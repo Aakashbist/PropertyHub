@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
-import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
+import {
+  View,
+  Text,StyleSheet
+} from 'react-native';
+import { createAppContainer } from 'react-navigation';
+
+import AppNavigator from './components/StackNavigator'
+
+
+const AppContainer = createAppContainer(AppNavigator);
+
 export default class App extends Component {
   render() {
     return (
-      <Container>
-        <Header />
-        <Content>
-          <Form>
-            <Item floatingLabel>
-              <Label>Username</Label>
-              <Input />
-            </Item>
-            <Item floatingLabel last>
-              <Label>Password</Label>
-              <Input />
-            </Item>
-          </Form>
-        </Content>
-      </Container>
+  <AppContainer />
     );
   }
 }
