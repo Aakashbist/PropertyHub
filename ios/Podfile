@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'AwesomeProject' do
-  # Pods for AwesomeProject
+target 'PropertyHub' do
+  # Pods for PropertyHub
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -27,7 +27,7 @@ target 'AwesomeProject' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'AwesomeProjectTests' do
+  target 'PropertyHubTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -35,10 +35,10 @@ target 'AwesomeProject' do
   use_native_modules!
 end
 
-target 'AwesomeProject-tvOS' do
-  # Pods for AwesomeProject-tvOS
+target 'PropertyHub-tvOS' do
+  # Pods for PropertyHub-tvOS
 
-  target 'AwesomeProject-tvOSTests' do
+  target 'PropertyHub-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

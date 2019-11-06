@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import {
    View,
-   Text,StyleSheet
+   Text,StyleSheet,TouchableOpacity
 } from 'react-native'
+import { Button } from 'native-base';
 
 class LoginScreen extends Component{
     static navigationOptions={
@@ -12,6 +13,9 @@ class LoginScreen extends Component{
         return (
             <View style={style.container}>
                 <Text>Login Screen</Text>
+                <Button onPress={()=>this.props.navigation.navigate('DrawerNavigator')} >
+            <Text>Login</Text>
+        </Button>
             </View>
         );
     }

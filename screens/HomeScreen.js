@@ -4,6 +4,8 @@ import { View,Text,StyleSheet,Button,TouchableOpacity} from 'react-native'
 class HomeScreen extends Component{
     static navigationOptions=({navigation})=>({
         title: 'HOME',
+        headerStyle:{ backgroundColor:'#ff55f0'},
+       
         headerRight:<TouchableOpacity onPress={()=>navigation.navigate('LoginScreen')} >
             <Text style={{margin:10,padding:10}}>Login</Text>
         </TouchableOpacity>
