@@ -5,7 +5,8 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "devServe": "adb reverse tcp:8081 tcp:8081 && react-native run-android"
   },
   "dependencies": {
     "native-base": "^2.13.8",
