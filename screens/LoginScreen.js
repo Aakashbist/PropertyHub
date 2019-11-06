@@ -1,32 +1,24 @@
-import React, { Component } from 'react';
-import {
-   View,
-   Text,StyleSheet,TouchableOpacity
-} from 'react-native'
-import { Button } from 'native-base';
+import React, {Component} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
-class LoginScreen extends Component{
-    static navigationOptions={
-        title: 'login'
-    }
-    render(){
-        return (
-            <View style={style.container}>
-                <Text>Login Screen</Text>
-                <Button onPress={()=>this.props.navigation.navigate('DrawerNavigator')} >
-            <Text>Login</Text>
-        </Button>
-            </View>
-        );
-    }
+class LoginScreen extends Component {
+  static navigationOptions = {
+    title: 'login',
+  };
+  render() {
+    return (
+      <View style={style.container}>
+        <Text>Login Screen</Text>
+      </View>
+    );
+  }
 }
 export default LoginScreen;
 
-const style=StyleSheet.create({
-    container:{
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center'
-
-    }
-})
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
