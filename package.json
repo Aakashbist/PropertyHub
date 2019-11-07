@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.2",
+    "firebase": "^7.2.3",
     "native-base": "^2.13.8",
     "react": "16.8.6",
     "react-native": "0.60.5",
+    "react-native-dotenv": "^0.2.0",
+    "react-native-firebase": "^5.5.6",
     "react-native-gesture-handler": "^1.5.0",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "^1.0.0-alpha.23",

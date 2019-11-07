@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, View, StatusBar, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+
 export default class AuthLoading extends Component {
     constructor(props) {
         super(props);

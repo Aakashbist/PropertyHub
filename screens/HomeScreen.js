@@ -9,7 +9,7 @@ class HomeScreen extends Component {
     title: 'HOME',
     headerRight: (
       <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <Text style={{ margin: 10, padding: 10 }}>Login</Text>
+        <Text style={{ margin: 10, padding: 10 }}>Member</Text>
       </TouchableOpacity>
     ),
   });
