@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 class LoginScreen extends Component {
   static navigationOptions = {
     title: 'login',
@@ -8,12 +8,21 @@ class LoginScreen extends Component {
   render() {
     return (
       <View style={style.container}>
-        <Text>Login Screen</Text>
-      </View>
+        {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('DrawerNavigator')}> */}
+        <TouchableOpacity onPress={this._asyncLogin}>
+          <Text>Authenticate</Text>
+        </TouchableOpacity>
+      </View >
     );
   }
+  _asyncLogin = async () => {
+    await AsyncStorage.setItem('userToken', 'abc');
+    this.props.navigation.navigate('App');
+  };
 }
 export default LoginScreen;
+
+
 
 const style = StyleSheet.create({
   container: {

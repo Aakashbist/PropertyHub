@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import {View,Text,StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 
-import AppNavigator from './components/StackNavigator'
+import AppSwitchNavigator from './components/AppSwitchNavigator';
 
 
-const AppContainer = createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(AppSwitchNavigator);
 
 export default class App extends Component {
   render() {

@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import {
-   View,
-   Text,StyleSheet
+    View,
+    Text, StyleSheet, Image
 } from 'react-native'
 
-class ProfileScreen extends Component{
-    render(){
+class ProfileScreen extends Component {
+    static navigationOptions = {
+        drawerLabel: 'Profile',
+        drawerIcon: ({ tintColor }) => (
+            <Image
+                source={require('../assets/icon/supervisor_account-24px.svg')}
+                style={[style.icon, { tintColor: '#ff0' }]}
+            />
+        ),
+    };
+    render() {
         return (
             <View style={style.container}>
                 <Text>Profile Screen</Text>
@@ -15,11 +24,14 @@ class ProfileScreen extends Component{
 }
 export default ProfileScreen;
 
-const style=StyleSheet.create({
-    container:{
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center'
-
+const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    icon: {
+        width: 20,
+        height: 20
     }
 })
