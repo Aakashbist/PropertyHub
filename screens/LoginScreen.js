@@ -1,11 +1,11 @@
 
 import React from 'react'
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button } from 'react-native'
-
+//import firebase from '../config/Firebase';
 class Login extends React.Component {
-    state = {
-        email: '',
-        password: ''
+    constructor(props) {
+        super(props);
+        this.state = { email: '', password: '' }
     }
 
     render() {

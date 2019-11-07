@@ -2,12 +2,25 @@
 
 import React from 'react'
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import firebase from '../config/Firebase';
 
 class Signup extends React.Component {
-  state = {
-    name: '',
-    email: '',
-    password: ''
+
+  state = { email: '', password: '' }
+
+  handleSignUp = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(() => this.props.navigation.navigate('LoginScreen'))
+      .catch(error => this.setState({ errorMessage: error.message }))
+  }
+  handleSignUp = () => {
+
+    Firebase.auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => this.props.navigation.navigate('Profile'))
+      .catch(error => console.log(error))
   }
 
   render() {
