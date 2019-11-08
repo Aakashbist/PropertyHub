@@ -1,13 +1,21 @@
 
 import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button } from 'react-native'
-//import firebase from '../config/Firebase';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, AsyncStorage } from 'react-native'
+import Firebase from '../config/Firebase';
+
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { email: '', password: '' }
+        this.state = { email: '', password: '', error: '' }
     }
+    handleLogin = () => {
 
+        Firebase.auth()
+            .signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then(
+                this.props.navigation.navigate('App'))
+            .catch((error) => console.log(error))
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -15,19 +23,19 @@ class Login extends React.Component {
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.email}
-                    onChangeText={email => this.setState({ email })}
+                    onChangeText={(email) => this.setState({ email })}
                     placeholder='Email'
                     autoCapitalize='none'
                 />
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.password}
-                    onChangeText={password => this.setState({ password })}
+                    onChangeText={(password) => this.setState({ password })}
                     placeholder='Password'
                     secureTextEntry={true}
                 />
-                <TouchableOpacity style={styles.button} >
-                    <Text style={styles.buttonText}>Login</Text>
+                <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+                    <Text style={styles.buttonText}>Login </Text>
                 </TouchableOpacity>
                 <View>
                     <Text> Don't have an account? <Text onPress={() => this.props.navigation.navigate('SignupScreen')}
