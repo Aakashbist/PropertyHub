@@ -1,7 +1,7 @@
 
 
-import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
+import React from 'react';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
 
 class Signup extends React.Component {
@@ -13,7 +13,15 @@ class Signup extends React.Component {
       password: ''
     }
   }
-
+  static navigationOptions = {
+    // headerTitle instead of title
+    headerTitle: 'Signin',
+    headerTintColor: '#fff',
+    headerStyle: {
+      fontSize: 40,
+      backgroundColor: '#e93766',
+    },
+  };
   handleSignUp = () => {
 
     Firebase.auth()
@@ -26,7 +34,13 @@ class Signup extends React.Component {
 
       )
       .catch((error) => {
-        alert(this.state.email + "already in use")
+        if (error.code == 'auth/email-already-in-use') {
+          alert('Email already used')
+        }
+        else if (error.code == 'auth/weak-password') {
+          alert('password is to weak')
+        }
+
       })
   }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, View, StatusBar, StyleSheet, Image } from 'react-native';
+import { ActivityIndicator, Image, StatusBar, StyleSheet, View } from 'react-native';
 import Firebase from '../config/Firebase';
 
 export default class AuthLoading extends Component {
