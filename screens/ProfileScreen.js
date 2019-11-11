@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import {
-    View,
-    Text, StyleSheet, Image
-} from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 class ProfileScreen extends Component {
     static navigationOptions = {
         drawerLabel: 'Profile',
         drawerIcon: ({ tintColor }) => (
             <Image
-                source={require('../assets/icon/supervisor_account-24px.svg')}
-                style={[style.icon, { tintColor: '#ff0' }]}
+                source={require('../assets/icon/profile.png')}
+                style={[style.icon]}
             />
         ),
     };
@@ -31,7 +28,7 @@ const style = StyleSheet.create({
         justifyContent: 'center'
     },
     icon: {
-        width: 20,
-        height: 20
+        width: 30,
+        height: 30
     }
-})
+});

@@ -1,33 +1,86 @@
 
 import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Button } from 'react-native'
-//import firebase from '../config/Firebase';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
+import Firebase from '../config/Firebase';
+
 class Login extends React.Component {
     constructor(props) {
+
         super(props);
-        this.state = { email: '', password: '' }
+
+        this.state = { email: '', password: '', error: '' }
     }
 
+    static navigationOptions = {
+
+        headerTitle: 'Login',
+        headerTintColor: '#fff',
+        headerStyle: {
+
+            backgroundColor: '#e93766',
+        },
+    };
+
+    getTokenId = () => {
+
+        Firebase.auth().currentUser
+            .getIdToken(true)
+            .then((token) => {
+                return token;
+
+            })
+            .catch((error) => alert(error))
+    }
+    handleLogin = () => {
+
+        Firebase.auth()
+            .signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then((user) => {
+
+                user = firebase.auth().currentUser;
+
+                if (user) {
+                    this.props.navigation.navigate('App')
+                }
+
+            })
+            .catch((error) => {
+                if (error.code == 'auth/wrong-password') {
+                    alert('Wrong Password')
+                }
+                else if (error.code == 'auth/invalid-email') {
+                    alert('Invalid Email')
+                }
+                else if (error.code == 'auth/user-not-found') {
+                    alert('Invalid User')
+                }
+
+            })
+    }
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} >
+                <Image
+                    source={require('../assets/icon/homeIcon.png')}
+                    style={{ width: 200, height: 200 }}
+                />
                 <Text style={{ color: '#e93766', fontSize: 40 }}>Login</Text>
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.email}
-                    onChangeText={email => this.setState({ email })}
+                    onChangeText={(email) => this.setState({ email })}
                     placeholder='Email'
                     autoCapitalize='none'
                 />
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.password}
-                    onChangeText={password => this.setState({ password })}
+                    onChangeText={(password) => this.setState({ password })}
                     placeholder='Password'
                     secureTextEntry={true}
                 />
-                <TouchableOpacity style={styles.button} >
-                    <Text style={styles.buttonText}>Login</Text>
+                <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+                    <Text style={styles.buttonText}>Login </Text>
                 </TouchableOpacity>
                 <View>
                     <Text> Don't have an account? <Text onPress={() => this.props.navigation.navigate('SignupScreen')}
