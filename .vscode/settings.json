@@ -1,0 +1,13 @@
+{
+    "prettier.printWidth": 120,
+    "prettier.tabWidth": 4,
+    "prettier.useTabs": true,
+    "editor.renderWhitespace": "all",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 3000,
+    "files.exclude": {
+        "**/__*": true
+    },
+    "editor.detectIndentation": false,
+    "prettier.trailingComma": "all"
+}
