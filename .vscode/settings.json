@@ -9,5 +9,6 @@
         "**/__*": true
     },
     "editor.detectIndentation": false,
-    "prettier.trailingComma": "all"
+    "prettier.trailingComma": "all",
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

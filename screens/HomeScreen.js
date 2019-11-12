@@ -1,12 +1,15 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 class HomeScreen extends Component {
-  static navigationOptions = ({navigation}) => ({
+
+
+  static navigationOptions = ({ navigation }) => ({
+
     title: 'HOME',
     headerRight: (
       <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <Text style={{margin: 10, padding: 10}}>Login</Text>
+        <Text style={{ margin: 10, padding: 10 }}>Member</Text>
       </TouchableOpacity>
     ),
   });
