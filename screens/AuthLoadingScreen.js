@@ -7,6 +7,7 @@ export default class AuthLoading extends Component {
         super(props);
         this.currentAuthState();
     }
+    
     currentAuthState = () => {
         Firebase.auth().onAuthStateChanged((user) =>
             this.props.navigation.navigate(user ? 'App' : 'Auth')

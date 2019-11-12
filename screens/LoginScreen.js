@@ -1,28 +1,22 @@
-
-import React from 'react'
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, Image } from 'react-native'
+import React from 'react';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
 
 class Login extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = { email: '', password: '', error: '' }
     }
 
     static navigationOptions = {
-
         headerTitle: 'Login',
         headerTintColor: '#fff',
         headerStyle: {
-
             backgroundColor: '#e93766',
         },
     };
 
     getTokenId = () => {
-
         Firebase.auth().currentUser
             .getIdToken(true)
             .then((token) => {
@@ -31,8 +25,8 @@ class Login extends React.Component {
             })
             .catch((error) => alert(error))
     }
-    handleLogin = () => {
 
+    handleLogin = () => {
         Firebase.auth()
             .signInWithEmailAndPassword(this.state.email, this.state.password)
             .then((user) => {
@@ -42,7 +36,6 @@ class Login extends React.Component {
                 if (user) {
                     this.props.navigation.navigate('App')
                 }
-
             })
             .catch((error) => {
                 if (error.code == 'auth/wrong-password') {
@@ -54,9 +47,9 @@ class Login extends React.Component {
                 else if (error.code == 'auth/user-not-found') {
                     alert('Invalid User')
                 }
-
             })
     }
+
     render() {
         return (
             <View style={styles.container} >

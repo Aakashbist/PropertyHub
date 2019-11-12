@@ -8,16 +8,15 @@ class DashBoardScreen extends Component {
     drawerIcon: ({ }) => (
       <Image
         source={require('../assets/icon/dashboard.png')}
-
       />
     ),
   };
+
   render() {
     return (
       <View style={style.container}>
         <Text>DashBoard Screen</Text>
         <Button title='open drawer' onPress={() => this.props.navigation.toggleDrawer()}></Button>
-
       </View >
     );
   }
@@ -27,6 +26,7 @@ class DashBoardScreen extends Component {
     this.props.navigation.navigate('Auth');
   };
 }
+
 export default DashBoardScreen;
 
 const style = StyleSheet.create({
@@ -34,12 +34,9 @@ const style = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   icon: {
     width: 30,
     height: 30
-
-
   }
 });

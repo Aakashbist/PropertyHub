@@ -1,11 +1,5 @@
+import { Body, Header, Icon, Left, Right, Title } from 'native-base';
 import React, { Component } from "react";
-import {
-    View,
-    Text,
-    StyleSheet
-} from "react-native";
-
-import { Header, Body, Title, Content, Left, Icon, Right } from 'native-base'
 
 class CustomHeader extends Component {
     render() {
@@ -23,4 +17,3 @@ class CustomHeader extends Component {
     }
 }
 export default CustomHeader;
-

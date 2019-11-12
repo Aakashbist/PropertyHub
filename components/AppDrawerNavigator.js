@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import DashBoardScreen from '../screens/DashBoardScreen';
@@ -17,8 +16,4 @@ const DrawerNavigator = createDrawerNavigator({
     }
 );
 
-
-
-
 export default createAppContainer(DrawerNavigator);
-

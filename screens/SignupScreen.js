@@ -1,46 +1,41 @@
-
-
 import React from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
 
 class Signup extends React.Component {
   constructor(props) {
-
     super(props);
     this.state = {
       email: '',
       password: ''
     }
   }
+
   static navigationOptions = {
     // headerTitle instead of title
-    headerTitle: 'Signin',
+    headerTitle: 'Sign In',
     headerTintColor: '#fff',
     headerStyle: {
       fontSize: 40,
       backgroundColor: '#e93766',
     },
   };
-  handleSignUp = () => {
 
+  handleSignUp = () => {
     Firebase.auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => {
         alert("in success");
         const user = Firebase.auth().currentUser;
-
-      }
-
-      )
+      })
       .catch((error) => {
         if (error.code == 'auth/email-already-in-use') {
           alert('Email already used')
-        }
-        else if (error.code == 'auth/weak-password') {
+        } else if (error.code == 'auth/weak-password') {
           alert('password is to weak')
+        } else {
+          alert('failed creating account' + error.code)
         }
-
       })
   }
 

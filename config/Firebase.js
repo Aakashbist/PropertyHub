@@ -1,6 +1,5 @@
 import firebase from 'firebase'
 
-
 const firebaseConfig = {
     // apiKey: API_KEY,
     // authDomain: AUTH_DOMAIN,

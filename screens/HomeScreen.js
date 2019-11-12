@@ -3,16 +3,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 class HomeScreen extends Component {
 
-
-  static navigationOptions = ({ navigation }) => ({
-
-    title: 'HOME',
-    headerRight: (
-      <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <Text style={{ margin: 10, padding: 10 }}>Member</Text>
-      </TouchableOpacity>
-    ),
-  });
+  static navigationOptions = ({ navigation }) => (
+    {
+      title: 'HOME',
+      headerRight: (
+        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+          <Text style={{ margin: 10, padding: 10 }}>Member</Text>
+        </TouchableOpacity>
+      ),
+    }
+  );
 
   render() {
     return (
@@ -22,6 +22,7 @@ class HomeScreen extends Component {
     );
   }
 }
+
 export default HomeScreen;
 
 const style = StyleSheet.create({

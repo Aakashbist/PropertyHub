@@ -1,19 +1,18 @@
 import { Body, Button, Container, Content, Footer, FooterTab, Header, Right, Text } from 'native-base';
 import React from 'react';
-import { DrawerItems } from 'react-navigation-drawer';
 import { Image, StyleSheet } from 'react-native';
+import { DrawerItems } from 'react-navigation-drawer';
 import firebase from '../config/Firebase';
-
-
-//import { Header, Body, Container, Content, Image, Left, Button, Icon } from 'native-base';
 
 export default class DrawerMenu extends React.Component {
     constructor(props) {
         super(props);
     }
+
     handleSignOut = () => {
         firebase.auth().signOut();
     }
+    
     render() {
         return (
             <Container>
@@ -38,10 +37,10 @@ export default class DrawerMenu extends React.Component {
                     </FooterTab>
                 </Footer>
             </Container>
-
         )
     }
 }
+
 const styles = StyleSheet.create({
 
     button: {
