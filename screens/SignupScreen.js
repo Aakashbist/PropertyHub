@@ -66,7 +66,9 @@ class Signup extends React.Component {
           <Text style={styles.buttonText}>Signup</Text>
         </TouchableOpacity>
         <View>
-          <Text> Already have an account? <Text onPress={() => this.props.navigation.navigate('LoginScreen')} style={{ color: '#e93766', fontSize: 18 }}> Login </Text></Text>
+          <Text> Already have an account?
+            <Text onPress={() => this.props.navigation.navigate('LoginScreen')} style={{ color: '#e93766', fontSize: 18 }}> Login </Text>
+          </Text>
         </View>
       </View>
     )

@@ -57,7 +57,6 @@ class Login extends React.Component {
                     source={require('../assets/icon/homeIcon.png')}
                     style={{ width: 200, height: 200 }}
                 />
-                <Text style={{ color: '#e93766', fontSize: 40 }}>Login</Text>
                 <TextInput
                     style={styles.inputBox}
                     value={this.state.email}
