@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import GeneralStatusBarColor from '../components/GeneralStatusBarColor';
 import Firebase from '../config/Firebase';
 import colors from '../styles/colors';
 import styles from '../styles/styles';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const Login = (props) => {
     const [email, setEmail] = useState('');
@@ -56,6 +58,7 @@ const Login = (props) => {
 
     return (
         <View style={styles.container} >
+            <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
             <Image
                 source={require('../assets/icon/homeIcon.png')}
                 style={{ width: 200, height: 200, marginBottom: 50 }}

@@ -3,6 +3,7 @@ import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
 import styles from '../styles/styles';
 import colors from '../styles/colors';
+import GeneralStatusBarColor from '../components/GeneralStatusBarColor';
 
 const Signup = (props) => {
 
@@ -45,6 +46,7 @@ const Signup = (props) => {
 
   return (
     <View style={styles.container}>
+      <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
       <Image
         source={require('../assets/icon/homeIcon.png')}
         style={{ width: 200, height: 200 }}
