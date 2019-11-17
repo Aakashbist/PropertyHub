@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, View, Button } from 'react-native';
+import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
+import colors from '../styles/colors';
 import styles from '../styles/styles';
 
 const Login = (props) => {
@@ -45,16 +46,19 @@ const Login = (props) => {
                 else if (error.code == 'auth/user-not-found') {
                     errorMessage = 'Invalid User';
                 }
-                alert(errorMessage);
-                setError(errorMessage);
+                if (errorMessage) {
+                    setError(errorMessage);
+                }
             })
     }
+
+    let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
     return (
         <View style={styles.container} >
             <Image
                 source={require('../assets/icon/homeIcon.png')}
-                style={{ width: 200, height: 200 }}
+                style={{ width: 200, height: 200, marginBottom: 50 }}
             />
             <TextInput
                 style={styles.inputBox}
@@ -70,6 +74,7 @@ const Login = (props) => {
                 placeholder='Password'
                 secureTextEntry={true}
             />
+            {errorView}
             <TouchableOpacity
                 style={canLogin ? styles.button : styles.buttonDisabled}
                 onPress={this.handleLogin}

@@ -8,5 +8,7 @@ export default {
     primaryLight: "#ff6f93",
 
     darkWhite1: "#f3f3f3",
-    darkWhite2: "#d3d3d3"
+    darkWhite2: "#d3d3d3",
+
+    textColorError: "#b1003c"
 }
