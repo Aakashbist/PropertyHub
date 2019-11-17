@@ -24,6 +24,7 @@ const Signup = (props) => {
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
         const user = Firebase.auth().currentUser;
+        user.sendEmailVerification();
       })
       .catch((error) => {
         let errorMessage;

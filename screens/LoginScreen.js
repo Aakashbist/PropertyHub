@@ -25,7 +25,7 @@ const Login = (props) => {
             .then((token) => {
                 return token;
             })
-            .catch((error) => alert(error))
+            .catch((error) => setError(error.errorMessage))
     }
 
     handleLogin = () => {
@@ -34,7 +34,7 @@ const Login = (props) => {
             .then((user) => {
                 user = firebase.auth().currentUser;
                 if (user) {
-                    this.props.navigation.navigate('App')
+                    props.navigation.navigate('App')
                 }
             })
             .catch((error) => {
