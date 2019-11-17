@@ -1,78 +1,82 @@
-import React from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
 import styles from '../styles/styles';
+import colors from '../styles/colors';
 
-class Signup extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: ''
+const Signup = (props) => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState();
+  const [canSignUp, setCanSignUp] = useState(false);
+
+  useEffect(() => {
+    let hasEmailAndPassword = email.trim().length > 0 && password.trim().length > 0;
+    if (canSignUp !== hasEmailAndPassword) {
+      setCanSignUp(hasEmailAndPassword);
     }
-  }
-
-  static navigationOptions = {
-    // headerTitle instead of title
-    headerTitle: 'Sign In',
-    headerTintColor: '#fff',
-    headerStyle: {
-      fontSize: 40,
-      backgroundColor: '#e93766',
-    },
-  };
+  }, [email, password]);
 
   handleSignUp = () => {
     Firebase.auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        alert("in success");
         const user = Firebase.auth().currentUser;
       })
       .catch((error) => {
+        let errorMessage;
         if (error.code == 'auth/email-already-in-use') {
-          alert('Email already used')
+          errorMessage = 'Email already used';
         } else if (error.code == 'auth/weak-password') {
-          alert('password is to weak')
+          errorMessage = 'Password is to weak';
+        } else if (error.code == 'auth/invalid-email') {
+          errorMessage = 'Email is invalid';
         } else {
-          alert('failed creating account' + error.code)
+          errorMessage = 'Failed creating account ' + error.code;
+        }
+        if (errorMessage) {
+          setError(errorMessage);
         }
       })
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Image
-          source={require('../assets/icon/homeIcon.png')}
-          style={{ width: 200, height: 200 }}
-        />
+  let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
-        <TextInput
-          style={styles.inputBox}
-          value={this.state.email}
-          onChangeText={(email) => this.setState({ email })}
-          placeholder='Email'
-          autoCapitalize='none'
-        />
-        <TextInput
-          style={styles.inputBox}
-          value={this.state.password}
-          onChangeText={(password) => this.setState({ password })}
-          placeholder='Password'
-          secureTextEntry={true}
-        />
-        <TouchableOpacity style={styles.button} onPress={this.handleSignUp}>
-          <Text style={styles.buttonText}>Signup</Text>
-        </TouchableOpacity>
-        <View>
-          <Text> Already have an account?
-            <Text onPress={() => this.props.navigation.navigate('LoginScreen')} style={styles.primaryText}> Login </Text>
-          </Text>
-        </View>
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/icon/homeIcon.png')}
+        style={{ width: 200, height: 200 }}
+      />
+      <TextInput
+        style={styles.inputBox}
+        value={email}
+        onChangeText={(email) => setEmail(email)}
+        placeholder='Email'
+        autoCapitalize='none'
+      />
+      <TextInput
+        style={styles.inputBox}
+        value={password}
+        onChangeText={(password) => setPassword(password)}
+        placeholder='Password'
+        secureTextEntry={true}
+      />
+      {errorView}
+      <TouchableOpacity
+        style={canSignUp ? styles.button : styles.buttonDisabled}
+        onPress={this.handleSignUp}
+        disabled={!canSignUp}>
+        <Text style={styles.buttonText}>SignUp </Text>
+      </TouchableOpacity>
+      <View>
+        <Text> Already have an account?
+            <Text onPress={() => props.navigation.navigate('LoginScreen')} style={styles.primaryText}> Login </Text>
+        </Text>
       </View>
-    )
-  }
+    </View>
+  )
 }
 
 export default Signup

@@ -82,7 +82,7 @@ const Login = (props) => {
                 <Text style={styles.buttonText}>Login </Text>
             </TouchableOpacity>
             <View>
-                <Text> Don't have an account? <Text onPress={() => this.props.navigation.navigate('SignupScreen')}
+                <Text> Don't have an account? <Text onPress={() => props.navigation.navigate('SignupScreen')}
                     style={styles.primaryText}> Sign Up </Text></Text>
             </View>
         </View>
