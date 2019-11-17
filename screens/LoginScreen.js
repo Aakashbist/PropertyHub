@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View, Button } from 'react-native';
 import Firebase from '../config/Firebase';
 import styles from '../styles/styles';
 
-class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { email: '', password: '', error: '', canLogin: false }
-    }
+const Login = (props) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState();
+    const [canLogin, setCanLogin] = useState(false);
 
-    updateValues = () => {
-        let hasEmailAndPassword = this.state.email.trim().length > 0 &&
-            this.state.password.trim().length > 0;
-        if (this.state.canLogin !== hasEmailAndPassword) {
-            this.setState({ canLogin: hasEmailAndPassword });
-            this.setState({ canLogin: hasEmailAndPassword }); 
+    useEffect(() => {
+        let hasEmailAndPassword = email.trim().length > 0 && password.trim().length > 0;
+        if (canLogin !== hasEmailAndPassword) {
+            setCanLogin(hasEmailAndPassword);
         }
-    }
+    }, [email, password]);
 
     getTokenId = () => {
         Firebase.auth().currentUser
@@ -29,64 +27,61 @@ class Login extends React.Component {
 
     handleLogin = () => {
         Firebase.auth()
-            .signInWithEmailAndPassword(this.state.email, this.state.password)
+            .signInWithEmailAndPassword(email, password)
             .then((user) => {
                 user = firebase.auth().currentUser;
-
                 if (user) {
                     this.props.navigation.navigate('App')
                 }
             })
             .catch((error) => {
+                let errorMessage;
                 if (error.code == 'auth/wrong-password') {
-                    alert('Wrong Password')
+                    errorMessage = 'Wrong Password';
                 }
                 else if (error.code == 'auth/invalid-email') {
-                    alert('Invalid Email')
+                    errorMessage = 'Invalid Email';
                 }
                 else if (error.code == 'auth/user-not-found') {
-                    alert('Invalid User')
+                    errorMessage = 'Invalid User';
                 }
+                alert(errorMessage);
+                setError(errorMessage);
             })
     }
 
-    render() {
-        return (
-            <View style={styles.container} >
-                <Image
-                    source={require('../assets/icon/homeIcon.png')}
-                    style={{ width: 200, height: 200 }}
-                />
-                <TextInput
-                    style={styles.inputBox}
-                    value={this.state.email}
-                    onChangeText={(email) => {
-                        this.setState({ email });
-                        this.updateValues();
-                    }}
-                    placeholder='Email'
-                    autoCapitalize='none'
-                />
-                <TextInput
-                    style={styles.inputBox}
-                    value={this.state.password}
-                    onChangeText={(password) => {
-                        this.setState({ password });
-                        this.updateValues();
-                    }}
-                    placeholder='Password'
-                    secureTextEntry={true}
-                />
-                <TouchableOpacity style={this.state.canLogin ? styles.button : styles.buttonDisabled} onPress={this.handleLogin} disabled={this.state.canLogin}>
-                    <Text style={styles.buttonText}>Login </Text>
-                </TouchableOpacity>
-                <View>
-                    <Text> Don't have an account? <Text onPress={() => this.props.navigation.navigate('SignupScreen')}
-                        style={styles.primaryText}> Sign Up </Text></Text>
-                </View>
+    return (
+        <View style={styles.container} >
+            <Image
+                source={require('../assets/icon/homeIcon.png')}
+                style={{ width: 200, height: 200 }}
+            />
+            <TextInput
+                style={styles.inputBox}
+                value={email}
+                onChangeText={(email) => setEmail(email)}
+                placeholder='Email'
+                autoCapitalize='none'
+            />
+            <TextInput
+                style={styles.inputBox}
+                value={password}
+                onChangeText={(password) => setPassword(password)}
+                placeholder='Password'
+                secureTextEntry={true}
+            />
+            <TouchableOpacity
+                style={canLogin ? styles.button : styles.buttonDisabled}
+                onPress={this.handleLogin}
+                disabled={!canLogin}>
+                <Text style={styles.buttonText}>Login </Text>
+            </TouchableOpacity>
+            <View>
+                <Text> Don't have an account? <Text onPress={() => this.props.navigation.navigate('SignupScreen')}
+                    style={styles.primaryText}> Sign Up </Text></Text>
             </View>
-        )
-    }
+        </View>
+    )
 }
 
 export default Login
