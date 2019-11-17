@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import GeneralStatusBarColor from '../components/GeneralStatusBarColor';
 import Firebase from '../config/Firebase';
-import colors from '../styles/colors';
-import styles from '../styles/styles';
+import colors from '../resources/colors';
+import styles from '../resources/styles';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const Login = (props) => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../config/Firebase';
-import styles from '../styles/styles';
-import colors from '../styles/colors';
+import styles from '../resources/styles';
+import colors from '../resources/colors';
 import GeneralStatusBarColor from '../components/GeneralStatusBarColor';
 
 const Signup = (props) => {

@@ -8,20 +8,15 @@ const AppNavigator = createStackNavigator(
   {
     HomeScreen: { screen: HomeScreen },
     SignupScreen: {
-      screen: SignupScreen,
-      navigationOptions: {
-        header: null,
-      }
+      screen: SignupScreen
     },
     LoginScreen: {
-      screen: LoginScreen,
-      navigationOptions: {
-        header: null,
-      }
+      screen: LoginScreen
     }
   },
   {
     initialRouteName: 'LoginScreen',
+    headerMode: 'none',
   },
 );
 
