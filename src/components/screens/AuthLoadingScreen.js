@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Image, StatusBar, StyleSheet, View } from 'react-native';
-import Firebase from '../config/Firebase';
-import styles from '../resources/styles';
-import AppRoute from '../resources/appRoute';
+import { ActivityIndicator, Image, View } from 'react-native';
+import Firebase from '../../config/Firebase';
+import AppRoute from '../../resources/appRoute';
+import styles from '../../resources/styles';
 
 export default class AuthLoading extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ export default class AuthLoading extends Component {
         return (
             <View style={styles.container}>
                 <Image
-                    source={require('../assets/icon/homeIcon.png')}
+                    source={require('../../assets/icon/homeIcon.png')}
                     style={{ width: 400, height: 400 }}
                 />
                 <ActivityIndicator />

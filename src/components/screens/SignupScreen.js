@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Firebase from '../config/Firebase';
-import styles from '../resources/styles';
-import colors from '../resources/colors';
-import GeneralStatusBarColor from '../components/GeneralStatusBarColor';
-import AppRoute from '../resources/appRoute';
+import Firebase from '../../config/Firebase';
+import styles from '../../resources/styles';
+import colors from '../../resources/colors';
+import GeneralStatusBarColor from '../GeneralStatusBarColor';
+import AppRoute from '../../resources/appRoute';
 
 const Signup = (props) => {
 
@@ -50,7 +50,7 @@ const Signup = (props) => {
     <View style={styles.container}>
       <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
       <Image
-        source={require('../assets/icon/homeIcon.png')}
+        source={require('../../assets/icon/homeIcon.png')}
         style={{ width: 200, height: 200 }}
       />
       <TextInput

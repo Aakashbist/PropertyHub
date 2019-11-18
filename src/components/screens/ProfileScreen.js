@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import styles from '../../resources/styles';
 
 class ProfileScreen extends Component {
     static navigationOptions = {
         drawerLabel: 'Profile',
         drawerIcon: ({ tintColor }) => (
             <Image
-                source={require('../assets/icon/profile.png')}
-                style={[style.icon]}
+                source={require('../../assets/icon/profile.png')}
+                style={styles.drawerIcon}
             />
         ),
     };
     render() {
         return (
-            <View style={style.container}>
+            <View style={styles.container}>
                 <Text>Profile Screen</Text>
                 <Button title='open drawer' onPress={() => this.props.navigation.toggleDrawer()}></Button>
             </View>
@@ -21,15 +22,3 @@ class ProfileScreen extends Component {
     }
 }
 export default ProfileScreen;
-
-const style = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    icon: {
-        width: 30,
-        height: 30
-    }
-});

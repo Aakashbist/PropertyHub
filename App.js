@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
-import AppSwitchNavigator from './components/AppSwitchNavigator';
+import AppSwitchNavigator from './src/components/AppSwitchNavigator';
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
 

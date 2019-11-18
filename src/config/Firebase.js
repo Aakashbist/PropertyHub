@@ -1,13 +1,6 @@
 import firebase from 'firebase'
 
 const firebaseConfig = {
-    // apiKey: API_KEY,
-    // authDomain: AUTH_DOMAIN,
-    // databaseURL: DATABASE_URL,
-    // projectId: PROJECT_ID,
-    // storageBucket: '',
-    // messagingSenderId: MESSAGE_SENDER_ID,
-    // appId: APP_ID
     apiKey: "AIzaSyBACLpvymneTmxW216e5LSPP63yf1sLn5w",
     authDomain: "propertyhub-820e2.firebaseapp.com",
     databaseURL: "https://propertyhub-820e2.firebaseio.com",

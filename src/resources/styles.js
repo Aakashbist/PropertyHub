@@ -46,5 +46,9 @@ export default {
     primaryText: {
         color: colors.primary,
         fontSize: 14
+    },
+    drawerIcon: {
+        width: 20,
+        height: 20
     }
 }
