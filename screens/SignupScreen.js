@@ -4,6 +4,7 @@ import Firebase from '../config/Firebase';
 import styles from '../resources/styles';
 import colors from '../resources/colors';
 import GeneralStatusBarColor from '../components/GeneralStatusBarColor';
+import AppRoute from '../resources/appRoute';
 
 const Signup = (props) => {
 
@@ -75,7 +76,7 @@ const Signup = (props) => {
       </TouchableOpacity>
       <View>
         <Text> Already have an account?
-            <Text onPress={() => props.navigation.navigate('LoginScreen')} style={styles.primaryText}> Login </Text>
+            <Text onPress={() => props.navigation.navigate(AppRoute.Login)} style={styles.primaryText}> Login </Text>
         </Text>
       </View>
     </View>

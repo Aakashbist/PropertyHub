@@ -2,6 +2,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import AppDrawerNavigator from './AppDrawerNavigator';
 import AuthStack from './AuthStack';
+import AppRoute from '../resources/appRoute';
 
 const switchNavigator = createSwitchNavigator(
   {
@@ -10,7 +11,7 @@ const switchNavigator = createSwitchNavigator(
     App: AppDrawerNavigator,
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: AppRoute.AuthLoading,
   },
 );
 

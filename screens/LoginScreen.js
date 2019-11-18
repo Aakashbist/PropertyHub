@@ -5,6 +5,7 @@ import Firebase from '../config/Firebase';
 import colors from '../resources/colors';
 import styles from '../resources/styles';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import AppRoute from '../resources/appRoute';
 
 const Login = (props) => {
     const [email, setEmail] = useState('');
@@ -34,7 +35,7 @@ const Login = (props) => {
             .then((user) => {
                 user = firebase.auth().currentUser;
                 if (user) {
-                    props.navigation.navigate('App')
+                    props.navigation.navigate(AppRoute.Home)
                 }
             })
             .catch((error) => {
@@ -85,7 +86,7 @@ const Login = (props) => {
                 <Text style={styles.buttonText}>Login </Text>
             </TouchableOpacity>
             <View>
-                <Text> Don't have an account? <Text onPress={() => props.navigation.navigate('SignupScreen')}
+                <Text> Don't have an account? <Text onPress={() => props.navigation.navigate(AppRoute.Signup)}
                     style={styles.primaryText}> Sign Up </Text></Text>
             </View>
         </View>

@@ -12,17 +12,15 @@ export default class DrawerMenu extends React.Component {
     handleSignOut = () => {
         firebase.auth().signOut();
     }
-    
+
     render() {
         return (
             <Container>
                 <Header style={{ height: 150 }}>
                     <Body>
                         <Image source={require('../assets/icon/homeIcon.png')}
-                            style={{
-                                height: 100,
-                                width: 100,
-                            }} />
+                            style={{ height: 100, width: 100, }}
+                        />
                     </Body>
                     <Right />
                 </Header>

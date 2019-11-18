@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 
 class ProfileScreen extends Component {
     static navigationOptions = {
@@ -15,6 +15,7 @@ class ProfileScreen extends Component {
         return (
             <View style={style.container}>
                 <Text>Profile Screen</Text>
+                <Button title='open drawer' onPress={() => this.props.navigation.toggleDrawer()}></Button>
             </View>
         );
     }
