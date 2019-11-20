@@ -11,6 +11,7 @@ const Login = (props) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState();
     const [canLogin, setCanLogin] = useState(false);
+    let errorMessage;
 
     useEffect(() => {
         let hasEmailAndPassword = email.trim().length > 0 && password.trim().length > 0;
@@ -31,20 +32,30 @@ const Login = (props) => {
     handleLogin = () => {
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
-            .then((user) => {
-                user = firebase.auth().currentUser;
-                if (user) {
-                    props.navigation.navigate(AppRoute.Home)
+            .then(() => {
+                Firebase.auth().onAuthStateChanged((user) => {
+                    if (user.emailVerified) {
+                        this.props.navigation.navigate(AppRoute.App)
+                    }
+                    else {
+                        errorMessage = 'Please check your email for verification link'
+
+                    }
+                    if (errorMessage) {
+                        setError(errorMessage);
+                    }
                 }
+                )
             })
             .catch((error) => {
-                let errorMessage;
+
                 if (error.code == 'auth/wrong-password') {
                     errorMessage = 'Wrong Password';
                 }
                 else if (error.code == 'auth/invalid-email') {
                     errorMessage = 'Invalid Email';
                 }
+
                 else if (error.code == 'auth/user-not-found') {
                     errorMessage = 'Invalid User';
                 }

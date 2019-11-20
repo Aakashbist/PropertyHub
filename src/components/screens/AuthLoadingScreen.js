@@ -11,8 +11,15 @@ export default class AuthLoading extends Component {
     }
 
     currentAuthState = () => {
-        Firebase.auth().onAuthStateChanged((user) =>
-            this.props.navigation.navigate(user ? AppRoute.App : AppRoute.Auth)
+        Firebase.auth().onAuthStateChanged((user) => {
+            if (user && user.emailVerified) {
+                this.props.navigation.navigate(AppRoute.App)
+            }
+            else {
+                this.props.navigation.navigate(AppRoute.Auth)
+            }
+        }
+
         )
     };
 

@@ -11,6 +11,7 @@ const Signup = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState();
+  const [success, setSuccess] = useState();
   const [canSignUp, setCanSignUp] = useState(false);
 
   useEffect(() => {
@@ -24,8 +25,13 @@ const Signup = (props) => {
     Firebase.auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
+        let successMessage;
         const user = Firebase.auth().currentUser;
         user.sendEmailVerification();
+        successMessage = 'Your Account is created please verify your account';
+        if (successMessage) {
+          setSuccess(successMessage);
+        }
       })
       .catch((error) => {
         let errorMessage;
@@ -44,7 +50,10 @@ const Signup = (props) => {
       })
   }
 
-  let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
+  //let successView = success ? <Text style={{ color: colors.textColorSuccess }}>{success}</Text> : null;
+
+  let messageView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> :
+    success ? <Text style={{ color: colors.textColorSuccess }}>{success}</Text> : null;
 
   return (
     <View style={styles.container}>
@@ -67,7 +76,10 @@ const Signup = (props) => {
         placeholder='Password'
         secureTextEntry={true}
       />
-      {errorView}
+
+      {messageView}
+
+
       <TouchableOpacity
         style={canSignUp ? styles.button : styles.buttonDisabled}
         onPress={this.handleSignUp}
