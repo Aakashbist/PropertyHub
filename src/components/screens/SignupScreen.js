@@ -8,17 +8,19 @@ import AppRoute from '../../resources/appRoute';
 
 const Signup = (props) => {
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState();
   const [canSignUp, setCanSignUp] = useState(false);
 
   useEffect(() => {
-    let hasEmailAndPassword = email.trim().length > 0 && password.trim().length > 0;
-    if (canSignUp !== hasEmailAndPassword) {
-      setCanSignUp(hasEmailAndPassword);
+    let _canSignUp = email.trim().length > 0 && password.trim().length > 0 &&
+      name.trim().length > 0;
+    if (canSignUp !== _canSignUp) {
+      setCanSignUp(_canSignUp);
     }
-  }, [email, password]);
+  }, [name, email, password]);
 
   handleSignUp = () => {
     Firebase.auth()
@@ -52,6 +54,13 @@ const Signup = (props) => {
       <Image
         source={require('../../assets/icon/homeIcon.png')}
         style={{ width: 200, height: 200 }}
+      />
+      <TextInput
+        style={styles.inputBox}
+        value={name}
+        onChangeText={(name) => setName(name)}
+        placeholder='Name'
+        autoCapitalize='words'
       />
       <TextInput
         style={styles.inputBox}
