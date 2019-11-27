@@ -19,7 +19,6 @@ export default class AuthLoading extends Component {
                 this.props.navigation.navigate(AppRoute.Auth)
             }
         }
-
         )
     };
 

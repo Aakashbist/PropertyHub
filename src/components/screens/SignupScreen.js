@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../../config/Firebase';
-import styles from '../../resources/styles';
-import colors from '../../resources/colors';
-import GeneralStatusBarColor from '../GeneralStatusBarColor';
+import { User } from '../../models/user';
 import AppRoute from '../../resources/appRoute';
+import colors from '../../resources/colors';
+import styles from '../../resources/styles';
+import GeneralStatusBarColor from '../GeneralStatusBarColor';
 
 const Signup = (props) => {
 
@@ -14,26 +15,37 @@ const Signup = (props) => {
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
   const [canSignUp, setCanSignUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let _canSignUp = email.trim().length > 0 && password.trim().length > 0 &&
-      name.trim().length > 0;
+      name.trim().length > 0 && !isLoading;
     if (canSignUp !== _canSignUp) {
       setCanSignUp(_canSignUp);
     }
-  }, [name, email, password]);
+  }, [name, email, password, isLoading]);
 
   handleSignUp = () => {
+    setIsLoading(true);
     Firebase.auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        let successMessage;
-        const user = Firebase.auth().currentUser;
-        user.sendEmailVerification();
-        successMessage = 'Your Account is created please verify your account';
-        if (successMessage) {
-          setSuccess(successMessage);
-        }
+      .then((data) => {
+        const currentUser = Firebase.auth().currentUser;
+        const user = new User(currentUser.uid, name, email);
+
+        Firebase.database().ref().child('users/' + user.id).set({
+          name: name,
+          email: email
+        }).then(() => {
+          currentUser.sendEmailVerification();
+          let successMessage;
+          successMessage = 'Your Account is created please verify your account';
+          if (successMessage) {
+            setSuccess(successMessage);
+          }
+        }).catch((error) => {
+          alert(error);
+        })
       })
       .catch((error) => {
         let errorMessage;
@@ -49,6 +61,9 @@ const Signup = (props) => {
         if (errorMessage) {
           setError(errorMessage);
         }
+        alert(error)
+      }).finally (() => {
+        setIsLoading(false);
       })
   }
 
@@ -87,7 +102,6 @@ const Signup = (props) => {
       />
 
       {messageView}
-
 
       <TouchableOpacity
         style={canSignUp ? styles.button : styles.buttonDisabled}
