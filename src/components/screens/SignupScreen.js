@@ -1,9 +1,9 @@
 import { Container } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ButtonGroup, Icon, Header } from 'react-native-elements';
 import Firebase from '../../config/Firebase';
-import { User } from '../../models/user';
+import { Owner, Tenant } from '../../models/userModels';
 import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
@@ -15,14 +15,22 @@ const SignupSteps = {
   SIGNUP_SUCCESS: 1
 }
 
+const UserType = {
+  TENANT: 'Tenant',
+  OWNER: 'Owner'
+}
+
 const Signup = (props) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState(UserType.TENANT);
   const [error, setError] = useState();
   const [step, setStep] = useState(SignupSteps.SIGNUP);
   const [canSignUp, setCanSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const userTypes = [UserType.TENANT, UserType.OWNER]
 
   useEffect(() => {
     let _canSignUp = email.trim().length > 0 && password.trim().length > 0 &&
@@ -38,10 +46,22 @@ const Signup = (props) => {
       .createUserWithEmailAndPassword(email, password)
       .then((data) => {
         const currentUser = Firebase.auth().currentUser;
-        const user = new User(currentUser.uid, name, email);
-        Firebase.database().ref().child('users/' + user.id).set(user).then(() => {
+        let user;
+        let userDb;
+        switch (userType) {
+          case UserType.TENANT:
+            user = new Tenant(currentUser.uid, name, email);
+            userDb = "tenants";
+            break;
+          case UserType.OWNER:
+            user = new Owner(currentUser.uid, name, email);
+            userDb = "owners";
+            break;
+        }
+        Firebase.database().ref().child(userDb + '/' + user.id).set(user).then(() => {
           currentUser.sendEmailVerification();
           setStep(SignupSteps.SIGNUP_SUCCESS);
+          setIsLoading(false);
         }).catch((error) => {
           setError(error);
         })
@@ -51,13 +71,16 @@ const Signup = (props) => {
         if (errorMessage) {
           setError(errorMessage);
         }
-      }).finally(() => {
-        setIsLoading(false);
-      });
+      })
   }
 
   navigateToLogin = () => {
     props.navigation.navigate(AppRoute.Login);
+  }
+
+  updateIndex = (index) => {
+    let userType = userTypes[index];
+    setUserType(userType);
   }
 
   let messageView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
@@ -65,7 +88,7 @@ const Signup = (props) => {
   let view = step === SignupSteps.SIGNUP ? <React.Fragment>
     <Image
       source={require('../../assets/icon/homeIcon.png')}
-      style={{ width: 200, height: 200 }}
+      style={{ width: 200, height: 200, marginBottom: 30 }}
     />
     <TextInput
       style={styles.inputBox}
@@ -88,6 +111,16 @@ const Signup = (props) => {
       placeholder='Password'
       secureTextEntry={true}
     />
+    <ButtonGroup
+      onPress={this.updateIndex}
+      selectedIndex={userTypes.indexOf(userType)}
+      buttons={userTypes}
+      selectedTextStyle={{ fontSize: 18 }}
+      textStyle={{ color: colors.darkWhite2 }}
+      innerBorderStyle={{ color: colors.green }}
+      selectedButtonStyle={{ backgroundColor: colors.green }}
+      containerStyle={{ width: '80%', height: 60 }}
+    />
 
     {messageView}
 
@@ -95,9 +128,9 @@ const Signup = (props) => {
       style={canSignUp ? styles.button : styles.buttonDisabled}
       onPress={this.handleSignUp}
       disabled={!canSignUp}>
-      <Text style={styles.buttonText}>SignUp </Text>
+      <Text style={canSignUp ? styles.buttonText : styles.buttonTextDisabled}>SignUp </Text>
     </TouchableOpacity>
-    <View>
+    <View style={{ marginBottom: 20 }}>
       <Text> Already have an account?
         <Text onPress={() => props.navigation.navigate(AppRoute.Login)} style={styles.primaryText}> Login </Text>
       </Text>
@@ -122,10 +155,12 @@ const Signup = (props) => {
     </React.Fragment>;
 
   return (
-    <View style={styles.container}>
-      <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
-      {view}
-    </View>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={styles.container}>
+        <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+        {view}
+      </View>
+    </ScrollView>
   )
 }
 

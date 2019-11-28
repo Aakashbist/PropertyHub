@@ -10,6 +10,9 @@ export default {
     white: "#ffffff",
     darkWhite1: "#f3f3f3",
     darkWhite2: "#d3d3d3",
+    black: "#000000",
+    green: '#4CAF50',
+    blue: '#3D6DCC',
 
     textColorError: "#b1003c",
     textColorSuccess: '#4CAF50',

@@ -24,9 +24,8 @@ export default {
         marginBottom: 20,
         paddingVertical: 8,
         alignItems: 'center',
-        backgroundColor: colors.darkWhite2,
-        borderColor: colors.darkWhite2,
-        borderWidth: 1,
+        borderColor: colors.darkWhite1,
+        borderWidth: 2,
         borderRadius: 4,
         width: '50%',
     },
@@ -42,8 +41,12 @@ export default {
         minWidth: '50%'
     },
     buttonText: {
-        fontSize: 20,
-        color: '#fff'
+        fontSize: 18,
+        color: colors.white
+    },
+    buttonTextDisabled: {
+        fontSize: 18,
+        color: colors.darkWhite2
     },
 
     // To show pink text like "Sign up" under login button

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Firebase from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
@@ -43,8 +43,7 @@ const Login = (props) => {
                     if (errorMessage) {
                         setError(errorMessage);
                     }
-                }
-                )
+                });
             })
             .catch((error) => {
                 error
@@ -66,38 +65,40 @@ const Login = (props) => {
     let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
     return (
-        <View style={styles.container} >
-            <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
-            <Image
-                source={require('../../assets/icon/homeIcon.png')}
-                style={{ width: 200, height: 200, marginBottom: 50 }}
-            />
-            <TextInput
-                style={styles.inputBox}
-                value={email}
-                onChangeText={(email) => setEmail(email)}
-                placeholder='Email'
-                autoCapitalize='none'
-            />
-            <TextInput
-                style={styles.inputBox}
-                value={password}
-                onChangeText={(password) => setPassword(password)}
-                placeholder='Password'
-                secureTextEntry={true}
-            />
-            {errorView}
-            <TouchableOpacity
-                style={canLogin ? styles.button : styles.buttonDisabled}
-                onPress={this.handleLogin}
-                disabled={!canLogin}>
-                <Text style={styles.buttonText}>Login </Text>
-            </TouchableOpacity>
-            <View>
-                <Text> Don't have an account? <Text onPress={() => props.navigation.navigate(AppRoute.Signup)}
-                    style={styles.primaryText}> Sign Up </Text></Text>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+            <View style={styles.container} >
+                <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+                <Image
+                    source={require('../../assets/icon/homeIcon.png')}
+                    style={{ width: 200, height: 200, marginBottom: 30 }}
+                />
+                <TextInput
+                    style={styles.inputBox}
+                    value={email}
+                    onChangeText={(email) => setEmail(email)}
+                    placeholder='Email'
+                    autoCapitalize='none'
+                />
+                <TextInput
+                    style={styles.inputBox}
+                    value={password}
+                    onChangeText={(password) => setPassword(password)}
+                    placeholder='Password'
+                    secureTextEntry={true}
+                />
+                {errorView}
+                <TouchableOpacity
+                    style={canLogin ? styles.button : styles.buttonDisabled}
+                    onPress={this.handleLogin}
+                    disabled={!canLogin}>
+                    <Text style={canLogin ? styles.buttonText : styles.buttonTextDisabled}>Login </Text>
+                </TouchableOpacity>
+                <View style={{ marginBottom: 20 }}>
+                    <Text> Don't have an account? <Text onPress={() => props.navigation.navigate(AppRoute.Signup)}
+                        style={styles.primaryText}> Sign Up </Text></Text>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
