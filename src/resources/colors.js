@@ -7,6 +7,7 @@ export default {
     primaryDark: "#b1003c",
     primaryLight: "#ff6f93",
 
+    white: "#ffffff",
     darkWhite1: "#f3f3f3",
     darkWhite2: "#d3d3d3",
 

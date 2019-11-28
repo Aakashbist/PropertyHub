@@ -6,6 +6,10 @@ export default {
         justifyContent: 'center',
         alignItems: 'center'
     },
+    containerFull: {
+        flex: 1,
+        alignItems: 'center'
+    },
     inputBox: {
         width: '80%',
         margin: 10,
@@ -35,7 +39,7 @@ export default {
         borderColor: colors.primary,
         borderWidth: 1,
         borderRadius: 4,
-        width: '50%',
+        minWidth: '50%'
     },
     buttonText: {
         fontSize: 20,
@@ -46,6 +50,10 @@ export default {
     primaryText: {
         color: colors.primary,
         fontSize: 14
+    },
+    primaryTextHeading: {
+        color: colors.primary,
+        fontSize: 24
     },
     drawerIcon: {
         width: 20,

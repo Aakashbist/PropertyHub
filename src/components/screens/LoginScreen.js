@@ -26,7 +26,7 @@ const Login = (props) => {
             .then((token) => {
                 return token;
             })
-            .catch((error) => setError(error.errorMessage))
+            .catch((error) => setError(error.message))
     }
 
     handleLogin = () => {
@@ -39,7 +39,6 @@ const Login = (props) => {
                     }
                     else {
                         errorMessage = 'Please check your email for verification link'
-
                     }
                     if (errorMessage) {
                         setError(errorMessage);
@@ -48,14 +47,13 @@ const Login = (props) => {
                 )
             })
             .catch((error) => {
-
+                error
                 if (error.code == 'auth/wrong-password') {
                     errorMessage = 'Wrong Password';
                 }
                 else if (error.code == 'auth/invalid-email') {
                     errorMessage = 'Invalid Email';
                 }
-
                 else if (error.code == 'auth/user-not-found') {
                     errorMessage = 'Invalid User';
                 }
