@@ -1,7 +1,7 @@
 import { Container } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { ButtonGroup, Icon, Header } from 'react-native-elements';
+import { Image, ProgressBarAndroid, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ButtonGroup, Icon } from 'react-native-elements';
 import Firebase from '../../config/Firebase';
 import { Owner, Tenant } from '../../models/userModels';
 import AppRoute from '../../resources/appRoute';
@@ -21,9 +21,9 @@ const UserType = {
 }
 
 const Signup = (props) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('random name');
+  const [email, setEmail] = useState('fghjk@gh.jhg');
+  const [password, setPassword] = useState('dbvsuyfhs');
   const [userType, setUserType] = useState(UserType.TENANT);
   const [error, setError] = useState();
   const [step, setStep] = useState(SignupSteps.SIGNUP);
@@ -42,29 +42,27 @@ const Signup = (props) => {
 
   handleSignUp = () => {
     setIsLoading(true);
-    Firebase.auth()
-      .createUserWithEmailAndPassword(email, password)
+    let currentUser;
+    Firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((data) => {
-        const currentUser = Firebase.auth().currentUser;
-        let user;
-        let userDb;
+        let user, userDb;
+        currentUser = data.user;
         switch (userType) {
           case UserType.TENANT:
-            user = new Tenant(currentUser.uid, name, email);
+            user = new Tenant(data.user.uid, name, data.user.email);
             userDb = "tenants";
             break;
           case UserType.OWNER:
-            user = new Owner(currentUser.uid, name, email);
+            user = new Owner(data.user.uid, name, data.user.email);
             userDb = "owners";
             break;
         }
-        Firebase.database().ref().child(userDb + '/' + user.id).set(user).then(() => {
-          currentUser.sendEmailVerification();
-          setStep(SignupSteps.SIGNUP_SUCCESS);
-          setIsLoading(false);
-        }).catch((error) => {
-          setError(error);
-        })
+        Firebase.database().ref().child(userDb + '/' + user.id).set(user);
+      })
+      .then(() => currentUser.sendEmailVerification())
+      .then(() => {
+        clearFields();
+        setStep(SignupSteps.SIGNUP_SUCCESS);
       })
       .catch((error) => {
         let errorMessage = parseFirebaseError(error);
@@ -72,6 +70,7 @@ const Signup = (props) => {
           setError(errorMessage);
         }
       })
+      .finally(() => setIsLoading(false));
   }
 
   navigateToLogin = () => {
@@ -83,13 +82,15 @@ const Signup = (props) => {
     setUserType(userType);
   }
 
+  clearFields = () => {
+    setEmail('');
+    setPassword('');
+    setName('');
+  }
+
   let messageView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
-  let view = step === SignupSteps.SIGNUP ? <React.Fragment>
-    <Image
-      source={require('../../assets/icon/homeIcon.png')}
-      style={{ width: 200, height: 200, marginBottom: 30 }}
-    />
+  let view = isLoading ? <ProgressBarAndroid color={colors.primaryDark} style={{ height: 440 }} /> : step === SignupSteps.SIGNUP ? <React.Fragment>
     <TextInput
       style={styles.inputBox}
       value={name}
@@ -138,10 +139,6 @@ const Signup = (props) => {
   </React.Fragment> :
     <React.Fragment>
       <Container style={styles.containerFull}>
-        <Image
-          source={require('../../assets/icon/homeIcon.png')}
-          style={{ width: 200, height: 200, marginTop: 50, marginBottom: 50 }}
-        />
         <Text style={styles.primaryTextHeading}>Account Created</Text>
         <Text style={{ fontSize: 14, marginTop: 10, marginBottom: 50 }}>Your Account is created please verify your account.</Text>
 
@@ -158,6 +155,10 @@ const Signup = (props) => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={styles.container}>
         <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+        <Image
+          source={require('../../assets/icon/homeIcon.png')}
+          style={{ width: 200, height: 200, marginBottom: 30 }}
+        />
         {view}
       </View>
     </ScrollView>
