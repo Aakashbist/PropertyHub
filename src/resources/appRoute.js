@@ -3,7 +3,7 @@ const AppRoute = {
     Auth: 'Auth',
     AuthLoading: 'AuthLoading',
     Dashboard: 'DashboardScreen',
-    Profile: 'ProfileScreen',
+    Property: 'PropertyScreen',
     Login: 'LoginScreen',
     Signup: 'SignupScreen'
 }

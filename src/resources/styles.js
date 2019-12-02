@@ -61,5 +61,30 @@ export default {
     drawerIcon: {
         width: 20,
         height: 20
+    },
+    searchBox: {
+        width: '95%',
+        height: 60,
+        margin: 10,
+        padding: 5,
+        fontSize: 16,
+        borderColor: colors.darkWhite2,
+        backgroundColor: colors.darkWhite1,
+        borderBottomWidth: 1
+    },
+    suggestion: {
+        width: '95%',
+        height: 60,
+        margin: 10,
+        marginTop: 0,
+        marginBottom: 0,
+        padding: 5,
+        fontSize: 16,
+        backgroundColor: colors.darkWhite1,
+        borderBottomWidth: .25
+    },
+    map: {
+        height: 400,
+        marginTop: 80
     }
 }
