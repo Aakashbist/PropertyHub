@@ -97,6 +97,7 @@ const Signup = (props) => {
       onChangeText={(name) => setName(name)}
       placeholder='Name'
       autoCapitalize='words'
+
     />
     <TextInput
       style={styles.inputBox}
@@ -128,7 +129,8 @@ const Signup = (props) => {
     <TouchableOpacity
       style={canSignUp ? styles.button : styles.buttonDisabled}
       onPress={this.handleSignUp}
-      disabled={!canSignUp}>
+      disabled={!canSignUp}
+    >
       <Text style={canSignUp ? styles.buttonText : styles.buttonTextDisabled}>SignUp </Text>
     </TouchableOpacity>
     <View style={{ marginBottom: 20 }}>
@@ -148,6 +150,7 @@ const Signup = (props) => {
           <Icon name='chevron-left' type='evilicon' color={colors.primary} />
           <Text style={styles.primaryText}>Go Back to Login</Text>
         </TouchableOpacity>
+
       </Container>
     </React.Fragment>;
 

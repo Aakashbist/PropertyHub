@@ -7,6 +7,7 @@ import styles from '../../resources/styles';
 import GeneralStatusBarColor from '../GeneralStatusBarColor';
 
 const Login = (props) => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState();

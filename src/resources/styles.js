@@ -19,6 +19,28 @@ export default {
         backgroundColor: colors.darkWhite1,
         borderBottomWidth: 1,
     },
+    unitInputBox: {
+        width: '40%',
+        margin: 10,
+        paddingLeft: 35,
+        fontSize: 16,
+        borderColor: colors.darkWhite2,
+        backgroundColor: colors.darkWhite1,
+        borderBottomWidth: 1,
+    },
+    buttonNext: {
+        flexDirection: 'row',
+        width: '20%',
+        marginLeft: '60%',
+
+        marginTop: 5,
+        padding: 5,
+        fontSize: 20,
+        borderColor: colors.darkWhite2,
+        backgroundColor: colors.green,
+        borderBottomWidth: 1,
+
+    },
     buttonDisabled: {
         marginTop: 30,
         marginBottom: 20,
@@ -39,6 +61,17 @@ export default {
         borderWidth: 1,
         borderRadius: 4,
         minWidth: '50%'
+    },
+    unitButton: {
+        padding: 5,
+        margin: 10,
+        paddingVertical: 8,
+        alignItems: 'center',
+        backgroundColor: colors.primary,
+        borderColor: colors.primary,
+        borderWidth: 1,
+        borderRadius: 4,
+        minWidth: '30%'
     },
     buttonText: {
         fontSize: 18,
@@ -84,7 +117,11 @@ export default {
         borderBottomWidth: .25
     },
     map: {
-        height: 400,
-        marginTop: 80
+        height: 150,
+        marginTop: 20
+
+    },
+    ss: {
+        marginTop: 200
     }
 }
