@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
+    "logs": "react-native log-android",
     "test": "jest",
     "lint": "eslint .",
     "devServe": "adb reverse tcp:8081 tcp:8081 && react-native run-android"
