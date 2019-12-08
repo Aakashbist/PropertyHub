@@ -1,5 +1,6 @@
 const AppRoute = {
-    App: 'App',
+    Tenant: 'Tenant',
+    Owner: 'Owner',
     Auth: 'Auth',
     AuthLoading: 'AuthLoading',
     Dashboard: 'DashboardScreen',

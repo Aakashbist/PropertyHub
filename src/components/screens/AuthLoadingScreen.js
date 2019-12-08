@@ -12,14 +12,19 @@ export default class AuthLoading extends Component {
 
     currentAuthState = () => {
         Firebase.auth().onAuthStateChanged((user) => {
-            if (user && user.emailVerified) {
-                this.props.navigation.navigate(AppRoute.App)
-            }
-            else {
+            if (user) {
+                user.getIdTokenResult().then((token) => {
+                    if (user && user.emailVerified) {
+                        this.props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
+                    } else {
+                        this.props.navigation.navigate(AppRoute.Auth)
+                    }
+                })
+                .catch((error) => console.error(error.message))
+            } else {
                 this.props.navigation.navigate(AppRoute.Auth)
             }
-        }
-        )
+        });
     };
 
     render() {
