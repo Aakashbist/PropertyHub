@@ -1,9 +1,9 @@
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-import AppRoute from '../resources/appRoute';
-import DashboardScreen from './screens/DashboardScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import DrawerMenu from './DrawerMenu';
+import AppRoute from '../../../resources/appRoute';
+import DashboardScreen from '../DashboardScreen';
+import ProfileScreen from '../ProfileScreen';
+import DrawerMenu from '../../DrawerMenu';
 
 const DrawerNavigator = createDrawerNavigator({
     DashboardScreen: { screen: DashboardScreen },

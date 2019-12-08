@@ -19,8 +19,7 @@ export default class AuthLoading extends Component {
                     } else {
                         this.props.navigation.navigate(AppRoute.Auth)
                     }
-                })
-                .catch((error) => console.error(error.message))
+                }).catch((error) => console.error(error.message))
             } else {
                 this.props.navigation.navigate(AppRoute.Auth)
             }
@@ -34,7 +33,7 @@ export default class AuthLoading extends Component {
                     source={require('../../assets/icon/homeIcon.png')}
                     style={{ width: 400, height: 400 }}
                 />
-                <ActivityIndicator />
+                <ActivityIndicator style={{ marginTop: 30 }} />
             </View>
         );
     }

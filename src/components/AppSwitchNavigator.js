@@ -2,8 +2,8 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import AuthLoadingScreen from './screens/AuthLoadingScreen';
 import AuthStack from './AuthStack';
 import AppRoute from '../resources/appRoute';
-import TenantDrawerNavigator from './TenantDrawerNavigator';
-import OwnerDrawerNavigator from './OwnerDrawerNavigator';
+import TenantDrawerNavigator from './screens/tenants/TenantDrawerNavigator';
+import OwnerDrawerNavigator from './screens/owners/OwnerDrawerNavigator';
 
 const switchNavigator = createSwitchNavigator(
   {
