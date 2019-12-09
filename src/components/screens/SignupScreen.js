@@ -8,7 +8,7 @@ import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import GeneralStatusBarColor from '../GeneralStatusBarColor';
-import parseFirebaseError from './FirebaseErrorParser';
+import parseFirebaseError from '../firebase/FirebaseErrorParser';
 
 const SignupSteps = {
   SIGNUP: 0,

@@ -5,15 +5,15 @@ import { View, Text, ScrollView, TouchableOpacity, Button } from 'react-native';
 import styles from '../../resources/styles';
 import geoLocation from '@react-native-community/geolocation';
 import { TextInput } from 'react-native-gesture-handler';
-import { Container, Item, CheckBox, Body } from 'native-base';
+import { Container, Item, CheckBox, Body, Switch } from 'native-base';
 import { ButtonGroup, Icon } from 'react-native-elements';
 import colors from '../../resources/colors';
 import GeneralStatusBarColor from '../GeneralStatusBarColor';
 
 const AddProperty = {
-    ADDRESS: true,
-    PROPERTYTYPE: 0,
-    PROPERTYSTATUS: 1,
+    ADDRESS: 0,
+    PROPERTY_TYPE: 1,
+    PROPERTY_STATUS: 2,
 }
 
 
@@ -21,12 +21,13 @@ const Property = (props) => {
     const [latitude, setlatitude] = useState(0);
     const [longitude, setlongitude] = useState(0);
     const [destination, setdestination] = useState('');
-    const [propertyTypeContent, setPropertyTypeContent] = useState(false);
-    const [step, setStep] = useState([AddProperty.ADDRESS]);
-    const [propertyStatusContent, setPropertyStatusContent] = useState(false);
+    const [step, setStep] = useState(AddProperty.ADDRESS);
     const [predictions, setpredictions] = useState([]);
     const [unitNumber, setunitNumber] = useState('');
     const [check, setCheck] = useState(true);
+    const [unitContent, setUnitContent] = useState(false);
+
+
 
 
     geoLocation.getCurrentPosition(position => {
@@ -37,12 +38,12 @@ const Property = (props) => {
     handleSuggestion = value => {
         setdestination(value);
         setpredictions([]);
-        setStep(AddProperty.PROPERTYTYPE)
+        setStep(AddProperty.PROPERT_YTYPE)
         // setPropertyTypeContent(!propertyTypeContent)
 
     }
-    componentHideAndShow = () => {
-        setPropertyTypeContent(!propertyTypeContent)
+    unitInputShow = () => {
+        setUnitContent(!unitContent)
     }
 
 
@@ -86,27 +87,28 @@ const Property = (props) => {
 
                 </Body>
             </Item>
-
-            <Text style={{ color: colors.black, padding: 20 }}>Is this a Flat/Unit?</Text>
             <Item style={{ flexDirection: 'row' }}>
+                <Text style={{ color: colors.black, padding: 20 }}>Is this a Flat/Unit?</Text>
+                <Switch value={false} onValueChange={this.unitInputShow}></Switch>
+            </Item>{unitContent ?
+                <Item style={{ flexDirection: 'row' }}>
 
-                <TextInput
-                    style={styles.unitInputBox}
-                    value={unitNumber}
-                    onChangeText={(unitNumber) => setunitNumber(unitNumber)}
-                    placeholder='Flat/Unit Number'
-                    autoCapitalize='none'
-                />
-                <TouchableOpacity
-                    style={styles.unitButton}
+                    <TextInput
+                        style={styles.unitInputBox}
+                        value={unitNumber}
+                        onChangeText={(unitNumber) => setunitNumber(unitNumber)}
+                        placeholder='Flat/Unit Number'
+                        autoCapitalize='none'
+                    />
+                    <TouchableOpacity
+                        style={styles.unitButton}
 
-                >
-                    <Text style={styles.buttonText}>update premise </Text>
-                </TouchableOpacity>
-            </Item>
+                    >
+                        <Text style={styles.buttonText}>update premise </Text>
+                    </TouchableOpacity>
+                </Item> : null}
             <TouchableOpacity style={styles.buttonNext}
-                onPress={() => setStep(AddProperty.PROPERTYSTATUS)}
-                alert={propertyStatusContent}>
+                onPress={() => setStep(AddProperty.PROPERTY_STATUS)}>
                 <Text style={styles.buttonText}>Next</Text>
                 <Icon name='chevron-right' type='evilicon' color={colors.white} />
             </TouchableOpacity>
