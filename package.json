@@ -21,12 +21,15 @@
     "react-native-elements": "^1.2.7",
     "react-native-firebase": "^5.5.6",
     "react-native-gesture-handler": "^1.5.0",
+    "react-native-image-picker": "^1.1.0",
     "react-native-maps": "0.26.1",
+    "react-native-picker-module": "^1.2.3",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "^1.0.0-alpha.23",
     "react-navigation": "^4.0.10",
     "react-navigation-drawer": "^2.3.3",
     "react-navigation-stack": "^1.10.3",
+    "react-navigation-tabs": "^2.6.2",
     "watchman": "^1.0.0"
   },
   "devDependencies": {

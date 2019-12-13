@@ -10,6 +10,31 @@ export default {
         flex: 1,
         alignItems: 'center'
     },
+    containerFlexRow: {
+        flexDirection: 'row',
+        borderBottomWidth: 0,
+        marginTop: 15,
+        justifyContent: 'center',
+
+        fontSize: 20
+
+    },
+    containerFlexColumn: {
+        flexDirection: 'column',
+
+        justifyContent: 'center',
+        backgroundColor: '#f5fcff',
+
+        width: '80%',
+        margin: 10,
+        padding: 15,
+        fontSize: 16,
+        borderColor: colors.black,
+        backgroundColor: colors.white,
+        borderBottomWidth: 0,
+
+
+    },
     inputBox: {
         width: '80%',
         margin: 10,
@@ -20,7 +45,7 @@ export default {
         borderBottomWidth: 1,
     },
     unitInputBox: {
-        width: '40%',
+        width: '80%',
         margin: 10,
         paddingLeft: 35,
         fontSize: 16,
@@ -31,8 +56,7 @@ export default {
     buttonNext: {
         flexDirection: 'row',
         width: '20%',
-        marginLeft: '60%',
-
+        marginLeft: '80%',
         marginTop: 5,
         padding: 5,
         fontSize: 20,
@@ -51,6 +75,42 @@ export default {
         borderRadius: 4,
         width: '50%',
     },
+
+    buttonWithChevron: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: colors.primary,
+        borderColor: colors.primary
+
+    },
+    buttonWithChevronDisable: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#ff6f93'
+
+    },
+    card: {
+        backgroundColor: colors.white,
+        marginBottom: 10,
+        marginLeft: '2%',
+        width: '96%',
+    },
+    cardImage: {
+        width: '100%',
+        height: 200,
+        backgroundColor: '#000'
+
+    },
+    cardText: {
+        padding: 10,
+        fontSize: 16
+    },
+    cardContainer: {
+        margin: 20,
+        backgroundColor: '#f5fcff'
+    },
     button: {
         marginTop: 30,
         marginBottom: 20,
@@ -62,6 +122,7 @@ export default {
         borderRadius: 4,
         minWidth: '50%'
     },
+
     unitButton: {
         padding: 5,
         margin: 10,
@@ -87,6 +148,7 @@ export default {
         color: colors.primary,
         fontSize: 14
     },
+
     primaryTextHeading: {
         color: colors.primary,
         fontSize: 24
@@ -99,7 +161,7 @@ export default {
         width: '95%',
         height: 60,
         margin: 10,
-        padding: 5,
+        padding: 12,
         fontSize: 16,
         borderColor: colors.darkWhite2,
         backgroundColor: colors.darkWhite1,
@@ -119,9 +181,6 @@ export default {
     map: {
         height: 150,
         marginTop: 20
-
-    },
-    ss: {
-        marginTop: 200
     }
+
 }

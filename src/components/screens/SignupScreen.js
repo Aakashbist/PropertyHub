@@ -9,6 +9,7 @@ import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import GeneralStatusBarColor from '../GeneralStatusBarColor';
 import parseFirebaseError from '../firebase/FirebaseErrorParser';
+import { Property } from '../../models/propertyModels';
 
 const SignupSteps = {
   SIGNUP: 0,
@@ -21,9 +22,9 @@ const UserType = {
 }
 
 const Signup = (props) => {
-  const [name, setName] = useState('random name');
-  const [email, setEmail] = useState('fghjk@gh.jhg');
-  const [password, setPassword] = useState('dbvsuyfhs');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [userType, setUserType] = useState(UserType.TENANT);
   const [error, setError] = useState();
   const [step, setStep] = useState(SignupSteps.SIGNUP);
@@ -80,6 +81,7 @@ const Signup = (props) => {
   updateIndex = (index) => {
     let userType = userTypes[index];
     setUserType(userType);
+
   }
 
   clearFields = () => {
@@ -145,7 +147,11 @@ const Signup = (props) => {
         <Text style={{ fontSize: 14, marginTop: 10, marginBottom: 50 }}>Your Account is created please verify your account.</Text>
 
         <TouchableOpacity
-          style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}
+          style={{
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
           onPress={navigateToLogin}>
           <Icon name='chevron-left' type='evilicon' color={colors.primary} />
           <Text style={styles.primaryText}>Go Back to Login</Text>

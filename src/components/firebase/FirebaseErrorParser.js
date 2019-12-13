@@ -16,9 +16,6 @@ export default function parseFirebaseError(error) {
         case 'auth/weak-password':
             errorMessage = 'Password is to weak';
             break;
-        case 'auth/invalid-email':
-            errorMessage = 'Email is invalid';
-            break;
         default:
             errorMessage = error.message;
             break;

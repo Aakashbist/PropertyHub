@@ -4,9 +4,11 @@ const AppRoute = {
     Auth: 'Auth',
     AuthLoading: 'AuthLoading',
     Dashboard: 'DashboardScreen',
-    Property: 'PropertyScreen',
     Login: 'LoginScreen',
-    Signup: 'SignupScreen'
+    Signup: 'SignupScreen',
+    Property: 'PropertyListScreen',
+    AddProperty: 'AddPropertyScreen',
+    TenancyAgreemnet: 'PropertyTenancyAgreementScreen'
 }
 
 export default AppRoute
