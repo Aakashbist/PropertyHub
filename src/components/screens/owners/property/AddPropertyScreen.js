@@ -1,29 +1,30 @@
 
-import geoLocation from '@react-native-community/geolocation';
-import { CheckBox, Container, Footer, Item, Picker, Switch } from 'native-base';
-import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Image, Button } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Container, Label, Picker } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Icon, Slider } from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
-import MapView, { Marker } from 'react-native-maps';
+import ImagePicker from 'react-native-image-picker';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Firebase from '../../../../config/Firebase';
-import { Property, Coordinates } from '../../../../models/propertyModels';
+import { Property } from '../../../../models/propertyModels';
+import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
 import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
-import AppRoute from '../../../../resources/appRoute';
-import ImagePicker from 'react-native-image-picker';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
     ADD_PROPERTY_SUCCESS: 1
 }
 
-const PropertyStatus = {
-    RENTED: 'rented',
-    VACANT: 'vacant'
+const PropertyType = {
+    HOUSE: "House",
+    UNIT: "Unit",
+    APARTMENT: "Apartment"
 }
+
+
 
 const AddNewProperty = (props) => {
 
@@ -35,25 +36,27 @@ const AddNewProperty = (props) => {
     const [predictions, setPrediction] = useState([]);
     const [unitContent, setUnitContent] = useState(false);
     const [value, setValue] = useState(false);
-    const [mapView, setMapView] = useState(false);
+    const [propertyDescriptionView, setpropertyDescriptionView] = useState(false);
     const [placeId, setPlaceID] = useState([])
 
+    const [propertyType, setPropertyType] = useState(null);
     const [canAddProperty, setCanAddProperty] = useState('');
     const [unitNumber, setunitNumber] = useState('');
-    const [bond, setBond] = useState('');
-    const [rent, setRent] = useState('');
-    const [numberOfBedrooms, setNumberOfBedrooms] = useState('');
-    const [numberOfBathrooms, setNumberOfBathrooms] = useState('');
+    const [bond, setBond] = useState(34);
+    const [rent, setRent] = useState(45);
+    const [numberOfBedrooms, setNumberOfBedrooms] = useState(1);
+    const [numberOfBathrooms, setNumberOfBathrooms] = useState(1);
     const [image, setImage] = useState();
     const [address, setAddress] = useState([])
-
+    const [imageFileName, setImageFileName] = useState();
 
     useEffect(() => {
-        let _canAddProperty = rent.length > 0 && bond.length > 0;
+
+        let _canAddProperty = rent.length > 0 && bond.length > 0 && propertyType !== null;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
-    }, [rent, bond]);
+    }, [rent, bond, propertyType]);
 
     selectPropertyImage = () => {
         ImagePicker.showImagePicker({ noData: true, mediaType: 'photo' }, (response) => {
@@ -68,6 +71,7 @@ const AddNewProperty = (props) => {
             } else {
 
                 setImage(response.uri);
+                setImageFileName(response.fileName);
 
             }
         });
@@ -102,7 +106,7 @@ const AddNewProperty = (props) => {
             setPrediction(json.predictions);
         }
         catch (error) {
-            alert(">>" + error)
+            console.log(error)
         };
     };
 
@@ -114,24 +118,44 @@ const AddNewProperty = (props) => {
             const json = await result.json();
             setLatitude(json.result.geometry.location.lat);
             setLongitude(json.result.geometry.location.lng);
-            console.log(latitude)
-            console.log(longitude)
-            setMapView(true);
+            setpropertyDescriptionView(true);
 
         } catch (error) {
 
-            alert(">>" + error)
+            console.log(error)
         }
     }
 
-
+    handlePropertyType = (value) => {
+        switch (value) {
+            case PropertyType.APARTMENT:
+                setPropertyType(PropertyType.APARTMENT)
+                setUnitContent(true)
+                break;
+            case PropertyType.HOUSE:
+                setPropertyType(PropertyType.HOUSE)
+                setUnitContent(false)
+                break;
+            case PropertyType.UNIT:
+                setPropertyType(PropertyType.UNIT)
+                setUnitContent(true)
+                break;
+            default:
+                setPropertyType(null)
+                setUnitContent(false)
+                break;
+        }
+        console.log(propertyType)
+    }
     handleAddProperty = () => {
         let property, userDb;
         let currentUser = Firebase.auth().currentUser;
 
         property = new Property(address, unitNumber, numberOfBedrooms, numberOfBathrooms, rent, bond, image, latitude, longitude);
         userDb = 'property';
-        Firebase.database().ref().child(userDb + '/' + currentUser.uid).push(property);
+        let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser.uid)
+
+        propertyDbRef.push(property);
         setStep(AddProperty.ADD_PROPERTY_SUCCESS)
 
     }
@@ -146,143 +170,144 @@ const AddNewProperty = (props) => {
         </TouchableOpacity >
     )
 
-    let view = step === AddProperty.PROPERTY_DETAILS ? <View style={{ marginTop: 10 }}>
-        <TextInput name="destination" style={styles.searchBox} placeholder="Enter Address" value={destination} onChangeText={destination => this.onDestinationQueryChange(destination)} ></TextInput>
-        {suggestionView}
-        {mapView ?
-            <View>
-                <MapView
-                    style={{ flex: 1, height: 400 }}
-                    intialRegion={{
-                        latitude: 37.422,
-                        longitude: -122.084,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421
-                    }}
+    let view = step === AddProperty.PROPERTY_DETAILS ?
+        <View style={{ margin: 10 }}>
+            <TextInput name="destination" style={styles.searchBox} placeholder="Enter Address"
+                value={destination} onChangeText={destination => this.onDestinationQueryChange(destination)} />
+            {suggestionView}
+            {propertyDescriptionView ?
+                <View>
+                    <View >
+                        <MapView
+                            style={styles.map}
+                            provider={PROVIDER_GOOGLE}
+                            intialRegion={{
+                                latitude: 37.422,
+                                longitude: -122.084,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421
+                            }}
 
-                    region={{
-                        latitude: latitude,
-                        longitude: longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421
-                    }}
-                    showsUserLocation={true}
-                    showsCompass={true}
-                >
-                    <Marker
+                            region={{
+                                latitude: latitude,
+                                longitude: longitude,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421
+                            }}
+                            showsUserLocation={true}
+                            showsCompass={true} >
+                            <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
+                        </MapView>
+                    </View>
+                    <Container style={styles.containerLeft}>
 
-                        coordinate={{
-                            latitude: latitude,
-                            longitude: longitude
-                        }}
-                    />
-                </MapView>
+                        <View style={styles.containerFlexRow}>
+                            <Icon name='location' type='evilicon' size={36} color={colors.blue} />
+                            <Text style={styles.textSubHeading}>{address}</Text>
+                        </View>
 
-                <View style={{ flex: 1, marginTop: 15, }}>
-                    <Item style={styles.containerFlexColumn}>
-                        <Text style={{ fontSize: 15, marginTop: 20, padding: 20 }}>{address}</Text>
-                        <Item style={styles.containerFlexRow}>
-                            <CheckBox checked={true} style={{ borderRadius: 8, color: colors.green }} onPress={this.handleCheckBoxEvent} />
-                            <Text style={{ fontSize: 15, padding: 12 }}>Property available</Text>
-                        </Item>
+                        <View style={styles.inputBoxFull}>
+                            <Picker
+                                mode="dropdown"
+                                selectedValue={propertyType === null ? "Select property type.." : propertyType}
+                                onValueChange={(itemValue) => handlePropertyType(itemValue)}>
+                                <Picker.Item label="Select property type.." value={null} />
+                                <Picker.Item label="Unit" value={PropertyType.UNIT} />
+                                <Picker.Item label="House" value={PropertyType.HOUSE} />
+                                <Picker.Item label="Apartment" value={PropertyType.APARTMENT} />
+                            </Picker>
+                        </View>
 
-                        <Item style={styles.containerFlexRow}>
-                            <Text style={{ color: colors.black, padding: 5 }}>Is this a Flat/Unit?</Text>
-                            <Switch value={value} onValueChange={this.unitInputBoxShow}></Switch>
-                        </Item>{unitContent ?
-
-                            <Item style={styles.containerFlexRow}>
-                                <TextInput
-                                    style={styles.unitInputBox}
-                                    value={unitNumber}
-                                    onChangeText={(unitNumber) => setunitNumber(unitNumber)}
-                                    placeholder='Flat/Unit Number'
-                                    autoCapitalize='none'
-                                />
-                            </Item> : null}
-
-                        <Text style={{ alignItems: 'flex-start' }}>Number of Bedroom?</Text>
-                        <Picker
-                            mode="dropdown"
-                            selectedValue={numberOfBedrooms}
-
-                            placeholderIconColor='#000'
-
-                            style={{ height: 50, width: 300, margin: 30, borderWidth: 4 }}
-                            onValueChange={(itemValue, itemIndex) => setNumberOfBedrooms(itemValue)}>
-                            <Picker.Item label="1" value="1" />
-                            <Picker.Item label="2" value="2" />
-                            <Picker.Item label="3" value="3" />
-                            <Picker.Item label="5" value="4" />
-                        </Picker>
-
-                        <Text style={{ alignItems: 'flex-start' }}>Number of Bathroom?</Text>
-                        <Picker
-                            selectedValue={numberOfBathrooms}
-                            style={{ borderColor: 'black', height: 50, width: 300, margin: 30, borderBottomWidth: 3 }}
-                            placeholder="Select your SIM"
-                            placeholderStyle={{ color: "#bfc6ea" }}
-                            placeholderIconColor="#007aff"
-                            onValueChange={(itemValue, itemIndex) => setNumberOfBathrooms(itemValue)}>
-                            <Picker.Item label="1" value="1" />
-                            <Picker.Item label="2" value="2" />
-                            <Picker.Item label="3" value="3" />
-                            <Picker.Item label="5" value="4" />
-                        </Picker>
-
-
-                        <TextInput
-                            style={styles.unitInputBox}
-                            value={rent}
-                            onChangeText={(rent) => setRent(rent)}
-                            placeholder='Rent Per Week'
-                            autoCapitalize='none'
-                        />
-                        <TextInput
-                            style={styles.unitInputBox}
-                            value={bond}
-                            onChangeText={(bond) => setBond(bond)}
-                            placeholder='Bond Amount'
-                            autoCapitalize='none'
-                        />
-                        {
-                            image && <Image source={{ uri: image }} style={{ width: '80%', height: 100, resizeMode: 'contain' }} />
+                        {unitContent ?
+                            <TextInput
+                                style={styles.inputBoxFull}
+                                keyboardType='number-pad'
+                                value={unitNumber}
+                                onChangeText={(unitNumber) => setunitNumber(unitNumber)}
+                                placeholder='Flat/Unit Number'
+                                autoCapitalize='none' /> : null
                         }
 
+                        <TextInput
+                            style={styles.inputBoxFull}
+                            value={rent}
+                            keyboardType='number-pad'
+                            onChangeText={(rent) => setRent(rent)}
+                            placeholder='Rent Amount per Week ($)'
+                            autoCapitalize='none'
+                        />
 
-                        <TouchableOpacity onPress={this.selectPropertyImage} style={{ minWidth: '30%', backgroundColor: colors.blue, borderRadius: 3, height: 40, padding: 4, marginVertical: 5 }} >
-                            <Text style={{ color: colors.white, fontSize: 20, backgroundColor: colors.blue, textAlign: "center" }}>import Image</Text>
+                        <TextInput
+                            style={styles.inputBoxFull}
+                            value={bond}
+                            keyboardType='number-pad'
+                            onChangeText={(bond) => setBond(bond)}
+                            placeholder='Bond Amount ($)'
+                            autoCapitalize='none'
+                        />
+
+                        <View style={styles.containerFlexRow}>
+                            <Label style={{ flex: 1 }}>Number of Bedroom</Label>
+                            <Label style={{ paddingStart: 20, fontSize: 18, disabled: true }} disabled={true}>{numberOfBedrooms}</Label>
+                        </View>
+                        <Slider
+                            style={{ width: '100%', height: 40 }}
+                            minimumValue={1}
+                            maximumValue={5}
+                            step={1}
+                            maximumTrackTintColor={colors.darkWhite2}
+                            minimumTrackTintColor={colors.primary}
+                            value={numberOfBedrooms}
+                            onValueChange={value => setNumberOfBedrooms(value)}
+                        />
+
+                        <View style={styles.containerFlexRow}>
+                            <Label style={{ flex: 1 }}>Number of Bathroom</Label>
+                            <Label style={{ fontSize: 18, disabled: true }} >{numberOfBathrooms}</Label>
+                        </View>
+                        <Slider
+                            style={{ width: '100%', height: 40 }}
+                            minimumValue={1}
+                            maximumValue={5}
+                            step={1}
+                            maximumTrackTintColor={colors.darkWhite2}
+                            minimumTrackTintColor={colors.primary}
+                            value={numberOfBathrooms}
+                            onValueChange={value => setNumberOfBathrooms(value)}
+                        />
+
+                        {
+                            image && <Image source={{ uri: image }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
+                        }
+                        <TouchableOpacity onPress={this.selectPropertyImage} style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
+                            <Text style={{ color: colors.primary, fontSize: 18 }}>Choose image..</Text>
                         </TouchableOpacity>
 
-                    </Item>
+                        <TouchableOpacity style={styles.button} onPress={this.handleAddProperty} disabled={!canAddProperty}>
+                            <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
 
-                    <Footer style={canAddProperty ? styles.buttonWithChevron : styles.buttonWithChevronDisable}>
-                        <TouchableOpacity
-                            onPress={this.handleAddProperty}
-                            disabled={!canAddProperty}>
-                            <Text style={{ color: colors.white, marginBottom: 10, fontSize: 15 }}>Add Property</Text>
                         </TouchableOpacity>
-                    </Footer>
-                </View>
-            </View> : null
-        }
-    </View > : step === AddProperty.ADD_PROPERTY_SUCCESS ? <React.Fragment>
-        <Container style={styles.containerFull}>
-            <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
-            <Text style={{ color: colors.green, marginBottom: 10, fontSize: 20 }}>Property Added</Text>
-            <TouchableOpacity
-                style={{
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                }}
-                onPress={navigateToPropertyList}>
-                <Icon name='chevron-left' type='evilicon' color={colors.primary} />
-                <Text style={styles.primaryText}>Go Back to Property</Text>
-            </TouchableOpacity>
 
-        </Container>
-    </React.Fragment> : null;
+                    </Container>
+                </View> : null
+            }
+        </View > : step === AddProperty.ADD_PROPERTY_SUCCESS ? <React.Fragment>
+            <Container style={styles.containerFull}>
+                <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
+                <Text style={{ color: colors.green, marginBottom: 10, fontSize: 20 }}>Property Added</Text>
+                <TouchableOpacity
+                    style={{
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}
+                    onPress={navigateToPropertyList}>
+                    <Icon name='chevron-left' type='evilicon' color={colors.primary} />
+                    <Text style={styles.primaryText}>Go Back to Property</Text>
+                </TouchableOpacity>
+
+            </Container>
+        </React.Fragment> : null;
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

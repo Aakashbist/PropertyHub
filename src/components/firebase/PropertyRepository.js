@@ -2,16 +2,22 @@ import { Component } from 'react';
 import Firebase from '../../config/Firebase';
 
 export function getProperties(userId) {
-    const tasks = [];
-    let dbPropertyRef = Firebase.database().ref('property/' + userId);
-    return dbPropertyRef.once('value', dataSnapshot => {
-        dataSnapshot.forEach(data => {
-            let result = data.val();
-            result["key"] = data.key;
-            tasks.push(result);
-        })
 
-    });
+    let dbPropertyRef = Firebase.database().ref('property/' + userId);
+
+    let listofProperties = new Promise((resolve, reject) => {
+        dbPropertyRef.once('value', dataSnapshot => {
+            let data = dataSnapshot.val();
+            let result = Object.keys(data).map((key) => {
+                data[key].id = key;
+                return data[key];
+            });
+            resolve(result)
+        }, (error) => {
+            reject(error)
+        });
+    })
+    return listofProperties;
 
 }
 

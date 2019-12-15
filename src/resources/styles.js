@@ -1,4 +1,5 @@
 import colors from "./colors";
+import { calculateString } from "bytebuffer";
 
 export default {
     container: {
@@ -6,35 +7,24 @@ export default {
         justifyContent: 'center',
         alignItems: 'center'
     },
+    containerLeft: {
+        flex: 1,
+        alignItems: 'flex-start',
+        padding: 16,
+
+    },
     containerFull: {
         flex: 1,
         alignItems: 'center'
+
     },
     containerFlexRow: {
         flexDirection: 'row',
-        borderBottomWidth: 0,
-        marginTop: 15,
         justifyContent: 'center',
-
-        fontSize: 20
-
+        fontSize: 20,
+        margin: 10
     },
-    containerFlexColumn: {
-        flexDirection: 'column',
 
-        justifyContent: 'center',
-        backgroundColor: '#f5fcff',
-
-        width: '80%',
-        margin: 10,
-        padding: 15,
-        fontSize: 16,
-        borderColor: colors.black,
-        backgroundColor: colors.white,
-        borderBottomWidth: 0,
-
-
-    },
     inputBox: {
         width: '80%',
         margin: 10,
@@ -44,53 +34,29 @@ export default {
         backgroundColor: colors.darkWhite1,
         borderBottomWidth: 1,
     },
-    unitInputBox: {
-        width: '80%',
-        margin: 10,
-        paddingLeft: 35,
+    inputBoxFull: {
+        width: '100%',
+        padding: 15,
         fontSize: 16,
         borderColor: colors.darkWhite2,
         backgroundColor: colors.darkWhite1,
         borderBottomWidth: 1,
+        marginBottom: 10
     },
-    buttonNext: {
-        flexDirection: 'row',
-        width: '20%',
-        marginLeft: '80%',
-        marginTop: 5,
-        padding: 5,
-        fontSize: 20,
-        borderColor: colors.darkWhite2,
-        backgroundColor: colors.green,
-        borderBottomWidth: 1,
 
-    },
     buttonDisabled: {
         marginTop: 30,
         marginBottom: 20,
         paddingVertical: 8,
         alignItems: 'center',
         borderColor: colors.darkWhite1,
+
         borderWidth: 2,
         borderRadius: 4,
         width: '50%',
     },
 
-    buttonWithChevron: {
-        justifyContent: 'center',
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.primary,
-        borderColor: colors.primary
 
-    },
-    buttonWithChevronDisable: {
-        justifyContent: 'center',
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#ff6f93'
-
-    },
     card: {
         backgroundColor: colors.white,
         marginBottom: 10,
@@ -143,24 +109,9 @@ export default {
         color: colors.darkWhite2
     },
 
-    // To show pink text like "Sign up" under login button
-    primaryText: {
-        color: colors.primary,
-        fontSize: 14
-    },
-
-    primaryTextHeading: {
-        color: colors.primary,
-        fontSize: 24
-    },
-    drawerIcon: {
-        width: 20,
-        height: 20
-    },
     searchBox: {
         width: '95%',
         height: 60,
-        margin: 10,
         padding: 12,
         fontSize: 16,
         borderColor: colors.darkWhite2,
@@ -168,7 +119,7 @@ export default {
         borderBottomWidth: 1
     },
     suggestion: {
-        width: '95%',
+        width: '90%',
         height: 60,
         margin: 10,
         marginTop: 0,
@@ -179,8 +130,28 @@ export default {
         borderBottomWidth: .25
     },
     map: {
-        height: 150,
-        marginTop: 20
-    }
+        height: 150
 
+    },
+
+
+    // To show pink text like "Sign up" under login button
+    primaryText: {
+        color: colors.primary,
+        fontSize: 14
+    },
+    text: {
+        fontSize: 14
+    },
+    textSubHeading: {
+        fontSize: 18
+    },
+    primaryTextHeading: {
+        color: colors.primary,
+        fontSize: 24
+    },
+    drawerIcon: {
+        width: 20,
+        height: 20
+    }
 }

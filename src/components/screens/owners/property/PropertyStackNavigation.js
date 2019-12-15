@@ -13,7 +13,7 @@ const PropertyStackNavigator = createStackNavigator(
         PropertyTenancyAgreementScreen: { screen: PropertyTenancyAgreementScreen }
     },
     {
-        initialRouteName: AppRoute.Property,
+        initialRouteName: AppRoute.AddProperty,
         headerMode: 'none',
     },
 );
