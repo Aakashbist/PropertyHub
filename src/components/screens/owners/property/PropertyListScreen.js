@@ -1,89 +1,72 @@
-import { List, ListItem, Button } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Text, View } from 'react-native';
-import { ButtonGroup } from 'react-native-elements';
+import { ActivityIndicator, FlatList, Image, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { ButtonGroup, Icon } from 'react-native-elements';
 import Firebase from '../../../../config/Firebase';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
-import { getProperties } from '../../../firebase/PropertyRepository';
-const Property = {
-    PROPERTY_LIST: 'Property List',
-    ADD_Property: 'Add Property'
-}
+import { getProperties, deletePropertiesWithId } from '../../../firebase/PropertyRepository';
+
 
 const PropertyListScreen = (props) => {
     const [properties, setProperties] = useState([]);
-    const [status, setStatus] = useState();
     const currentUser = Firebase.auth().currentUser.uid;
 
-    const _status = [Property.PROPERTY_LIST, Property.ADD_Property]
 
+    setPropertiesInState = (propertiesList) => {
+        setProperties(propertiesList);
+        console.log("from setPropertiesState", propertiesList);
+    }
 
     getListofProperties = () => {
         if (currentUser !== null) {
-            getProperties(currentUser)
-                .then((result) => {
-                    console.log(result, ">> result")
-                    setProperties(result);
-                })
-                .catch((error) => console.log(error, ">> error"))
+            getProperties(currentUser, setPropertiesInState)
+
         }
     };
-
     useEffect(() => {
         getListofProperties();
     }, [])
 
-
-    updateIndex = (index) => {
-        let status = _status[index];
-        setStatus(status);
-        switch (status) {
-            case Property.ADD_Property:
-                props.navigation.navigate(AppRoute.AddProperty)
-                break;
-            case Property.PROPERTY_LIST:
-
-
-                break;
-        }
+    deleteProperties = (propertyId) => {
+        Alert.alert(
+            'Delete Address',
+            'Are you sure want to delete this address ?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                {
+                    text: 'OK', onPress: () => deletePropertiesWithId(currentUser, propertyId)
+                        .catch(error => console.log(error))
+                },
+            ],
+            { cancelable: false }
+        )
     }
-
-
-    let view = properties.length === 0 ? <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+    let view = properties == null ? <View style={styles.container}>
+        <Text style={{ fontSize: 18 }}> No available  properties </Text>
     </View> :
         <FlatList
-
             style={styles.cardContainer}
             data={properties}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-                <TouchableOpacity style={styles.card}>
-                    <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
-                    <Text style={styles.cardText}>{item.address}</Text>
-                    <Text style={styles.cardText}>{item.title}</Text>
-                </TouchableOpacity>
+                <View style={styles.card}>
+                    <Image style={styles.cardImage} source={{ uri: item.imageUrl }} />
+                    <View style={styles.containerFlexRow}>
+                        <Text style={{ flex: 1, fontSize: 16 }}>{item.address}</Text>
+                        <TouchableOpacity onPress={() => this.deleteProperties(item.id)}>
+                            <Icon name='trash' type='evilicon' size={36} color={colors.red} />
+                        </TouchableOpacity>
+
+                    </View>
+                    <Text style={styles.cardText}>${item.rent}</Text>
+                </View>
             )}
         />
 
-
     return (
-        <View style={{ flex: 1 }} >
-
-            <ButtonGroup
-                onPress={this.updateIndex}
-                selectedIndex={_status.indexOf(status)}
-                buttons={_status}
-                selectedTextStyle={{ fontSize: 18 }}
-                textStyle={{ color: colors.darkWhite2 }}
-                innerBorderStyle={{ color: colors.green }}
-                selectedButtonStyle={{ backgroundColor: colors.green }}
-                containerStyle={{ width: '80%', height: 60 }} />
-
+        <View style={styles.containerFull} >
             {view}
-
         </View>
     )
 }

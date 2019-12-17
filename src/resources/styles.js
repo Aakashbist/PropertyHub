@@ -59,23 +59,23 @@ export default {
 
     card: {
         backgroundColor: colors.white,
-        marginBottom: 10,
-        marginLeft: '2%',
-        width: '96%',
+        width: '100%',
+        marginBottom: 10
+
     },
     cardImage: {
         width: '100%',
         height: 200,
-        backgroundColor: '#000'
-
     },
     cardText: {
-        padding: 10,
+        padding: 5,
         fontSize: 16
     },
     cardContainer: {
-        margin: 20,
-        backgroundColor: '#f5fcff'
+        backgroundColor: colors.darkWhite2,
+        width: '100%',
+        marginTop: 20
+
     },
     button: {
         marginTop: 30,
@@ -110,22 +110,22 @@ export default {
     },
 
     searchBox: {
-        width: '95%',
+        width: '100%',
         height: 60,
         padding: 12,
         fontSize: 16,
         borderColor: colors.darkWhite2,
-        backgroundColor: colors.darkWhite1,
+        backgroundColor: colors.darkWhite2,
         borderBottomWidth: 1
     },
     suggestion: {
-        width: '90%',
+        flex: 1,
+        alignItems: 'flex-start',
+        padding: 16,
         height: 60,
-        margin: 10,
         marginTop: 0,
         marginBottom: 0,
         padding: 5,
-        fontSize: 16,
         backgroundColor: colors.darkWhite1,
         borderBottomWidth: .25
     },

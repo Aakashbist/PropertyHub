@@ -1,7 +1,7 @@
 
-import { Container, Label, Picker } from 'native-base';
+import { Container, Label, Picker, Input } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Icon, Slider } from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
@@ -12,6 +12,9 @@ import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
 import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
+import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
+import { getdownloadImageUrl } from '../../../services/imageUploadService';
+
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -42,17 +45,18 @@ const AddNewProperty = (props) => {
     const [propertyType, setPropertyType] = useState(null);
     const [canAddProperty, setCanAddProperty] = useState('');
     const [unitNumber, setunitNumber] = useState('');
-    const [bond, setBond] = useState(34);
-    const [rent, setRent] = useState(45);
+    const [bond, setBond] = useState();
+    const [rent, setRent] = useState();
     const [numberOfBedrooms, setNumberOfBedrooms] = useState(1);
     const [numberOfBathrooms, setNumberOfBathrooms] = useState(1);
-    const [image, setImage] = useState();
+    //const [imageUrl, setImageUrl] = useState();
     const [address, setAddress] = useState([])
     const [imageFileName, setImageFileName] = useState();
+    const [imageUri, setImageUri] = useState();
+
 
     useEffect(() => {
-
-        let _canAddProperty = rent.length > 0 && bond.length > 0 && propertyType !== null;
+        let _canAddProperty = rent != null && bond != null && propertyType !== null;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
@@ -69,10 +73,8 @@ const AddNewProperty = (props) => {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
-
-                setImage(response.uri);
-                setImageFileName(response.fileName);
-
+                setImageUri(response.uri);
+                setImageFileName(response.fileName)
             }
         });
     }
@@ -94,36 +96,26 @@ const AddNewProperty = (props) => {
 
     navigateToPropertyList = () => {
         props.navigation.navigate(AppRoute.Property);
-
+        setStep(AddProperty.PROPERTY_DETAILS)
     }
 
-    onDestinationQueryChange = async (destination) => {
+    onDestinationQueryChange = (destination) => {
         setDestination(destination);
-        const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key= AIzaSyC8cfuosSdIXS9JrI5PWrtMYmCVFCGwwnM &input=${destination}&radius=2000`;
-        try {
-            const result = await fetch(apiUrl);
-            const json = await result.json();
-            setPrediction(json.predictions);
-        }
-        catch (error) {
-            console.log(error)
-        };
+        getGooglePlaceAutocomplete(destination)
+            .then((json) => {
+                setPrediction(json.predictions);
+            })
+            .catch(error => console.log(error))
     };
 
-    loadCoordinatesByPlaceId = async (placeId) => {
-        console.log(placeId)
-        const apiUrl = `https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyC8cfuosSdIXS9JrI5PWrtMYmCVFCGwwnM&place_id=${placeId}&fields=geometry`
-        try {
-            const result = await fetch(apiUrl);
-            const json = await result.json();
-            setLatitude(json.result.geometry.location.lat);
-            setLongitude(json.result.geometry.location.lng);
-            setpropertyDescriptionView(true);
-
-        } catch (error) {
-
-            console.log(error)
-        }
+    loadCoordinatesByPlaceId = (placeId) => {
+        getGooglePlaceDetails(placeId)
+            .then((json) => {
+                setLatitude(json.result.geometry.location.lat);
+                setLongitude(json.result.geometry.location.lng);
+                setpropertyDescriptionView(true);
+            })
+            .catch(error => console.log(error))
     }
 
     handlePropertyType = (value) => {
@@ -145,64 +137,76 @@ const AddNewProperty = (props) => {
                 setUnitContent(false)
                 break;
         }
-        console.log(propertyType)
+    }
+
+    clearFields = () => {
+        setPropertyType(null)
+        setDestination('');
+        setAddress([]);
+        setBond(1);
+        setRent(1);
+        setNumberOfBathrooms(1);
+        setNumberOfBedrooms(1);
+        setunitNumber('');
+        setImageUri()
     }
     handleAddProperty = () => {
         let property, userDb;
         let currentUser = Firebase.auth().currentUser;
+        getdownloadImageUrl(imageUri, imageFileName)
+            .then((url) => {
+                property = new Property(address, unitNumber, numberOfBedrooms, numberOfBathrooms, rent, bond, url, latitude, longitude)
+                userDb = 'property';
+                let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser.uid)
+                propertyDbRef.push(property);
+            }).then(() => {
+                setStep(AddProperty.ADD_PROPERTY_SUCCESS)
+                clearFields();
 
-        property = new Property(address, unitNumber, numberOfBedrooms, numberOfBathrooms, rent, bond, image, latitude, longitude);
-        userDb = 'property';
-        let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser.uid)
-
-        propertyDbRef.push(property);
-        setStep(AddProperty.ADD_PROPERTY_SUCCESS)
-
+            })
+            .catch(error => console.log(error));
     }
 
     const suggestionView = predictions.map(item =>
         <TouchableOpacity
+            style={styles.suggestion}
             onPress={() => this.onPredictionSelected(item)}>
-
-            <Text key={item.id} style={styles.suggestion} value={destination}>
-                {item.description}
-            </Text>
+            <Text key={item.id} style={{ fontSize: 16 }}> {item.description}</Text>
         </TouchableOpacity >
     )
 
     let view = step === AddProperty.PROPERTY_DETAILS ?
-        <View style={{ margin: 10 }}>
+        <View style={{ marginTop: 10 }}>
             <TextInput name="destination" style={styles.searchBox} placeholder="Enter Address"
                 value={destination} onChangeText={destination => this.onDestinationQueryChange(destination)} />
             {suggestionView}
             {propertyDescriptionView ?
                 <View>
-                    <View >
-                        <MapView
-                            style={styles.map}
-                            provider={PROVIDER_GOOGLE}
-                            intialRegion={{
-                                latitude: 37.422,
-                                longitude: -122.084,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421
-                            }}
+                    <MapView
+                        style={styles.map}
+                        provider={PROVIDER_GOOGLE}
+                        intialRegion={{
+                            latitude: 37.422,
+                            longitude: -122.084,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421
+                        }}
 
-                            region={{
-                                latitude: latitude,
-                                longitude: longitude,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421
-                            }}
-                            showsUserLocation={true}
-                            showsCompass={true} >
-                            <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
-                        </MapView>
-                    </View>
-                    <Container style={styles.containerLeft}>
+                        region={{
+                            latitude: latitude,
+                            longitude: longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421
+                        }}
+                        showsUserLocation={true}
+                        showsCompass={true} >
+                        <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
+                    </MapView>
+
+                    <View style={styles.containerLeft}>
 
                         <View style={styles.containerFlexRow}>
-                            <Icon name='location' type='evilicon' size={36} color={colors.blue} />
+                            <Icon name='location' type='evilicon' size={36} color={colors.green} />
                             <Text style={styles.textSubHeading}>{address}</Text>
                         </View>
 
@@ -219,7 +223,7 @@ const AddNewProperty = (props) => {
                         </View>
 
                         {unitContent ?
-                            <TextInput
+                            <Input
                                 style={styles.inputBoxFull}
                                 keyboardType='number-pad'
                                 value={unitNumber}
@@ -228,7 +232,7 @@ const AddNewProperty = (props) => {
                                 autoCapitalize='none' /> : null
                         }
 
-                        <TextInput
+                        <Input
                             style={styles.inputBoxFull}
                             value={rent}
                             keyboardType='number-pad'
@@ -237,7 +241,7 @@ const AddNewProperty = (props) => {
                             autoCapitalize='none'
                         />
 
-                        <TextInput
+                        <Input
                             style={styles.inputBoxFull}
                             value={bond}
                             keyboardType='number-pad'
@@ -248,7 +252,7 @@ const AddNewProperty = (props) => {
 
                         <View style={styles.containerFlexRow}>
                             <Label style={{ flex: 1 }}>Number of Bedroom</Label>
-                            <Label style={{ paddingStart: 20, fontSize: 18, disabled: true }} disabled={true}>{numberOfBedrooms}</Label>
+                            <Label style={{ fontSize: 18, }}>{numberOfBedrooms}</Label>
                         </View>
                         <Slider
                             style={{ width: '100%', height: 40 }}
@@ -263,7 +267,7 @@ const AddNewProperty = (props) => {
 
                         <View style={styles.containerFlexRow}>
                             <Label style={{ flex: 1 }}>Number of Bathroom</Label>
-                            <Label style={{ fontSize: 18, disabled: true }} >{numberOfBathrooms}</Label>
+                            <Label style={{ fontSize: 18 }} >{numberOfBathrooms}</Label>
                         </View>
                         <Slider
                             style={{ width: '100%', height: 40 }}
@@ -277,7 +281,7 @@ const AddNewProperty = (props) => {
                         />
 
                         {
-                            image && <Image source={{ uri: image }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
+                            imageUri && <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
                         }
                         <TouchableOpacity onPress={this.selectPropertyImage} style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
                             <Text style={{ color: colors.primary, fontSize: 18 }}>Choose image..</Text>
@@ -288,10 +292,10 @@ const AddNewProperty = (props) => {
 
                         </TouchableOpacity>
 
-                    </Container>
+                    </View>
                 </View> : null
             }
-        </View > : step === AddProperty.ADD_PROPERTY_SUCCESS ? <React.Fragment>
+        </View > : step === AddProperty.ADD_PROPERTY_SUCCESS ?
             <Container style={styles.containerFull}>
                 <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
                 <Text style={{ color: colors.green, marginBottom: 10, fontSize: 20 }}>Property Added</Text>
@@ -306,16 +310,17 @@ const AddNewProperty = (props) => {
                     <Text style={styles.primaryText}>Go Back to Property</Text>
                 </TouchableOpacity>
 
-            </Container>
-        </React.Fragment> : null;
+            </Container> : null;
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <View style={{ flex: 1 }}>
-                <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
-                {view}
-            </View >
-        </ScrollView>
+        <SafeAreaView>
+            <ScrollView >
+                <View style={{ flex: 1 }}>
+                    <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+                    {view}
+                </View >
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
