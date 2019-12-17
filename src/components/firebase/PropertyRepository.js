@@ -26,6 +26,7 @@ export function deletePropertiesWithId(userId, propertyId) {
         return dbPropertyRef.remove()
             .then(resolve())
             .catch(error => reject(error))
+
     })
 }
 
