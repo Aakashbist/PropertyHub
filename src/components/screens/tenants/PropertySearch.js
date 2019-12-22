@@ -1,35 +1,33 @@
 import React from 'react';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
 
 const PropertySearch = (props) => {
   return (
-    <SafeAreaView >
-      <ScrollView>
+    <ScrollView>
+      <SafeAreaView >
         <View style={styles.containerFull}>
           <Header
-            statusBarProps={{ barStyle: 'light-content', backgroundColor: colors.green }}
-            barStyle="light-content" // or directly
+            barStyle="light-content"
             backgroundColor={colors.blue}
-            leftComponent={{ icon: 'menu' }}
-            centerComponent={{ text: 'MY TITLE' }}
-            rightComponent={{ icon: 'home' }}
-
+            placement="left"
+            leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
+            centerComponent={{ text: 'Search', style: { fontSize: 20, color: colors.white } }}
+            statusBarProps={{ translucent: true }}
           />
           <Text>Property Search Screen</Text>
-          <Button title='open drawer' onPress={() => this.props.navigation.toggleDrawer()}></Button>
         </View>
-      </ScrollView>
-    </SafeAreaView >
+      </SafeAreaView >
+    </ScrollView>
   );
 }
 
 PropertySearch.navigationOptions = (props) => ({
-  drawerLabel: 'Property',
+  drawerLabel: 'Property Lookup',
   drawerIcon: ({ }) => (
-    <Icon name='user'
+    <Icon name='search'
       type='font-awesome'
       style={styles.drawerIcon}
     />

@@ -40,22 +40,9 @@ export default class DrawerMenu extends React.Component {
 }
 
 const styles = StyleSheet.create({
-
-    button: {
-        marginTop: 30,
-        marginBottom: 20,
-        paddingVertical: 0,
-        alignItems: 'center',
-        backgroundColor: '#e93766',
-        borderColor: '#e93766',
-        borderWidth: 1,
-        borderRadius: 5,
-        width: 200
-    },
     buttonText: {
         fontSize: 12,
         fontWeight: 'bold',
         color: '#fff'
-    },
-
+    }
 })

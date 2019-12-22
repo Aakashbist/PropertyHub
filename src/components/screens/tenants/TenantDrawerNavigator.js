@@ -14,7 +14,7 @@ const DrawerNavigator = createDrawerNavigator({
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,
-        contentComponent: DrawerMenu
+        contentComponent: DrawerMenu,
     }
 );
 
