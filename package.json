@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.2",
     "firebase": "^7.2.3",
+    "lodash": "^4.17.15",
     "native-base": "^2.13.8",
     "react": "16.8.6",
     "react-native": "0.60.5",

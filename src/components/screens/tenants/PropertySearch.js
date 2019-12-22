@@ -1,10 +1,25 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { Header, Icon } from 'react-native-elements';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, Text, View, FlatList } from 'react-native';
+import { Header, Icon, SearchBar, ListItem } from 'react-native-elements';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
+import { getPropertiesBySearch } from '../../service/PropertyService';
+import { Item } from 'native-base';
 
 const PropertySearch = (props) => {
+  const [search, setSearch] = useState('');
+  const [properties, setProperties] = useState();
+
+  useEffect(() => {
+    getPropertiesBySearch(search)
+      .then((properties) => {
+        setProperties(properties);
+      })
+      .catch((error) => {
+        console.log(" -- ", error);
+      });
+  }, [search]);
+
   return (
     <ScrollView>
       <SafeAreaView >
@@ -17,7 +32,27 @@ const PropertySearch = (props) => {
             centerComponent={{ text: 'Property Lookup', style: { fontSize: 20, color: colors.white } }}
             statusBarProps={{ translucent: true }}
           />
-          <Text>Property Search Screen</Text>
+          <SearchBar
+            placeholder="Type Here..."
+            onChangeText={(text) => setSearch(text)}
+            value={search}
+            lightTheme={true}
+            platform="android"
+          />
+          <FlatList
+            style={{ flex: 1, width: '100%' }}
+            data={properties}
+            renderItem={({ item }) => (
+              <ListItem
+                key={item.id}
+                leftAvatar={{ source: { uri: item.imageUri } }}
+                title={item.address}
+                subtitle={item.address}
+                bottomDivider
+              />
+            )}
+            keyExtractor={property => property.id}
+          />
         </View>
       </SafeAreaView >
     </ScrollView>
