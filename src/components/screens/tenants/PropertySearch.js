@@ -14,7 +14,7 @@ const PropertySearch = (props) => {
             backgroundColor={colors.blue}
             placement="left"
             leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
-            centerComponent={{ text: 'Search', style: { fontSize: 20, color: colors.white } }}
+            centerComponent={{ text: 'Property Lookup', style: { fontSize: 20, color: colors.white } }}
             statusBarProps={{ translucent: true }}
           />
           <Text>Property Search Screen</Text>
