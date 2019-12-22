@@ -21,7 +21,7 @@ const Login = (props) => {
     }, [email, password]);
 
     handleLogin = () => {
-        let result;
+        let result; 
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
             .then((data) => {

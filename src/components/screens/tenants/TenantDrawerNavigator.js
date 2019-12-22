@@ -3,12 +3,14 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import AppRoute from '../../../resources/appRoute';
 import DashboardScreen from '../DashboardScreen';
 import DrawerMenu from '../../DrawerMenu';
+import PropertySearch from './PropertySearch';
 
 const DrawerNavigator = createDrawerNavigator({
     DashboardScreen: { screen: DashboardScreen },
+    PropertySearch: { screen: PropertySearch },
 },
     {
-        initialRouteName: AppRoute.Dashboard,
+        initialRouteName: AppRoute.PropertySearch,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Image, Text, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import styles from '../../resources/styles';
+import { Icon } from 'react-native-elements';
 
 class DashboardScreen extends Component {
   static navigationOptions = {
     drawerLabel: 'Dashboard',
     drawerIcon: ({ }) => (
-      <Image
-        source={require('../../assets/icon/dashboard.png')}
+      <Icon name='th'
+        type='font-awesome'
         style={styles.drawerIcon}
       />
     ),
