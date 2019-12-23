@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Text, View, TouchableOpacity, Alert } from 'react-native';
-import { ButtonGroup, Icon } from 'react-native-elements';
+import { Alert, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import Firebase from '../../../../config/Firebase';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
-import { getProperties, deletePropertiesWithId } from '../../../firebase/PropertyRepository';
-
+import { deletePropertiesWithId, propertyReference } from '../../../firebase/PropertyRepository';
 
 const PropertyListScreen = (props) => {
     const [properties, setProperties] = useState([]);
     const currentUser = Firebase.auth().currentUser.uid;
-
 
     setPropertiesInState = (propertiesList) => {
         setProperties(propertiesList);
@@ -20,10 +18,10 @@ const PropertyListScreen = (props) => {
 
     getListofProperties = () => {
         if (currentUser !== null) {
-            getProperties(currentUser, setPropertiesInState)
-
+            propertyReference(currentUser, setPropertiesInState)
         }
     };
+
     useEffect(() => {
         getListofProperties();
     }, [])
@@ -42,6 +40,7 @@ const PropertyListScreen = (props) => {
             { cancelable: false }
         )
     }
+
     let view = properties == null ? <View style={styles.container}>
         <Text style={{ fontSize: 18 }}> No available  properties </Text>
     </View> :
@@ -54,6 +53,14 @@ const PropertyListScreen = (props) => {
                     <Image style={styles.cardImage} source={{ uri: item.imageUrl }} />
                     <View style={styles.containerFlexRow}>
                         <Text style={{ flex: 1, fontSize: 16 }}>{item.address}</Text>
+                        <TouchableOpacity onPress={() => props.navigation.navigate(AppRoute.AddProperty,
+                            {
+                                key: item.id,
+                                mode: 'EDIT'
+                            })}>
+                            <Icon name='pencil' type='evilicon' size={36} color={colors.blue} />
+                        </TouchableOpacity>
+
                         <TouchableOpacity onPress={() => this.deleteProperties(item.id)}>
                             <Icon name='trash' type='evilicon' size={36} color={colors.red} />
                         </TouchableOpacity>
@@ -70,4 +77,5 @@ const PropertyListScreen = (props) => {
         </View>
     )
 }
+
 export default PropertyListScreen;

@@ -1,15 +1,16 @@
 class Property {
-    constructor(address, unitNumber, numberOfBedrooms, numberOfBathrooms, rent, bond, imageUrl, lat, lng) {
+    constructor(address, unitNumber, bedroom, bathroom, propertyType, rent, bond, imageUrl, lat, lng) {
 
         this.address = address;
         this.unitNumber = unitNumber;
-        this.numberOfBedrooms = numberOfBedrooms;
-        this.numberOfBathrooms = numberOfBathrooms;
+        this.bedroom = bedroom;
+        this.bathroom = bathroom;
         this.rent = rent;
         this.bond = bond;
         this.imageUrl = imageUrl;
         this.lat = lat;
         this.lng = lng;
+        this.propertyType = propertyType
     }
 }
 class Coordinates {

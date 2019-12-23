@@ -17,6 +17,4 @@ export default {
 
     textColorError: "#b1003c",
     textColorSuccess: '#4CAF50',
-
-
 }

@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import Firebase from '../../config/Firebase'
+import Firebase from '../../config/Firebase';
 
-
-export async function getdownloadImageUrl(uri, fileName) {
-    const imageUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+export async function getDownloadImageUrl(uri, fileName) {
+    const imageUri = getUriBasedOnOS(uri)
     const response = await fetch(imageUri);
     const blob = await response.blob();
     var storageRef = Firebase.storage().ref().child('images/' + fileName);
@@ -20,4 +19,9 @@ export async function getdownloadImageUrl(uri, fileName) {
             }
         )
     });
+}
+
+function getUriBasedOnOS(uri) {
+    const imageUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+    return imageUri;
 }

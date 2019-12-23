@@ -1,17 +1,16 @@
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-import AppRoute from '../../../resources/appRoute';
-import DashboardScreen from '../DashboardScreen';
-import PropertyListScreen from '../owners/property/PropertyListScreen';
-import DrawerMenu from '../../DrawerMenu';
-import PropertyStackNavigation from './property/PropertyStackNavigation';
+import DrawerMenu from '../../../../DrawerMenu';
+import DashboardScreen from '../../../DashboardScreen';
+import PropertyTabNavigation from './PropertyTabNavigation';
+import AppRoute from '../../../../../resources/appRoute';
 
 const DrawerNavigator = createDrawerNavigator({
-    // DashboardScreen: { screen: DashboardScreen },
-    Property: PropertyStackNavigation,
+    DashboardScreen: { screen: DashboardScreen },
+    Property: PropertyTabNavigation,
 },
     {
-        // initialRouteName: AppRoute.Dashboard,
+        initialRouteName: AppRoute.Dashboard,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,

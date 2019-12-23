@@ -1,9 +1,6 @@
 import Firebase from '../../config/Firebase';
-import { Footer } from 'native-base';
-import PropertyTenancyAgreementScreen from '../screens/owners/property/LeasedPropertyScreen';
 
-export function getProperties(userId, callback) {
-
+export function propertyReference(userId, callback) {
     let dbPropertyRef = Firebase.database().ref('property/' + userId);
     dbPropertyRef.on('value', (dataSnapshot, key) => {
         if (dataSnapshot.exists()) {
@@ -16,7 +13,6 @@ export function getProperties(userId, callback) {
         } else {
             callback(null)
         }
-
     })
 }
 
@@ -26,8 +22,14 @@ export function deletePropertiesWithId(userId, propertyId) {
         return dbPropertyRef.remove()
             .then(resolve())
             .catch(error => reject(error))
-
     })
 }
 
-
+export function getPropertyById(userId, propertyId) {
+    return new Promise((resolve, reject) => {
+        let dbPropertyRef = Firebase.database().ref(`property/${userId}/${propertyId}`); return dbPropertyRef.once("value", snapShot => {
+            let data = snapShot.val();
+            resolve(data)
+        }, error => reject(error))
+    })
+}

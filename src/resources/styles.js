@@ -1,5 +1,4 @@
 import colors from "./colors";
-import { calculateString } from "bytebuffer";
 
 export default {
     container: {
@@ -11,12 +10,10 @@ export default {
         flex: 1,
         alignItems: 'flex-start',
         padding: 16,
-
     },
     containerFull: {
         flex: 1,
         alignItems: 'center'
-
     },
     containerFlexRow: {
         flexDirection: 'row',
@@ -24,7 +21,6 @@ export default {
         fontSize: 20,
         margin: 10
     },
-
     inputBox: {
         width: '80%',
         margin: 10,
@@ -43,25 +39,20 @@ export default {
         borderBottomWidth: 1,
         marginBottom: 10
     },
-
     buttonDisabled: {
         marginTop: 30,
         marginBottom: 20,
         paddingVertical: 8,
         alignItems: 'center',
         borderColor: colors.darkWhite1,
-
         borderWidth: 2,
         borderRadius: 4,
         width: '50%',
     },
-
-
     card: {
         backgroundColor: colors.white,
         width: '100%',
         marginBottom: 10
-
     },
     cardImage: {
         width: '100%',
@@ -75,7 +66,6 @@ export default {
         backgroundColor: colors.darkWhite2,
         width: '100%',
         marginTop: 20
-
     },
     button: {
         marginTop: 30,
@@ -88,7 +78,6 @@ export default {
         borderRadius: 4,
         minWidth: '50%'
     },
-
     unitButton: {
         padding: 5,
         margin: 10,
@@ -108,7 +97,6 @@ export default {
         fontSize: 18,
         color: colors.darkWhite2
     },
-
     searchBox: {
         width: '100%',
         height: 60,
@@ -131,9 +119,7 @@ export default {
     },
     map: {
         height: 150
-
     },
-
 
     // To show pink text like "Sign up" under login button
     primaryText: {

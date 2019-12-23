@@ -8,7 +8,8 @@ const AppRoute = {
     Signup: 'SignupScreen',
     Property: 'PropertyListScreen',
     AddProperty: 'AddPropertyScreen',
-    LeasedProperty: 'LeasedPropertyScreen'
+    LeasedProperty: 'LeasedPropertyScreen',
+    PropertyDetails: 'PropertyDetailScreen'
 }
 
 export default AppRoute

@@ -1,14 +1,16 @@
 import firebase from 'firebase'
+import FireBaseApiKey from '../resources/firebaseApiKey'
+
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBACLpvymneTmxW216e5LSPP63yf1sLn5w",
-    authDomain: "propertyhub-820e2.firebaseapp.com",
-    databaseURL: "https://propertyhub-820e2.firebaseio.com",
-    projectId: "propertyhub-820e2",
-    storageBucket: "propertyhub-820e2.appspot.com",
-    messagingSenderId: "858836941342",
-    appId: "1:858836941342:web:48b6fb4ef4942c0c718c0f",
-    measurementId: "G-TE6VRGKBY4"
+    apiKey: FireBaseApiKey.FIREBASE_API_KEY,
+    authDomain: FireBaseApiKey.AUTH_DOMAIN,
+    databaseURL: FireBaseApiKey.DATABASE_URL,
+    projectId: FireBaseApiKey.PROJECT_ID,
+    storageBucket: FireBaseApiKey.STORAGE_BUCKET,
+    messagingSenderId: FireBaseApiKey.MESSAGE_SENDER_ID,
+    appId: FireBaseApiKey.APP_ID,
+    measurementId: FireBaseApiKey.MEASUREMENT_ID
 }
 
 // Initialize Firebase

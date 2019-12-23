@@ -1,7 +1,7 @@
 
-import { Container, Label, Picker, Input } from 'native-base';
+import { Container, Label, Picker, Input, ProgressBar } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ProgressBarAndroid, ActivityIndicator } from 'react-native';
 import { Icon, Slider } from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
@@ -13,7 +13,9 @@ import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
 import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
-import { getdownloadImageUrl } from '../../../services/imageUploadService';
+import { getDownloadImageUrl } from '../../../services/imageUploadService';
+import { getPropertyById } from '../../../firebase/PropertyRepository'
+import PropertyType from '../../../../resources/propertyType';
 
 
 const AddProperty = {
@@ -21,16 +23,11 @@ const AddProperty = {
     ADD_PROPERTY_SUCCESS: 1
 }
 
-const PropertyType = {
-    HOUSE: "House",
-    UNIT: "Unit",
-    APARTMENT: "Apartment"
-}
+
 
 
 
 const AddNewProperty = (props) => {
-
 
     const [latitude, setLatitude] = useState(0);
     const [longitude, setLongitude] = useState(0);
@@ -41,42 +38,50 @@ const AddNewProperty = (props) => {
     const [value, setValue] = useState(false);
     const [propertyDescriptionView, setpropertyDescriptionView] = useState(false);
     const [placeId, setPlaceID] = useState([])
-
+    const [editMode, setEditMode] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [propertyType, setPropertyType] = useState(null);
     const [canAddProperty, setCanAddProperty] = useState('');
-    const [unitNumber, setunitNumber] = useState('');
+    const [unitNumber, setUnitNumber] = useState('');
     const [bond, setBond] = useState();
     const [rent, setRent] = useState();
-    const [numberOfBedrooms, setNumberOfBedrooms] = useState(1);
-    const [numberOfBathrooms, setNumberOfBathrooms] = useState(1);
-    //const [imageUrl, setImageUrl] = useState();
+    const [bedroom, setBedroom] = useState(1);
+    const [bathroom, setBathroom] = useState(1);
     const [address, setAddress] = useState([])
     const [imageFileName, setImageFileName] = useState();
     const [imageUri, setImageUri] = useState();
-
+    const currentUser = Firebase.auth().currentUser.uid;
 
     useEffect(() => {
-        let _canAddProperty = rent != null && bond != null && propertyType !== null;
+        if (props.navigation.state.params) {
+            const { key, mode } = props.navigation.state.params;
+            getProperty(key, mode);
+            console.log(mode, "addProperty after click")
+            console.log(key, "addproperty  after click")
+        }
+
+    }, [])
+
+    useEffect(() => {
+        let _canAddProperty = rent != null && bond != null && propertyType !== null && !isLoading;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
-    }, [rent, bond, propertyType]);
+    }, [rent, bond, propertyType, isLoading]);
+
+    getProperty = (key, mode) => {
+        getPropertyById(currentUser, key).then((data) => {
+            setPropertyFields(data, mode);
+            console.log(data, "addProperty")
+
+        }).catch((error) => console.log(error));
+    }
 
     selectPropertyImage = () => {
         ImagePicker.showImagePicker({ noData: true, mediaType: 'photo' }, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                setImageUri(response.uri);
-                setImageFileName(response.fileName)
-            }
-        });
+            setImageUri(response.uri);
+            setImageFileName(response.fileName)
+        })
     }
 
     onPredictionSelected = place => {
@@ -85,13 +90,11 @@ const AddNewProperty = (props) => {
         setAddress(place.description)
         setPrediction([]);
         loadCoordinatesByPlaceId(place.place_id);
-
     }
 
     unitInputBoxShow = () => {
         setValue(!value)
         setUnitContent(!unitContent)
-
     }
 
     navigateToPropertyList = () => {
@@ -108,9 +111,27 @@ const AddNewProperty = (props) => {
             .catch(error => console.log(error))
     };
 
+    getPostalcode = (json) => {
+        const addressComponents = json.result.address_components;
+        for (let i = 0; i < addressComponents.length; i++) {
+            const typesArray = addressComponents[i].types;
+            for (let j = 0; j < typesArray.length; j++) {
+                if (typesArray[j].toString() === "postal_code") {
+                    const postalCode = addressComponents[i].long_name;
+                    console.log("postal code = ", postalCode)
+                }
+                if (typesArray[j].toString() === "locality") {
+                    const locality = addressComponents[i].long_name;
+                    console.log("locality  = ", locality)
+                }
+            }
+        }
+    }
+
     loadCoordinatesByPlaceId = (placeId) => {
         getGooglePlaceDetails(placeId)
             .then((json) => {
+                getPostalcode(json)
                 setLatitude(json.result.geometry.location.lat);
                 setLongitude(json.result.geometry.location.lng);
                 setpropertyDescriptionView(true);
@@ -118,7 +139,7 @@ const AddNewProperty = (props) => {
             .catch(error => console.log(error))
     }
 
-    handlePropertyType = (value) => {
+    handleOnPropertyTypeChange = (value) => {
         switch (value) {
             case PropertyType.APARTMENT:
                 setPropertyType(PropertyType.APARTMENT)
@@ -139,32 +160,51 @@ const AddNewProperty = (props) => {
         }
     }
 
+    setPropertyFields = (data, mode) => {
+        if (mode === "EDIT") {
+            setEditMode(true)
+        }
+        handleOnPropertyTypeChange(data.propertyType);
+        setAddress(data.address);
+        setBond(data.bond);
+        setRent(data.rent);
+        setBathroom(data.bathroom);
+        setBedroom(data.bedroom);
+        setUnitNumber(data.unitNumber);
+        setLatitude(data.lat);
+        setLongitude(data.lng);
+        setpropertyDescriptionView(true);
+    }
+
     clearFields = () => {
-        setPropertyType(null)
+        setp(null)
         setDestination('');
         setAddress([]);
         setBond(1);
         setRent(1);
-        setNumberOfBathrooms(1);
-        setNumberOfBedrooms(1);
-        setunitNumber('');
+        setBathroom(1);
+        setBedroom(1);
+        setUnitNumber('');
         setImageUri()
     }
+
     handleAddProperty = () => {
+        setIsLoading(true);
         let property, userDb;
-        let currentUser = Firebase.auth().currentUser;
-        getdownloadImageUrl(imageUri, imageFileName)
+        getDownloadImageUrl(imageUri, imageFileName)
             .then((url) => {
-                property = new Property(address, unitNumber, numberOfBedrooms, numberOfBathrooms, rent, bond, url, latitude, longitude)
+                property = new Property(address, unitNumber, bedroom, bathroom, propertyType,
+                    rent, bond, url, latitude, longitude)
                 userDb = 'property';
-                let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser.uid)
+                let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser)
                 propertyDbRef.push(property);
             }).then(() => {
                 setStep(AddProperty.ADD_PROPERTY_SUCCESS)
                 clearFields();
-
             })
-            .catch(error => console.log(error));
+            .catch(error => console.log(error))
+            .finally(() => setIsLoading(false));
+
     }
 
     const suggestionView = predictions.map(item =>
@@ -175,11 +215,15 @@ const AddNewProperty = (props) => {
         </TouchableOpacity >
     )
 
-    let view = step === AddProperty.PROPERTY_DETAILS ?
+    view = isLoading ? <ActivityIndicator style={{ flex: 1, justifyContent: 'center', height: 600 }} size="large" color={colors.green} /> : step === AddProperty.PROPERTY_DETAILS ?
         <View style={{ marginTop: 10 }}>
-            <TextInput name="destination" style={styles.searchBox} placeholder="Enter Address"
-                value={destination} onChangeText={destination => this.onDestinationQueryChange(destination)} />
-            {suggestionView}
+            {
+                !editMode ?
+                    <View>
+                        <TextInput name="destination" style={styles.searchBox} placeholder="Enter Address"
+                            value={destination} onChangeText={destination => this.onDestinationQueryChange(destination)} />
+                        {suggestionView}
+                    </View> : null}
             {propertyDescriptionView ?
                 <View>
                     <MapView
@@ -214,7 +258,7 @@ const AddNewProperty = (props) => {
                             <Picker
                                 mode="dropdown"
                                 selectedValue={propertyType === null ? "Select property type.." : propertyType}
-                                onValueChange={(itemValue) => handlePropertyType(itemValue)}>
+                                onValueChange={(itemValue) => handleOnPropertyTypeChange(itemValue)}>
                                 <Picker.Item label="Select property type.." value={null} />
                                 <Picker.Item label="Unit" value={PropertyType.UNIT} />
                                 <Picker.Item label="House" value={PropertyType.HOUSE} />
@@ -227,7 +271,7 @@ const AddNewProperty = (props) => {
                                 style={styles.inputBoxFull}
                                 keyboardType='number-pad'
                                 value={unitNumber}
-                                onChangeText={(unitNumber) => setunitNumber(unitNumber)}
+                                onChangeText={(unitNumber) => setUnitNumber(unitNumber)}
                                 placeholder='Flat/Unit Number'
                                 autoCapitalize='none' /> : null
                         }
@@ -252,7 +296,7 @@ const AddNewProperty = (props) => {
 
                         <View style={styles.containerFlexRow}>
                             <Label style={{ flex: 1 }}>Number of Bedroom</Label>
-                            <Label style={{ fontSize: 18, }}>{numberOfBedrooms}</Label>
+                            <Label style={{ fontSize: 18, }}>{bedroom}</Label>
                         </View>
                         <Slider
                             style={{ width: '100%', height: 40 }}
@@ -261,13 +305,13 @@ const AddNewProperty = (props) => {
                             step={1}
                             maximumTrackTintColor={colors.darkWhite2}
                             minimumTrackTintColor={colors.primary}
-                            value={numberOfBedrooms}
-                            onValueChange={value => setNumberOfBedrooms(value)}
+                            value={bedroom}
+                            onValueChange={value => setBedroom(value)}
                         />
 
                         <View style={styles.containerFlexRow}>
                             <Label style={{ flex: 1 }}>Number of Bathroom</Label>
-                            <Label style={{ fontSize: 18 }} >{numberOfBathrooms}</Label>
+                            <Label style={{ fontSize: 18 }} >{bathroom}</Label>
                         </View>
                         <Slider
                             style={{ width: '100%', height: 40 }}
@@ -276,18 +320,25 @@ const AddNewProperty = (props) => {
                             step={1}
                             maximumTrackTintColor={colors.darkWhite2}
                             minimumTrackTintColor={colors.primary}
-                            value={numberOfBathrooms}
-                            onValueChange={value => setNumberOfBathrooms(value)}
+                            value={bathroom}
+                            onValueChange={value => setBathroom(value)}
                         />
 
                         {
-                            imageUri && <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
+                            imageUri &&
+                            <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
                         }
-                        <TouchableOpacity onPress={this.selectPropertyImage} style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
+
+                        <TouchableOpacity
+                            onPress={this.selectPropertyImage}
+                            style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
                             <Text style={{ color: colors.primary, fontSize: 18 }}>Choose image..</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.button} onPress={this.handleAddProperty} disabled={!canAddProperty}>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={this.handleAddProperty}
+                            disabled={!canAddProperty}>
                             <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
 
                         </TouchableOpacity>

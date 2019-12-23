@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import styles from '../../../../resources/styles';
 
 
-const PropertyTenancyAgreementScreen = (props) => {
+const PropertyLeasedScreen = (props) => {
 
     const [propertiesLeased, setPropertiesLeased] = useState([]);
 
@@ -18,4 +18,4 @@ const PropertyTenancyAgreementScreen = (props) => {
         </View>
     )
 }
-export default PropertyTenancyAgreementScreen;
+export default PropertyLeasedScreen;
