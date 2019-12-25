@@ -8,7 +8,7 @@ import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import GeneralStatusBarColor from '../GeneralStatusBarColor';
-import parseFirebaseError from '../firebase/FirebaseErrorParser';
+import parseFirebaseError from '../errorParser/FirebaseErrorParser';
 import { Property } from '../../models/propertyModels';
 
 const SignupSteps = {
@@ -90,7 +90,7 @@ const Signup = (props) => {
     setName('');
   }
 
-  let messageView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
+  let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
   let view = isLoading ? <ProgressBarAndroid color={colors.primaryDark} style={{ height: 440 }} /> : step === SignupSteps.SIGNUP ? <React.Fragment>
     <TextInput
@@ -126,7 +126,7 @@ const Signup = (props) => {
       containerStyle={{ width: '80%', height: 60 }}
     />
 
-    {messageView}
+    {errorView}
 
     <TouchableOpacity
       style={canSignUp ? styles.button : styles.buttonDisabled}

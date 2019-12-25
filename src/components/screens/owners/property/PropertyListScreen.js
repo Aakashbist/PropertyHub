@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, Text, TouchableOpacity, View, SafeAreaView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Firebase from '../../../../config/Firebase';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
-import { deletePropertiesWithId, propertyReference } from '../../../firebase/PropertyRepository';
+import { deletePropertiesWithId, propertyReference } from '../../../services/PropertyService';
+import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
+import { Header } from 'native-base';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const PropertyListScreen = (props) => {
     const [properties, setProperties] = useState([]);
+
     const currentUser = Firebase.auth().currentUser.uid;
 
     setPropertiesInState = (propertiesList) => {
         setProperties(propertiesList);
-        console.log("from setPropertiesState", propertiesList);
     }
 
     getListofProperties = () => {
@@ -31,17 +34,21 @@ const PropertyListScreen = (props) => {
             'Delete Address',
             'Are you sure want to delete this address ?',
             [
-                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                { text: 'Cancel' },
                 {
                     text: 'OK', onPress: () => deletePropertiesWithId(currentUser, propertyId)
-                        .catch(error => console.log(error))
+                        .catch(error => {
+                            errorMessage = parseFirebaseError(error);
+                            Alert.alert(errorMessage);
+                        })
                 },
             ],
             { cancelable: false }
         )
     }
 
-    let view = properties == null ? <View style={styles.container}>
+
+    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center" }}>
         <Text style={{ fontSize: 18 }}> No available  properties </Text>
     </View> :
         <FlatList
@@ -72,9 +79,13 @@ const PropertyListScreen = (props) => {
         />
 
     return (
-        <View style={styles.containerFull} >
-            {view}
-        </View>
+        <ScrollView>
+            <SafeAreaView>
+                <View style={styles.containerFull} >
+                    {view}
+                </View>
+            </SafeAreaView>
+        </ScrollView>
     )
 }
 

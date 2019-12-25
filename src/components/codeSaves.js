@@ -44,3 +44,8 @@
 //     const ownerId = context.params.ownerId;
 //     return admin.auth().setCustomUserClaims(ownerId, { isOwner: true });
 // });
+///
+// for postal code in loadcordinate of addpropertyscreen
+// getPostalcode(json)
+// setLatitude(json.result.geometry.location.lat);
+// setLongitude(json.result.geometry.location.lng);

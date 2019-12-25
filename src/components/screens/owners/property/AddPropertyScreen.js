@@ -1,8 +1,8 @@
 
-import { Container, Label, Picker, Input, ProgressBar } from 'native-base';
+import { Container, Label, Picker, Input, ProgressBar, Header } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ProgressBarAndroid, ActivityIndicator } from 'react-native';
-import { Icon, Slider } from 'react-native-elements';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ProgressBarAndroid, ActivityIndicator, Alert } from 'react-native';
+import { Icon, Slider, SearchBar } from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -14,8 +14,10 @@ import styles from '../../../../resources/styles';
 import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadImageUrl } from '../../../services/imageUploadService';
-import { getPropertyById } from '../../../firebase/PropertyRepository'
+import { getPropertyById } from '../../../services/PropertyService'
 import PropertyType from '../../../../resources/propertyType';
+import parseMapApiError from '../../../errorParser/MapApiErrorParser';
+import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 
 
 const AddProperty = {
@@ -50,24 +52,23 @@ const AddNewProperty = (props) => {
     const [address, setAddress] = useState([])
     const [imageFileName, setImageFileName] = useState();
     const [imageUri, setImageUri] = useState();
+    const [error, setError] = useState("All fiels are required *");
+
     const currentUser = Firebase.auth().currentUser.uid;
 
     useEffect(() => {
         if (props.navigation.state.params) {
             const { key, mode } = props.navigation.state.params;
             getProperty(key, mode);
-            console.log(mode, "addProperty after click")
-            console.log(key, "addproperty  after click")
         }
-
     }, [])
 
     useEffect(() => {
-        let _canAddProperty = rent != null && bond != null && propertyType !== null && !isLoading;
+        let _canAddProperty = rent != null && bond != null && propertyType != null && imageUri != null && !isLoading;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
-    }, [rent, bond, propertyType, isLoading]);
+    }, [rent, bond, propertyType, isLoading, imageUri]);
 
     getProperty = (key, mode) => {
         getPropertyById(currentUser, key).then((data) => {
@@ -106,9 +107,14 @@ const AddNewProperty = (props) => {
         setDestination(destination);
         getGooglePlaceAutocomplete(destination)
             .then((json) => {
-                setPrediction(json.predictions);
+                if (json.status === "OK") {
+                    setPrediction(json.predictions);
+                } else {
+                    let errorMessage = parseMapApiError(json);
+                    Alert.alert(errorMessage);
+                }
             })
-            .catch(error => console.log(error))
+            .catch(error => setError(error))
     };
 
     getPostalcode = (json) => {
@@ -131,12 +137,16 @@ const AddNewProperty = (props) => {
     loadCoordinatesByPlaceId = (placeId) => {
         getGooglePlaceDetails(placeId)
             .then((json) => {
-                getPostalcode(json)
-                setLatitude(json.result.geometry.location.lat);
-                setLongitude(json.result.geometry.location.lng);
-                setpropertyDescriptionView(true);
+                if (json.status === "OK") {
+                    setLatitude(json.result.geometry.location.lat);
+                    setLongitude(json.result.geometry.location.lng);
+                    setpropertyDescriptionView(true);
+                } else {
+                    let errorMessage = parseMapApiError(json);
+                    Alert.alert(errorMessage)
+                }
             })
-            .catch(error => console.log(error))
+            .catch(error => { console.log(JSON.stringify(json.status), "then"); setError(error) })
     }
 
     handleOnPropertyTypeChange = (value) => {
@@ -197,14 +207,23 @@ const AddNewProperty = (props) => {
                     rent, bond, url, latitude, longitude)
                 userDb = 'property';
                 let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser)
-                propertyDbRef.push(property);
-            }).then(() => {
-                setStep(AddProperty.ADD_PROPERTY_SUCCESS)
-                clearFields();
+                propertyDbRef.push(property)
+                    .then(() => {
+                        clearFields();
+                        setStep(AddProperty.ADD_PROPERTY_SUCCESS);
+                    })
+                    .catch(error => {
+                        errorMessage = setError(parseFirebaseError(error))
+                        setError(errorMessage)
+                    });
             })
-            .catch(error => console.log(error))
-            .finally(() => setIsLoading(false));
-
+            .catch(error => {
+                let errorMessage = parseFirebaseError(error);
+                setError(errorMessage);
+            })
+            .finally(() => {
+                setIsLoading(false)
+            });
     }
 
     const suggestionView = predictions.map(item =>
@@ -215,15 +234,25 @@ const AddNewProperty = (props) => {
         </TouchableOpacity >
     )
 
+    let errorView = error ? <Text style={{ marginBottom: 5, fontSize: 16, color: colors.textColorError }}>{error}</Text> : null;
+
     view = isLoading ? <ActivityIndicator style={{ flex: 1, justifyContent: 'center', height: 600 }} size="large" color={colors.green} /> : step === AddProperty.PROPERTY_DETAILS ?
         <View style={{ marginTop: 10 }}>
             {
                 !editMode ?
                     <View>
-                        <TextInput name="destination" style={styles.searchBox} placeholder="Enter Address"
-                            value={destination} onChangeText={destination => this.onDestinationQueryChange(destination)} />
+                        <SearchBar
+                            placeholder="Type Here..."
+                            onChangeText={destination => this.onDestinationQueryChange(destination)}
+                            value={destination}
+                            lightTheme={true}
+                            platform="android"
+                        />
+
                         {suggestionView}
+
                     </View> : null}
+
             {propertyDescriptionView ?
                 <View>
                     <MapView
@@ -253,6 +282,8 @@ const AddNewProperty = (props) => {
                             <Icon name='location' type='evilicon' size={36} color={colors.green} />
                             <Text style={styles.textSubHeading}>{address}</Text>
                         </View>
+
+                        {errorView}
 
                         <View style={styles.inputBoxFull}>
                             <Picker
@@ -344,8 +375,8 @@ const AddNewProperty = (props) => {
                         </TouchableOpacity>
 
                     </View>
-                </View> : null
-            }
+                </View> : null}
+
         </View > : step === AddProperty.ADD_PROPERTY_SUCCESS ?
             <Container style={styles.containerFull}>
                 <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
