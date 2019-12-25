@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import Firebase from '../../config/Firebase';
 
 export async function getDownloadImageUrl(uri, fileName) {
