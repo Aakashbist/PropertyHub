@@ -29,8 +29,9 @@ const Login = (props) => {
                 Firebase.auth().currentUser.getIdTokenResult();
             })
             .then((token) => {
+
                 if (result.user.emailVerified) {
-                    this.props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner: AppRoute.Tenant);
+                    props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
                 } else {
                     Firebase.auth().signOut()
                         .then(() => setError('Please check your email for verification link'))

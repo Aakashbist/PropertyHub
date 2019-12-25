@@ -4,9 +4,12 @@ const AppRoute = {
     Auth: 'Auth',
     AuthLoading: 'AuthLoading',
     Dashboard: 'DashboardScreen',
-    Profile: 'ProfileScreen',
     Login: 'LoginScreen',
-    Signup: 'SignupScreen'
+    Signup: 'SignupScreen',
+    Property: 'PropertyListScreen',
+    AddProperty: 'AddPropertyScreen',
+    LeasedProperty: 'LeasedPropertyScreen',
+    PropertyDetails: 'PropertyDetailScreen'
 }
 
 export default AppRoute
