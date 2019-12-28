@@ -10,7 +10,11 @@ const AppRoute = {
     Profile: 'ProfileScreen',
     PropertySearch: 'PropertySearch',
     Login: 'LoginScreen',
-    Signup: 'SignupScreen'
+    Signup: 'SignupScreen',
+    Property: 'PropertyListScreen',
+    AddProperty: 'AddPropertyScreen',
+    LeasedProperty: 'LeasedPropertyScreen',
+    PropertyDetails: 'PropertyDetailScreen'
 }
 
 export default AppRoute

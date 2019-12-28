@@ -4,7 +4,7 @@ import Firebase from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
-import parseFirebaseError from '../firebase/FirebaseErrorParser';
+import parseFirebaseError from '../errorParser/FirebaseErrorParser';
 import GeneralStatusBarColor from '../GeneralStatusBarColor';
 
 const Login = (props) => {
@@ -29,8 +29,9 @@ const Login = (props) => {
                 Firebase.auth().currentUser.getIdTokenResult();
             })
             .then((token) => {
+
                 if (result.user.emailVerified) {
-                    this.props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner: AppRoute.Tenant);
+                    props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
                 } else {
                     Firebase.auth().signOut()
                         .then(() => setError('Please check your email for verification link'))

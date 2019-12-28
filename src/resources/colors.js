@@ -13,6 +13,7 @@ export default {
     black: "#000000",
     green: '#4CAF50',
     blue: '#3D6DCC',
+    red: '#ff0050',
 
     textColorError: "#b1003c",
     textColorSuccess: '#4CAF50',

@@ -16,6 +16,7 @@ class DashboardScreen extends Component {
 
   render() {
     return (
+
       <View style={styles.container}>
         <Text>Dashboard Screen</Text>
         <Button title='open drawer' onPress={() => this.props.navigation.toggleDrawer()}></Button>
