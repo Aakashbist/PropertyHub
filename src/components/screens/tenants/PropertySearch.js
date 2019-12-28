@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { SafeAreaView, ScrollView, Text, View, FlatList } from 'react-native';
 import { Header, Icon, SearchBar, ListItem } from 'react-native-elements';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
-import { getPropertiesBySearch } from '../../service/PropertyService';
-import { Item } from 'native-base';
+import { getPropertiesBySearch } from '../../services/PropertyService';
+import useDebounce from '../../useDebounce';
 
 const PropertySearch = (props) => {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [properties, setProperties] = useState();
+  const [error, setError] = useState();
 
-  useEffect(() => {
+  const searchProperties = () => {
     getPropertiesBySearch(search)
       .then((properties) => {
         setProperties(properties);
       })
       .catch((error) => {
-        console.log(" -- ", error);
+        setError(error);
       });
-  }, [search]);
+  }
+
+  useEffect(() => {
+    searchProperties();
+  }, [debouncedSearch]);
 
   return (
     <ScrollView>
@@ -45,10 +51,11 @@ const PropertySearch = (props) => {
             renderItem={({ item }) => (
               <ListItem
                 key={item.id}
-                leftAvatar={{ source: { uri: item.imageUri } }}
                 title={item.address}
                 subtitle={item.address}
+                leftAvatar={{ rounded: false, size: 'large', source: { uri: item.imageUrl } }}
                 bottomDivider
+                topDivider
               />
             )}
             keyExtractor={property => property.id}
