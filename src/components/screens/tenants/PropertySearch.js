@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, Text, View, FlatList } from 'react-native';
 import { Header, Icon, SearchBar, ListItem } from 'react-native-elements';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
 import { getPropertiesBySearch } from '../../services/PropertyService';
 import useDebounce from '../../useDebounce';
+import AppRoute from '../../../resources/appRoute';
 
 const PropertySearch = (props) => {
   const [search, setSearch] = useState('');
@@ -56,6 +57,7 @@ const PropertySearch = (props) => {
                 leftAvatar={{ rounded: false, size: 'large', source: { uri: item.imageUrl } }}
                 bottomDivider
                 topDivider
+                onPress={() => props.navigation.push(AppRoute.PropertyDetailsTenant, { propertyId: item.id })}
               />
             )}
             keyExtractor={property => property.id}
@@ -65,15 +67,5 @@ const PropertySearch = (props) => {
     </ScrollView>
   );
 }
-
-PropertySearch.navigationOptions = (props) => ({
-  drawerLabel: 'Property Lookup',
-  drawerIcon: ({ }) => (
-    <Icon name='search'
-      type='font-awesome'
-      style={styles.drawerIcon}
-    />
-  ),
-});
 
 export default PropertySearch;

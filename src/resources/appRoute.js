@@ -9,6 +9,7 @@ const AppRoute = {
     Dashboard: 'DashboardScreen',
     Profile: 'ProfileScreen',
     PropertySearch: 'PropertySearch',
+    PropertyDetailsTenant: 'PropertyDetails',
     Login: 'LoginScreen',
     Signup: 'SignupScreen',
     Property: 'PropertyListScreen',
