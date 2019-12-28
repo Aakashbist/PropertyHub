@@ -8,6 +8,7 @@ import colors from "../../../../../resources/colors";
 import AddPropertyScreen from '../AddPropertyScreen';
 import LeasedPropertyScreen from '../LeasedPropertyScreen';
 import PropertyStackNavigator from '../navigation/PropertyStackNavigation';
+import styles from '../../../../../resources/styles';
 
 
 const PropertyTabNavigator = createBottomTabNavigator(
@@ -73,5 +74,14 @@ const PropertyTabNavigator = createBottomTabNavigator(
     }
 )
 
+PropertyTabNavigator.navigationOptions = (props) => ({
+    drawerLabel: 'Property',
+    drawerIcon: ({ }) => (
+        <Icon name='home'
+            type='font-awesome'
+            style={styles.drawerIcon}
+        />
+    ),
+});
 
-export default createAppContainer(PropertyTabNavigator);
+export default PropertyTabNavigator;

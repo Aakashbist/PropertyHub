@@ -25,10 +25,6 @@ const AddProperty = {
     ADD_PROPERTY_SUCCESS: 1
 }
 
-
-
-
-
 const AddNewProperty = (props) => {
 
     const [latitude, setLatitude] = useState(0);
