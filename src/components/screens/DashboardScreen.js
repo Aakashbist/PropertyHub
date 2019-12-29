@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Text, View } from 'react-native';
+import { View } from 'react-native';
 import styles from '../../resources/styles';
-import { Icon } from 'react-native-elements';
+import { Icon, Text, Button } from 'react-native-elements';
 
 class DashboardScreen extends Component {
   static navigationOptions = {
