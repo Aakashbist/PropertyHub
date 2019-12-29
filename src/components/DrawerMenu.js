@@ -5,7 +5,8 @@ import { DrawerItems } from 'react-navigation-drawer';
 import firebase from '../config/Firebase';
 import getTheme from '../../native-base-theme/components';
 import material from '../../native-base-theme/variables/material';
-colors
+import colors from '../resources/colors';
+
 export default class DrawerMenu extends React.Component {
     constructor(props) {
         super(props);
@@ -41,10 +42,6 @@ export default class DrawerMenu extends React.Component {
             </StyleProvider>
         )
     }
-}
-
-DrawerMenu.contentOptions = {
-    activeTintColor: colors.
 }
 
 const styles = StyleSheet.create({

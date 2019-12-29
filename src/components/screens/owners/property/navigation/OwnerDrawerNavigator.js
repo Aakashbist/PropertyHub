@@ -4,6 +4,7 @@ import DrawerMenu from '../../../../DrawerMenu';
 import DashboardScreen from '../../../DashboardScreen';
 import PropertyTabNavigation from './PropertyTabNavigation';
 import AppRoute from '../../../../../resources/appRoute';
+import colors from '../../../../../resources/colors';
 
 const DrawerNavigator = createDrawerNavigator({
     DashboardScreen: { screen: DashboardScreen },
@@ -14,7 +15,10 @@ const DrawerNavigator = createDrawerNavigator({
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,
-        contentComponent: DrawerMenu
+        contentComponent: DrawerMenu,
+        contentOptions: {
+            activeTintColor: colors.primary,
+        }
     }
 );
 
