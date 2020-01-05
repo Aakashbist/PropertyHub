@@ -5,6 +5,7 @@
   "scripts": {
     "start": "react-native start",
     "test": "jest",
+    "logs": "react-native log-android",
     "lint": "eslint .",
     "devServe": "adb reverse tcp:8081 tcp:8081 && react-native run-android"
   },
@@ -12,7 +13,7 @@
     "@react-native-community/async-storage": "^1.6.2",
     "@react-native-community/geolocation": "^2.0.2",
     "firebase": "^7.2.3",
-    "install": "0.13.0",
+    "lodash": "^4.17.15",
     "native-base": "^2.13.8",
     "npm": "6.13.1",
     "react": "16.8.6",

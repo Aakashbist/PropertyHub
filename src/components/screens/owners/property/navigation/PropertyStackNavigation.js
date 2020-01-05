@@ -4,8 +4,6 @@ import PropertyDetailScreen from '../PropertyDetailScreen';
 import PropertyListScreen from '../PropertyListScreen';
 import AddPropertyScreen from '../AddPropertyScreen'
 
-
-
 const PropertyStackNavigator = createStackNavigator(
     {
         PropertyListScreen: { screen: PropertyListScreen },

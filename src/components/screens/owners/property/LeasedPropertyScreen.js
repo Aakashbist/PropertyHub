@@ -44,4 +44,4 @@ const PropertyLeasedScreen = (props) => {
         </View>
     )
 }
-export default PropertyLeasedScreen;
+export default PropertyLeasedScreen; 

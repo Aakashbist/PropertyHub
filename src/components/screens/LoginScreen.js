@@ -21,7 +21,7 @@ const Login = (props) => {
     }, [email, password]);
 
     handleLogin = () => {
-        let result;
+        let result; 
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
             .then((data) => {
@@ -46,7 +46,7 @@ const Login = (props) => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
             <View style={styles.container} >
-                <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+                <GeneralStatusBarColor backgroundColor={colors.statusBar} barStyle="light-content" />
                 <Image
                     source={require('../../assets/icon/homeIcon.png')}
                     style={{ width: 200, height: 200, marginBottom: 30 }}

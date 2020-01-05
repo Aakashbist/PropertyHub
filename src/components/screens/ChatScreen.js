@@ -24,30 +24,26 @@ const ChatScreen = (props) => {
     };
     return (
         <ScrollView>
-            <SafeAreaView >
-                <View style={styles.containerFull}>
-                    <Header
-                        barStyle="light-content"
-                        style={{ height: 150 }}
-                        backgroundColor={colors.blue}
-                        placement="left"
-                        leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
-                        centerComponent={{ text: 'Chats', style: { fontSize: 20, color: colors.white } }}
-                        statusBarProps={{ translucent: true }}
+            <View style={styles.containerFull}>
+                <Header
+                    barStyle="light-content"
+                    style={{ height: 150 }}
+                    placement="left"
+                    leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
+                    centerComponent={{ text: 'Chats', style: { fontSize: 20, color: colors.white } }}
+                    statusBarProps={{ translucent: true }}
+                />
+
+                <View style={styles.chatContainer}>
+                    <GiftedChat
+                        messages={messages}
+                        onSend={newMessage => onSend(newMessage)}
+                        user={{
+                            _id: 1,
+                        }}
                     />
-
-                    <View style={styles.chatContainer}>
-                        <GiftedChat
-                            messages={messages}
-                            onSend={newMessage => onSend(newMessage)}
-                            user={{
-                                _id: 1,
-                            }}
-                        />
-                    </View>
-
                 </View>
-            </SafeAreaView >
+            </View>
         </ScrollView>
     );
 }

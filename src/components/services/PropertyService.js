@@ -1,4 +1,56 @@
 import Firebase from '../../config/Firebase';
+import { flatMap, filter } from 'lodash';
+import { Property } from '../../models/propertyModels';
+
+export function getPropertiesBySearch(searchTerm) {
+    return new Promise((resolve, reject) => {
+        Firebase.database().ref('property').once(
+            'value',
+            snapshot => {
+                var data = snapshot.val();
+                var properties = flatMap(data, (ownerList, ownerId) => {
+                    return flatMap(ownerList, (property, propertyId) => {
+                        property.id = propertyId;
+                        return property;
+                    });
+                });
+
+                if (searchTerm) {
+                    var matching = filter(properties, (property) => {
+                        return property.address.toLowerCase().includes(searchTerm.toLowerCase());
+                    });
+                    resolve(matching);
+                } else {
+                    resolve(properties);
+                }
+            },
+            error => reject(error));
+    });
+}
+
+export function getAnyPropertyById(propertyId) {
+    return new Promise((resolve, reject) => {
+        Firebase.database().ref('property').once(
+            'value',
+            snapshot => {
+                var data = snapshot.val();
+                var properties = flatMap(data, (ownerList, ownerId) => {
+                    return flatMap(ownerList, (property, propertyId) => {
+                        property.id = propertyId;
+                        return property;
+                    });
+                });
+
+                var property = properties.find(property => property.id == propertyId);
+                if (property) {
+                    resolve(property);
+                } else {
+                    reject(null);
+                }
+            },
+            error => reject(error));
+    });
+}
 
 export function propertyReference(userId, callback) {
     let dbPropertyRef = Firebase.database().ref('property/' + userId);

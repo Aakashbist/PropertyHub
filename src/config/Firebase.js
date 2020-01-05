@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-import FireBaseApiKey from '../resources/firebaseApiKey'
+import FireBaseApiKey from '../resources/firebaseApiKey.js'
 
 
 const firebaseConfig = {
