@@ -19,10 +19,11 @@ const PropertySearchStackNavigator = createStackNavigator(
 
 PropertySearchStackNavigator.navigationOptions = (props) => ({
     drawerLabel: 'Property Lookup',
-    drawerIcon: ({ }) => (
+    drawerIcon: ({ tintColor }) => (
         <Icon name='search'
             type='font-awesome'
             style={styles.drawerIcon}
+            color={tintColor}
         />
     ),
 });

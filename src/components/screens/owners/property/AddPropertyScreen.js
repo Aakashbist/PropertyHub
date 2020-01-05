@@ -1,9 +1,8 @@
 
-import { Container, Label, Picker, Input, ProgressBar, Header } from 'native-base';
+import { Container, Label, Picker, Input } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ProgressBarAndroid, ActivityIndicator, Alert } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert } from 'react-native';
 import { Icon, Slider, SearchBar } from 'react-native-elements';
-import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Firebase from '../../../../config/Firebase';
@@ -11,7 +10,6 @@ import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
-import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadImageUrl } from '../../../services/imageUploadService';
 import { getPropertyById } from '../../../services/PropertyService'
@@ -254,7 +252,7 @@ const AddNewProperty = (props) => {
                     <MapView
                         style={styles.map}
                         provider={PROVIDER_GOOGLE}
-                        intialRegion={{
+                        initialRegion={{
                             latitude: 37.422,
                             longitude: -122.084,
                             latitudeDelta: 0.0922,
@@ -275,7 +273,7 @@ const AddNewProperty = (props) => {
                     <View style={styles.containerLeft}>
 
                         <View style={styles.containerFlexRow}>
-                            <Icon name='location' type='evilicon' size={36} color={colors.green} />
+                            <Icon name='location' type='evilicon' size={36} color={colors.secondary} />
                             <Text style={styles.textSubHeading}>{address}</Text>
                         </View>
 
@@ -331,7 +329,8 @@ const AddNewProperty = (props) => {
                             maximumValue={5}
                             step={1}
                             maximumTrackTintColor={colors.darkWhite2}
-                            minimumTrackTintColor={colors.primary}
+                            minimumTrackTintColor={colors.secondary}
+                            thumbTintColor={colors.secondary}
                             value={bedroom}
                             onValueChange={value => setBedroom(value)}
                         />
@@ -346,7 +345,8 @@ const AddNewProperty = (props) => {
                             maximumValue={5}
                             step={1}
                             maximumTrackTintColor={colors.darkWhite2}
-                            minimumTrackTintColor={colors.primary}
+                            minimumTrackTintColor={colors.secondary}
+                            thumbTintColor={colors.secondary}
                             value={bathroom}
                             onValueChange={value => setBathroom(value)}
                         />
@@ -363,7 +363,7 @@ const AddNewProperty = (props) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={styles.button}
+                            style={canAddProperty ? styles.button : styles.buttonDisabled}
                             onPress={this.handleAddProperty}
                             disabled={!canAddProperty}>
                             <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
@@ -394,7 +394,6 @@ const AddNewProperty = (props) => {
         <SafeAreaView>
             <ScrollView >
                 <View style={{ flex: 1 }}>
-                    <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
                     {view}
                 </View >
             </ScrollView>

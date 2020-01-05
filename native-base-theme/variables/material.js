@@ -123,12 +123,12 @@ export default {
   checkboxTickColor: '#fff',
 
   // Color
-  brandPrimary: '#e93766',
-  brandInfo: '#62B1F6',
-  brandSuccess: '#5cb85c',
-  brandDanger: '#d9534f',
-  brandWarning: '#f0ad4e',
-  brandDark: '#000',
+  brandPrimary: colors.primary,
+  brandInfo: colors.info,
+  brandSuccess: colors.success,
+  brandDanger: colors.danger,
+  brandWarning: colors.warning,
+  brandDark: color.black,
   brandLight: '#f4f4f4',
 
   // Container
@@ -157,7 +157,7 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: colors.primaryDark,
+  footerDefaultBg: colors.black,
   footerPaddingBottom: 0,
 
   // FooterTab
@@ -179,11 +179,7 @@ export default {
   toolbarBtnTextColor: '#fff',
   toolbarDefaultBorder: '#3F51B5',
   iosStatusbar: 'light-content',
-  get statusBarColor() {
-    return color(this.toolbarDefaultBg)
-      .darken(0.2)
-      .hex();
-  },
+  statusBarColor: colors.statusBar,
   get darkenHeader() {
     return color(this.tabBgColor)
       .darken(0.03)
@@ -261,7 +257,7 @@ export default {
   tabFontSize: 15,
 
   // Text
-  textColor: '#000',
+  textColor: colors.black,
   inverseTextColor: '#fff',
   noteFontSize: 14,
   get defaultTextColor() {

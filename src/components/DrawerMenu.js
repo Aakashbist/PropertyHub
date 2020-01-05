@@ -26,7 +26,6 @@ export default class DrawerMenu extends React.Component {
                                 style={{ height: 100, width: 100, }}
                             />
                         </Body>
-                        <Right />
                     </Header>
                     <Content>
                         <DrawerItems  {...this.props} />

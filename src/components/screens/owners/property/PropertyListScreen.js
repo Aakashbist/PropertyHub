@@ -80,11 +80,9 @@ const PropertyListScreen = (props) => {
 
     return (
         <ScrollView>
-            <SafeAreaView>
-                <View style={styles.containerFull} >
-                    {view}
-                </View>
-            </SafeAreaView>
+            <View style={styles.containerFull} >
+                {view}
+            </View>
         </ScrollView>
     )
 }

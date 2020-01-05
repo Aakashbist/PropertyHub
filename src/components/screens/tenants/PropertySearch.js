@@ -29,41 +29,39 @@ const PropertySearch = (props) => {
 
   return (
     <ScrollView>
-      <SafeAreaView >
-        <View style={styles.containerFull}>
-          <Header
-            barStyle="light-content"
-            backgroundColor={colors.blue}
-            placement="left"
-            leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
-            centerComponent={{ text: 'Property Lookup', style: { fontSize: 20, color: colors.white } }}
-            statusBarProps={{ translucent: true }}
-          />
-          <SearchBar
-            placeholder="Type Here..."
-            onChangeText={(text) => setSearch(text)}
-            value={search}
-            lightTheme={true}
-            platform="android"
-          />
-          <FlatList
-            style={{ flex: 1, width: '100%' }}
-            data={properties}
-            renderItem={({ item }) => (
-              <ListItem
-                key={item.id}
-                title={item.address}
-                subtitle={item.address}
-                leftAvatar={{ rounded: false, size: 'large', source: { uri: item.imageUrl } }}
-                bottomDivider
-                topDivider
-                onPress={() => props.navigation.push(AppRoute.PropertyDetailsTenant, { propertyId: item.id })}
-              />
-            )}
-            keyExtractor={property => property.id}
-          />
-        </View>
-      </SafeAreaView >
+      <View style={styles.containerFull}>
+        <Header
+          barStyle="light-content"
+          backgroundColor={colors.blue}
+          placement="left"
+          leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
+          centerComponent={{ text: 'Property Lookup', style: { fontSize: 20, color: colors.white } }}
+          statusBarProps={{ translucent: true }}
+        />
+        <SearchBar
+          placeholder="Type Here..."
+          onChangeText={(text) => setSearch(text)}
+          value={search}
+          lightTheme={true}
+          platform="android"
+        />
+        <FlatList
+          style={{ flex: 1, width: '100%' }}
+          data={properties}
+          renderItem={({ item }) => (
+            <ListItem
+              key={item.id}
+              title={item.address}
+              subtitle={item.address}
+              leftAvatar={{ rounded: false, size: 'large', source: { uri: item.imageUrl } }}
+              bottomDivider
+              topDivider
+              onPress={() => props.navigation.push(AppRoute.PropertyDetailsTenant, { propertyId: item.id })}
+            />
+          )}
+          keyExtractor={property => property.id}
+        />
+      </View>
     </ScrollView>
   );
 }

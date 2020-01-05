@@ -6,10 +6,11 @@ import { Icon, Text, Button } from 'react-native-elements';
 class DashboardScreen extends Component {
   static navigationOptions = {
     drawerLabel: 'Dashboard',
-    drawerIcon: ({ }) => (
+    drawerIcon: ({ tintColor}) => (
       <Icon name='th'
         type='font-awesome'
         style={styles.drawerIcon}
+        color={tintColor}
       />
     ),
   };

@@ -3,8 +3,6 @@ import AppRoute from "../../../../../resources/appRoute";
 import PropertyDetailScreen from '../PropertyDetailScreen';
 import PropertyListScreen from '../PropertyListScreen';
 
-
-
 const PropertyStackNavigator = createStackNavigator(
     {
         PropertyListScreen: { screen: PropertyListScreen },

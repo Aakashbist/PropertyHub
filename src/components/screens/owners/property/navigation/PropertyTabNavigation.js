@@ -10,78 +10,63 @@ import LeasedPropertyScreen from '../LeasedPropertyScreen';
 import PropertyStackNavigator from '../navigation/PropertyStackNavigation';
 import styles from '../../../../../resources/styles';
 
-
-const PropertyTabNavigator = createBottomTabNavigator(
-    {
-        PropertyListScreen: {
-            screen: PropertyStackNavigator
-        },
-        AddPropertyScreen: { screen: AddPropertyScreen },
-        LeasedPropertyScreen: { screen: LeasedPropertyScreen }
-    },
-    {
-        initialRouteName: AppRoute.Property,
-        defaultNavigationOptions: ({ navigation }) => ({
-            tabBarIcon: ({ tintColor }) => {
-                let { routeName } = navigation.state;
-                let iconName;
-                if (routeName === AppRoute.Property) {
-                    iconName = `navicon`;
-                }
-                else if (routeName === AppRoute.AddProperty) {
-                    tabBarLabel = "Add";
-                    iconName = "plus";
-                }
-                else if (routeName === AppRoute.LeasedProperty) {
-                    tabBarLabel = "Leased";
-                    iconName = "paperclip";
-                }
-                return (
-                    <Icon name={`${iconName}`} type='evilicon' size={40} color={`${tintColor}`} />
-                )
-            },
-
-            tabBarLabel: ({ tintColor }) => {
-                let { routeName } = navigation.state;
-                let title;
-                if (routeName === AppRoute.Property) {
-                    title = `My Property`
-                }
-                else if (routeName === AppRoute.AddProperty) {
-                    title = `Add`
-                }
-                else if (routeName === AppRoute.LeasedProperty) {
-                    title = `Leased`
-                }
-                return (
-                    <View style={{ alignItems: 'center' }}>
-                        <Label style={{ color: `${tintColor}` }}>{title}</Label>
-                    </View>
-                )
-            }
-        }),
-        headerMode: 'float',
-        tabBarOptions: {
-            activeTintColor: colors.white,
-            inactiveTintColor: colors.darkWhite2,
-            labelStyle: {
-                fontSize: 14,
-            },
-            style: {
-                backgroundColor: colors.blue,
-            },
-        }
+const PropertyTabNavigator = createBottomTabNavigator({
+  PropertyListScreen: {
+    screen: PropertyStackNavigator,
+    navigationOptions: {
+      tabBarLabel: 'PROPERTIES',
+      tabBarIcon: ({ tintColor, size }) => (
+        <Icon name='menu' type='entypo' size={size} color={`${tintColor}`} />
+      ),
     }
-)
+  },
+  AddPropertyScreen: {
+    screen: AddPropertyScreen,
+    navigationOptions: {
+      tabBarLabel: 'ADD',
+      tabBarIcon: ({ tintColor, size }) => (
+        <Icon name='plus' type='entypo' size={size} color={`${tintColor}`} />
+      ),
+    }
+  },
+  LeasedPropertyScreen: {
+    screen: LeasedPropertyScreen,
+    navigationOptions: {
+      tabBarLabel: 'CHATS',
+      tabBarIcon: ({ tintColor, size }) => (
+        <Icon name='typing' type='entypo' size={size} color={`${tintColor}`} />
+      ),
+    }
+  }
+},
+  {
+    initialRouteName: AppRoute.Property,
+    tabBarOptions: {
+      style: {
+        height: 54,
+        backgroundColor: colors.black,
+        borderTopColor: colors.black,
+        paddingBottom: 8
+      },
+      activeTintColor: colors.primary,
+      inactiveTintColor: colors.white,
+      labelStyle: {
+        fontSize: 12
+      }
+    },
+    headerMode: 'float'
+  }
+);
 
 PropertyTabNavigator.navigationOptions = (props) => ({
-    drawerLabel: 'Property',
-    drawerIcon: ({ }) => (
-        <Icon name='home'
-            type='font-awesome'
-            style={styles.drawerIcon}
-        />
-    ),
+  drawerLabel: 'Property',
+  drawerIcon: ({ tintColor }) => (
+    <Icon name='home'
+      type='font-awesome'
+      style={styles.drawerIcon}
+      color={tintColor}
+    />
+  ),
 });
 
-export default PropertyTabNavigator;
+export default createAppContainer(PropertyTabNavigator);

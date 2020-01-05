@@ -46,7 +46,7 @@ const Login = (props) => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
             <View style={styles.container} >
-                <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+                <GeneralStatusBarColor backgroundColor={colors.statusBar} barStyle="light-content" />
                 <Image
                     source={require('../../assets/icon/homeIcon.png')}
                     style={{ width: 200, height: 200, marginBottom: 30 }}
