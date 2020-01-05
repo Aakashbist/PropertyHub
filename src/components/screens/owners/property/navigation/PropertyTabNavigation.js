@@ -16,7 +16,7 @@ const PropertyTabNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: 'PROPERTIES',
       tabBarIcon: ({ tintColor, size }) => (
-        <Icon name='menu' type='entypo' size={size} color={`${tintColor}`} />
+        <Icon name='menu' type='entypo' size={size} color={tintColor} />
       ),
     }
   },
@@ -25,7 +25,7 @@ const PropertyTabNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: 'ADD',
       tabBarIcon: ({ tintColor, size }) => (
-        <Icon name='plus' type='entypo' size={size} color={`${tintColor}`} />
+        <Icon name='plus' type='entypo' size={size} color={tintColor} />
       ),
     }
   },
@@ -34,7 +34,7 @@ const PropertyTabNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: 'CHATS',
       tabBarIcon: ({ tintColor, size }) => (
-        <Icon name='typing' type='entypo' size={size} color={`${tintColor}`} />
+        <Icon name='typing' type='entypo' size={size} color={tintColor} />
       ),
     }
   }

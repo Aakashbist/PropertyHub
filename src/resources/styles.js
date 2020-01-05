@@ -9,17 +9,14 @@ export default {
     containerLeft: {
         flex: 1,
         alignItems: 'flex-start',
-        padding: 16,
     },
     containerFull: {
         flex: 1,
         alignItems: 'center'
     },
     containerFlexRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        fontSize: 20,
-        margin: 10
+        flex: 1,
+        flexDirection: 'row'
     },
     inputBox: {
         width: '80%',
@@ -63,9 +60,7 @@ export default {
         fontSize: 16
     },
     cardContainer: {
-        backgroundColor: colors.darkWhite2,
-        width: '100%',
-        marginTop: 20
+        width: '100%'
     },
     button: {
         marginTop: 30,

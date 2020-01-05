@@ -9,7 +9,7 @@ const PropertyStackNavigator = createStackNavigator(
         PropertyDetailScreen: { screen: PropertyDetailScreen }
     },
     {
-        initialRouteName: AppRoute.property,
+        initialRouteName: AppRoute.Property,
         headerMode: 'none',
     },
 );
