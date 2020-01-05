@@ -1,33 +1,26 @@
 
-import { Container, Label, Picker, Input, ProgressBar, Header } from 'native-base';
+import { Container, Label, Picker } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ProgressBarAndroid, ActivityIndicator, Alert } from 'react-native';
-import { Icon, Slider, SearchBar } from 'react-native-elements';
-import { TextInput } from 'react-native-gesture-handler';
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import { Icon, Input, Slider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Firebase from '../../../../config/Firebase';
 import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
+import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
-import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
+import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
+import parseMapApiError from '../../../errorParser/MapApiErrorParser';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadImageUrl } from '../../../services/imageUploadService';
-import { getPropertyById } from '../../../services/PropertyService'
-import PropertyType from '../../../../resources/propertyType';
-import parseMapApiError from '../../../errorParser/MapApiErrorParser';
-import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
-
+import { getPropertyById } from '../../../services/PropertyService';
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
     ADD_PROPERTY_SUCCESS: 1
 }
-
-
-
-
 
 const AddNewProperty = (props) => {
 
@@ -38,7 +31,7 @@ const AddNewProperty = (props) => {
     const [predictions, setPrediction] = useState([]);
     const [unitContent, setUnitContent] = useState(false);
     const [value, setValue] = useState(false);
-    const [propertyDescriptionView, setpropertyDescriptionView] = useState(false);
+    const [propertyDescriptionView, setPropertyDescriptionView] = useState(false);
     const [placeId, setPlaceID] = useState([])
     const [editMode, setEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +45,8 @@ const AddNewProperty = (props) => {
     const [address, setAddress] = useState([])
     const [imageFileName, setImageFileName] = useState();
     const [imageUri, setImageUri] = useState();
-    const [error, setError] = useState("All fiels are required *");
+    const [focused, setFocused] = useState(false)
+    const [error, setError] = useState("All fields are required *");
 
     const currentUser = Firebase.auth().currentUser.uid;
 
@@ -71,6 +65,7 @@ const AddNewProperty = (props) => {
     }, [rent, bond, propertyType, isLoading, imageUri]);
 
     getProperty = (key, mode) => {
+        console.log(key, "ADD properties on edit click", currentUser)
         getPropertyById(currentUser, key).then((data) => {
             setPropertyFields(data, mode);
             console.log(data, "addProperty")
@@ -117,7 +112,7 @@ const AddNewProperty = (props) => {
             .catch(error => setError(error))
     };
 
-    getPostalcode = (json) => {
+    getPostalCode = (json) => {
         const addressComponents = json.result.address_components;
         for (let i = 0; i < addressComponents.length; i++) {
             const typesArray = addressComponents[i].types;
@@ -140,7 +135,7 @@ const AddNewProperty = (props) => {
                 if (json.status === "OK") {
                     setLatitude(json.result.geometry.location.lat);
                     setLongitude(json.result.geometry.location.lng);
-                    setpropertyDescriptionView(true);
+                    setPropertyDescriptionView(true);
                 } else {
                     let errorMessage = parseMapApiError(json);
                     Alert.alert(errorMessage)
@@ -183,7 +178,7 @@ const AddNewProperty = (props) => {
         setUnitNumber(data.unitNumber);
         setLatitude(data.lat);
         setLongitude(data.lng);
-        setpropertyDescriptionView(true);
+        setPropertyDescriptionView(true);
     }
 
     clearFields = () => {
@@ -225,11 +220,15 @@ const AddNewProperty = (props) => {
                 setIsLoading(false)
             });
     }
+    onFocusedChange = () => {
+        setFocused(true)
+    }
 
     const suggestionView = predictions.map(item =>
         <TouchableOpacity
             style={styles.suggestion}
             onPress={() => this.onPredictionSelected(item)}>
+            <Icon name='location' type='evilicon' size={36} color={colors.green} />
             <Text key={item.id} style={{ fontSize: 16 }}> {item.description}</Text>
         </TouchableOpacity >
     )
@@ -240,17 +239,31 @@ const AddNewProperty = (props) => {
         <View style={{ marginTop: 10 }}>
             {
                 !editMode ?
-                    <View>
-                        <SearchBar
-                            placeholder="Type Here..."
+                    <View style={{ marginTop: 10 }}>
+                        <Input
+                            placeholder='Type here..'
+                            leftIcon={focused ?
+                                <Icon
+                                    type='evilicon'
+                                    name='chevron-left'
+                                    size={36}
+                                    color={colors.blue}
+                                    onPress={() => props.navigation.goBack()}
+                                /> :
+                                <Icon
+                                    type='evilicon'
+                                    name='navicon'
+                                    size={36}
+                                    onPress={() => props.navigation.toggleDrawer()}
+                                    color={colors.primary}
+                                />
+                            }
+                            onFocus={onFocusedChange}
                             onChangeText={destination => this.onDestinationQueryChange(destination)}
                             value={destination}
-                            lightTheme={true}
-                            platform="android"
                         />
 
                         {suggestionView}
-
                     </View> : null}
 
             {propertyDescriptionView ?
@@ -298,7 +311,7 @@ const AddNewProperty = (props) => {
                         </View>
 
                         {unitContent ?
-                            <Input
+                            <TextInput
                                 style={styles.inputBoxFull}
                                 keyboardType='number-pad'
                                 value={unitNumber}
@@ -307,7 +320,7 @@ const AddNewProperty = (props) => {
                                 autoCapitalize='none' /> : null
                         }
 
-                        <Input
+                        <TextInput
                             style={styles.inputBoxFull}
                             value={rent}
                             keyboardType='number-pad'
@@ -316,7 +329,7 @@ const AddNewProperty = (props) => {
                             autoCapitalize='none'
                         />
 
-                        <Input
+                        <TextInput
                             style={styles.inputBoxFull}
                             value={bond}
                             keyboardType='number-pad'
@@ -397,12 +410,11 @@ const AddNewProperty = (props) => {
     return (
         <SafeAreaView>
             <ScrollView >
-                <View style={{ flex: 1 }}>
-                    <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
+                <View style={{ flex: 1, width: '100%' }}>
                     {view}
                 </View >
             </ScrollView>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 

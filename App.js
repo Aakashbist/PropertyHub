@@ -6,6 +6,7 @@ const AppContainer = createAppContainer(AppSwitchNavigator);
 
 export default class App extends Component {
   render() {
+    console.disableYellowBox = true;
     return <AppContainer />;
   }
 }

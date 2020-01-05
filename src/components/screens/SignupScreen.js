@@ -60,7 +60,16 @@ const Signup = (props) => {
         }
         Firebase.database().ref().child(userDb + '/' + user.id).set(user);
       })
-      .then(() => currentUser.sendEmailVerification())
+      .then(() => {
+        currentUser.sendEmailVerification();
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            user.updateProfile({
+              displayName: name
+            })
+          }
+        })
+      })
       .then(() => {
         clearFields();
         setStep(SignupSteps.SIGNUP_SUCCESS);

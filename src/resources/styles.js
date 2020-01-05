@@ -21,6 +21,14 @@ export default {
         fontSize: 20,
         margin: 10
     },
+    chatContainer: {
+        flex: 1,
+        width: '100%',
+        height: 550,
+
+
+
+    },
     inputBox: {
         width: '80%',
         margin: 10,
@@ -50,7 +58,7 @@ export default {
         width: '50%',
     },
     card: {
-        backgroundColor: colors.white,
+        backgroundColor: colors.darkWhite1,
         width: '100%',
         marginBottom: 10
     },
@@ -63,7 +71,7 @@ export default {
         fontSize: 16
     },
     cardContainer: {
-        backgroundColor: colors.darkWhite2,
+        backgroundColor: colors.white,
         width: '100%',
         marginTop: 20
     },
@@ -108,6 +116,7 @@ export default {
     },
     suggestion: {
         flex: 1,
+        flexDirection: 'row',
         alignItems: 'flex-start',
         padding: 16,
         height: 60,
@@ -120,7 +129,22 @@ export default {
     map: {
         height: 150
     },
+    TouchableOpacityStyle: {
+        position: 'absolute',
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        right: 30,
+        bottom: 30,
+    },
 
+    FloatingButtonStyle: {
+        resizeMode: 'contain',
+        width: 50,
+        height: 50,
+        //backgroundColor:'black'
+    },
     // To show pink text like "Sign up" under login button
     primaryText: {
         color: colors.primary,

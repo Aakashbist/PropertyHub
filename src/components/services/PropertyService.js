@@ -27,7 +27,8 @@ export function deletePropertiesWithId(userId, propertyId) {
 
 export function getPropertyById(userId, propertyId) {
     return new Promise((resolve, reject) => {
-        let dbPropertyRef = Firebase.database().ref(`property/${userId}/${propertyId}`); return dbPropertyRef.once("value", snapShot => {
+        let dbPropertyRef = Firebase.database().ref(`property/${userId}/${propertyId}`);
+        return dbPropertyRef.once("value", snapShot => {
             let data = snapShot.val();
             resolve(data)
         }, error => reject(error))
