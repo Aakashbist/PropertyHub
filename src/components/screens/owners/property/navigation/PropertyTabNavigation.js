@@ -58,7 +58,8 @@ const PropertyTabNavigator = createBottomTabNavigator({
   }
 );
 
-PropertyTabNavigator.navigationOptions = (props) => ({
+const appContainer = createAppContainer(PropertyTabNavigator)
+appContainer.navigationOptions = (props) => ({
   drawerLabel: 'Property',
   drawerIcon: ({ tintColor }) => (
     <Icon name='home'
@@ -69,4 +70,4 @@ PropertyTabNavigator.navigationOptions = (props) => ({
   ),
 });
 
-export default createAppContainer(PropertyTabNavigator);
+export default appContainer;
