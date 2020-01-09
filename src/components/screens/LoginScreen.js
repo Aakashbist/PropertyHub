@@ -21,7 +21,7 @@ const Login = (props) => {
     }, [email, password]);
 
     handleLogin = () => {
-        let result; 
+        let result;
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
             .then((data) => {
@@ -29,7 +29,6 @@ const Login = (props) => {
                 Firebase.auth().currentUser.getIdTokenResult();
             })
             .then((token) => {
-
                 if (result.user.emailVerified) {
                     props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
                 } else {

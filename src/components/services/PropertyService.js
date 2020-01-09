@@ -1,6 +1,5 @@
+import { filter, flatMap } from 'lodash';
 import Firebase from '../../config/Firebase';
-import { flatMap, filter } from 'lodash';
-import { Property } from '../../models/propertyModels';
 
 export function getPropertiesBySearch(searchTerm) {
     return new Promise((resolve, reject) => {
@@ -54,7 +53,7 @@ export function getAnyPropertyById(propertyId) {
 
 export function propertyReference(userId, callback) {
     let dbPropertyRef = Firebase.database().ref('property/' + userId);
-    dbPropertyRef.on('value', (dataSnapshot, key) => {
+    dbPropertyRef.on('value', (dataSnapshot) => {
         if (dataSnapshot.exists()) {
             let data = dataSnapshot.val();
             let result = Object.keys(data).map((key) => {

@@ -10,11 +10,16 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+ #import <GoogleMaps/GoogleMaps.h>
+
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  //GOOGLE MAPS SETUP
+[GMSServices provideAPIKey:@"AIzaSyC8cfuosSdIXS9JrI5PWrtMYmCVFCGwwnM"];
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"PropertyHub"
@@ -27,6 +32,8 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+
+
   return YES;
 }
 

@@ -11,7 +11,7 @@ const DrawerNavigator = createDrawerNavigator({
     PropertyListScreen: PropertyTabNavigation,
 },
     {
-        initialRouteName: AppRoute.Property,
+        initialRouteName: AppRoute.PropertyList,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,

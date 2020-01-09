@@ -52,9 +52,7 @@ const AddNewProperty = (props) => {
             const { key, mode } = props.navigation.state.params;
             getProperty(key, mode);
         }
-        return (){
 
-        }
     }, [])
 
     useEffect(() => {
@@ -396,11 +394,15 @@ const AddNewProperty = (props) => {
     }
 
     return (
+
         <ScrollView >
-            <View style={{ flex: 1 }}>
-                {view}
-            </View >
-        </ScrollView>
+            <SafeAreaView>
+                <View style={{ flex: 1 }}>
+                    {view}
+                </View >
+            </SafeAreaView>
+        </ScrollView >
+
     )
 }
 

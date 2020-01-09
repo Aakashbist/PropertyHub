@@ -62,7 +62,7 @@ const Signup = (props) => {
       })
       .then(() => {
         currentUser.sendEmailVerification();
-        firebase.auth().onAuthStateChanged((user) => {
+        Firebase.auth().onAuthStateChanged((user) => {
           if (user) {
             user.updateProfile({
               displayName: name

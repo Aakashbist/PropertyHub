@@ -39,7 +39,7 @@ const PropertyTabNavigator = createBottomTabNavigator({
   }
 },
   {
-    initialRouteName: AppRoute.Property,
+    initialRouteName: AppRoute.Chat,
     tabBarOptions: {
       style: {
         height: 54,

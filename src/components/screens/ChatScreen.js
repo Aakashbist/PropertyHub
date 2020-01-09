@@ -1,30 +1,25 @@
-
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
-import { Header, Icon } from 'react-native-elements';
-import colors from '../../resources/colors';
 import styles from '../../resources/styles';
-import { GiftedChat } from 'react-native-gifted-chat';
-import { Text } from 'native-base';
+import { ScrollView, View } from 'react-native';
+import { Header, icon, Text, Button } from 'react-native-elements';
+import colors from '../../resources/colors';
+import Firebase from '../../config/Firebase';
+import AppRoute from '../../resources/appRoute';
 
 const ChatScreen = (props) => {
+    navigateToChatRoom = () => {
+        const user = Firebase.auth().currentUser;
+        if (user.uid === "01htPsIsRCQSMPjjGFiJqd2e7ds1") {
+            props.navigation.navigate(AppRoute.ChatRoom, { key: 'yUzFvAXwZ1WC2kjIYaRIU25FqeE3' })
+        }
+        else {
+            props.navigation.navigate(AppRoute.ChatRoom, { key: '01htPsIsRCQSMPjjGFiJqd2e7ds1' })
+        }
+    }
 
-    const [messages, setMessages] = useState([
-        {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: { _id: 2, name: 'Name' },
-        },
-    ]);
-
-    const onSend = (newMessage = []) => {
-        setMessages(GiftedChat.append(messages, newMessage));
-        alert(JSON.stringify(messages))
-    };
     return (
         <ScrollView>
-            <View style={styles.containerFull}>
+            <View style={styles.containerFull} >
                 <Header
                     barStyle="light-content"
                     style={{ height: 150 }}
@@ -34,20 +29,11 @@ const ChatScreen = (props) => {
                     statusBarProps={{ translucent: true }}
                 />
 
-                <View style={styles.chatContainer}>
-                    <GiftedChat
-                        messages={messages}
-                        onSend={newMessage => onSend(newMessage)}
-                        user={{
-                            _id: 1,
-                        }}
-                    />
-                </View>
+                <Button title='chat' onPress={() => navigateToChatRoom()}></Button>
             </View>
         </ScrollView>
     );
 }
-
 
 
 export default ChatScreen;

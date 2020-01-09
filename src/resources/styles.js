@@ -20,7 +20,7 @@ export default {
     },
     chatContainer: {
         flex: 1,
-
+        width: '100%',
     },
     inputBox: {
         width: '80%',
