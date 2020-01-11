@@ -68,13 +68,13 @@ const PropertyListScreen = (props) => {
                                         key: item.id,
                                         mode: 'EDIT'
                                     })}>
-                                <Icon name='edit' type='entypo' size={20} color={colors.blue} />
+                                <Icon name='edit' type='entypo' size={20} color={colors.primaryDark} />
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={{ marginHorizontal: 4 }}
                                 onPress={() => this.deleteProperties(item.id)}>
-                                <Icon name='trash' type='entypo' size={20} color={colors.red} />
+                                <Icon name='trash' type='entypo' size={20} color={colors.primaryDark} />
                             </TouchableOpacity>
 
                         </View>

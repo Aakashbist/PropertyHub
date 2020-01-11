@@ -32,7 +32,7 @@ const PropertySearch = (props) => {
       <View style={styles.containerFull}>
         <Header
           barStyle="light-content"
-          backgroundColor={colors.blue}
+          backgroundColor={colors.primary}
           placement="left"
           leftComponent={{ icon: 'menu', color: colors.white, onPress: () => props.navigation.toggleDrawer() }}
           centerComponent={{ text: 'Property Lookup', style: { fontSize: 20, color: colors.white } }}
