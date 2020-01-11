@@ -92,7 +92,7 @@ const AddNewProperty = (props) => {
     }
 
     navigateToPropertyList = () => {
-        props.navigation.navigate(AppRoute.Property);
+        props.navigation.navigate(AppRoute.PropertyList);
         setStep(AddProperty.PROPERTY_DETAILS)
     }
 
@@ -180,6 +180,7 @@ const AddNewProperty = (props) => {
     }
 
     clearFields = () => {
+        setPropertyType(null);
         setDestination('');
         setAddress([]);
         setBond(1);
@@ -188,6 +189,7 @@ const AddNewProperty = (props) => {
         setBedroom(1);
         setUnitNumber('');
         setImageUri()
+        setPropertyDescriptionView(false);
     }
 
     handleAddProperty = () => {
@@ -201,7 +203,7 @@ const AddNewProperty = (props) => {
                 let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser)
                 propertyDbRef.push(property)
                     .then(() => {
-                        clearFields();
+
                         setStep(AddProperty.ADD_PROPERTY_SUCCESS);
                     })
                     .catch(error => {
@@ -214,6 +216,7 @@ const AddNewProperty = (props) => {
                 setError(errorMessage);
             })
             .finally(() => {
+                clearFields();
                 setIsLoading(false)
             });
     }

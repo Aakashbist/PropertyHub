@@ -64,6 +64,8 @@ const Signup = (props) => {
         currentUser.sendEmailVerification();
         Firebase.auth().onAuthStateChanged((user) => {
           if (user) {
+            user.getIdToken(true);
+            console.log(user);
             user.updateProfile({
               displayName: name
             })
@@ -72,6 +74,7 @@ const Signup = (props) => {
       })
       .then(() => {
         clearFields();
+        Firebase.auth().signOut();
         setStep(SignupSteps.SIGNUP_SUCCESS);
       })
       .catch((error) => {

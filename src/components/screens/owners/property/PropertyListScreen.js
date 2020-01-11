@@ -9,6 +9,7 @@ import styles from '../../../../resources/styles';
 import { deletePropertiesWithId, propertyReference } from '../../../services/PropertyService';
 import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 import { ScrollView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-navigation';
 
 const PropertyListScreen = (props) => {
     const [properties, setProperties] = useState([]);
@@ -85,11 +86,14 @@ const PropertyListScreen = (props) => {
 
 
     return (
-        <ScrollView>
-            <View style={[styles.containerLeft, { backgroundColor: '#f4f4f4', paddingBottom: 16 }]} >
-                {view}
-            </View>
-        </ScrollView>
+        <SafeAreaView>
+            <ScrollView>
+                <View style={[styles.containerLeft, { backgroundColor: '#f4f4f4', paddingBottom: 16 }]} >
+                    {view}
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+
     );
 }
 
