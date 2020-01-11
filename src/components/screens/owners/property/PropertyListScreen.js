@@ -18,14 +18,14 @@ const PropertyListScreen = (props) => {
         setProperties(propertiesList);
     }
 
-    getListofProperties = () => {
+    getListOfProperties = () => {
         if (currentUser !== null) {
             propertyReference(currentUser, setPropertiesInState)
         }
     };
 
     useEffect(() => {
-        getListofProperties();
+        getListOfProperties();
     }, [])
 
     deleteProperties = (propertyId) => {
@@ -47,8 +47,9 @@ const PropertyListScreen = (props) => {
     }
 
 
-    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text style={{ fontSize: 18 }}> No available  properties </Text>
+    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
+        <Text style={{ fontSize: 28 }}> Properties </Text>
+        <Text style={{ fontSize: 18, marginTop: 16 }}> No available  properties </Text>
     </View> :
         <React.Fragment>
             <FlatList
@@ -84,11 +85,13 @@ const PropertyListScreen = (props) => {
         </React.Fragment>
 
     return (
-        <ScrollView>
-            <View style={[styles.containerLeft, { backgroundColor: '#f4f4f4', paddingBottom: 16 }]} >
-                {view}
-            </View>
-        </ScrollView>
+        <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
+            <ScrollView>
+                <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
+                    {view}
+                </View>
+            </ScrollView>
+        </View>
     )
 }
 
