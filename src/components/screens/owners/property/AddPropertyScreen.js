@@ -353,7 +353,7 @@ const AddNewProperty = (props) => {
                                 <TouchableOpacity
                                     onPress={this.selectPropertyImage}
                                     style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
-                                    <Text style={{ color: colors.primary, fontSize: 18 }}>Choose image..</Text>
+                                    <Text style={{ color: colors.primary, fontSize: 18 }}>Add a photo</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
