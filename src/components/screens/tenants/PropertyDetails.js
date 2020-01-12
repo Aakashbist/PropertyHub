@@ -82,14 +82,6 @@ const PropertyDetails = (props) => {
 
     return (
         <View>
-            <Header
-                barStyle="light-content"
-                containerStyle={{ borderBottomColor: colors.primaryDark }}
-                backgroundColor={colors.primary}
-                placement="left"
-                leftComponent={{ icon: 'arrow-back', type: 'material', color: colors.white, onPress: () => props.navigation.pop() }}
-                centerComponent={{ text: 'Details', style: { fontSize: 20, color: colors.white } }}
-            />
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
                 <View>
                     {view}
@@ -98,5 +90,14 @@ const PropertyDetails = (props) => {
         </View>
     );
 }
+
+PropertyDetails.navigationOptions = (props) => ({
+    title: 'Details',
+    headerStyle: {
+        backgroundColor: colors.primary,
+    },
+    headerTintColor: colors.white,
+});
+
 
 export default PropertyDetails;
