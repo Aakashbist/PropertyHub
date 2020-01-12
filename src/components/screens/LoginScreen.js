@@ -5,7 +5,6 @@ import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import parseFirebaseError from '../errorParser/FirebaseErrorParser';
-import GeneralStatusBarColor from '../GeneralStatusBarColor';
 
 const Login = (props) => {
     const [email, setEmail] = useState('dilroop.singh@gmail.com');
@@ -46,7 +45,6 @@ const Login = (props) => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
             <View style={styles.container} >
-                <GeneralStatusBarColor backgroundColor={colors.statusBar} barStyle="light-content" />
                 <Image
                     source={require('../../assets/icon/homeIcon.png')}
                     style={{ width: 200, height: 200, marginBottom: 30 }}
