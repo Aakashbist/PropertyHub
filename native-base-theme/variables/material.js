@@ -2,7 +2,7 @@
 
 import color from 'color';
 import { Platform, Dimensions, PixelRatio } from 'react-native';
-
+import colors from '../../src/resources/colors'
 import { PLATFORM } from './commonColor';
 
 const deviceHeight = Dimensions.get('window').height;
@@ -123,12 +123,12 @@ export default {
   checkboxTickColor: '#fff',
 
   // Color
-  brandPrimary: '#3F51B5',
-  brandInfo: '#62B1F6',
-  brandSuccess: '#5cb85c',
-  brandDanger: '#d9534f',
-  brandWarning: '#f0ad4e',
-  brandDark: '#000',
+  brandPrimary: colors.primary,
+  brandInfo: colors.info,
+  brandSuccess: colors.success,
+  brandDanger: colors.danger,
+  brandWarning: colors.warning,
+  brandDark: color.black,
   brandLight: '#f4f4f4',
 
   // Container
@@ -157,33 +157,29 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: '#3F51B5',
+  footerDefaultBg: colors.primaryDark,
   footerPaddingBottom: 0,
 
   // FooterTab
-  tabBarTextColor: '#bfc6ea',
+  tabBarTextColor: colors.white,
   tabBarTextSize: 11,
   activeTab: '#fff',
   sTabBarActiveTextColor: '#007aff',
   tabBarActiveTextColor: '#fff',
-  tabActiveBgColor: '#3F51B5',
+  tabActiveBgColor: colors.primary,
 
   // Header
   toolbarBtnColor: '#fff',
-  toolbarDefaultBg: '#3F51B5',
+  toolbarDefaultBg: colors.primary,
   toolbarHeight: 56,
   toolbarSearchIconSize: 23,
   toolbarInputColor: '#fff',
   searchBarHeight: platform === PLATFORM.IOS ? 30 : 40,
   searchBarInputHeight: platform === PLATFORM.IOS ? 40 : 50,
   toolbarBtnTextColor: '#fff',
-  toolbarDefaultBorder: '#3F51B5',
+  toolbarDefaultBorder: colors.primary,
   iosStatusbar: 'light-content',
-  get statusBarColor() {
-    return color(this.toolbarDefaultBg)
-      .darken(0.2)
-      .hex();
-  },
+  statusBarColor: colors.statusBar,
   get darkenHeader() {
     return color(this.tabBgColor)
       .darken(0.03)
@@ -261,7 +257,7 @@ export default {
   tabFontSize: 15,
 
   // Text
-  textColor: '#000',
+  textColor: colors.black,
   inverseTextColor: '#fff',
   noteFontSize: 14,
   get defaultTextColor() {

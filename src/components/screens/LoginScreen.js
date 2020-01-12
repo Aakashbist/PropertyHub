@@ -5,7 +5,6 @@ import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import parseFirebaseError from '../errorParser/FirebaseErrorParser';
-import GeneralStatusBarColor from '../GeneralStatusBarColor';
 
 const Login = (props) => {
     const [email, setEmail] = useState('dilroop.singh@gmail.com');
@@ -21,23 +20,8 @@ const Login = (props) => {
     }, [email, password]);
 
     handleLogin = () => {
-        let result;
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
-            .then((data) => {
-                result = data;
-                Firebase.auth().currentUser.getIdTokenResult();
-            })
-            .then((token) => {
-
-                if (result.user.emailVerified) {
-                    props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
-                } else {
-                    Firebase.auth().signOut()
-                        .then(() => setError('Please check your email for verification link'))
-                        .catch((error) => setError(parseFirebaseError(error)))
-                }
-            })
             .catch((error) => setError(parseFirebaseError(error)))
     }
 
@@ -46,7 +30,6 @@ const Login = (props) => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
             <View style={styles.container} >
-                <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
                 <Image
                     source={require('../../assets/icon/homeIcon.png')}
                     style={{ width: 200, height: 200, marginBottom: 30 }}

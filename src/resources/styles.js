@@ -9,17 +9,14 @@ export default {
     containerLeft: {
         flex: 1,
         alignItems: 'flex-start',
-        padding: 16,
     },
     containerFull: {
         flex: 1,
         alignItems: 'center'
     },
     containerFlexRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        fontSize: 20,
-        margin: 10
+        flex: 1,
+        flexDirection: 'row'
     },
     inputBox: {
         width: '80%',
@@ -31,13 +28,12 @@ export default {
         borderBottomWidth: 1,
     },
     inputBoxFull: {
-        width: '100%',
-        padding: 15,
+        alignSelf: 'stretch',
         fontSize: 16,
         borderColor: colors.darkWhite2,
         backgroundColor: colors.darkWhite1,
         borderBottomWidth: 1,
-        marginBottom: 10
+        marginBottom: 16
     },
     buttonDisabled: {
         marginTop: 30,
@@ -63,9 +59,7 @@ export default {
         fontSize: 16
     },
     cardContainer: {
-        backgroundColor: colors.darkWhite2,
-        width: '100%',
-        marginTop: 20
+        width: '100%'
     },
     button: {
         marginTop: 30,
@@ -122,6 +116,10 @@ export default {
     },
 
     // To show pink text like "Sign up" under login button
+    overline: {
+        fontSize: 14,
+        textTransform: 'uppercase'
+    },
     primaryText: {
         color: colors.primary,
         fontSize: 14

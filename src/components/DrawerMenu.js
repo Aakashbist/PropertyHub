@@ -1,20 +1,21 @@
-import { Body, Button, Container, Content, Footer, FooterTab, Header, Right, Text } from 'native-base';
+import { Body, Button, Container, Content, Footer, FooterTab, Header, Right, Text, StyleProvider } from 'native-base';
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import { DrawerItems } from 'react-navigation-drawer';
 import firebase from '../config/Firebase';
+import getTheme from '../../native-base-theme/components';
+import material from '../../native-base-theme/variables/material';
+import colors from '../resources/colors';
+import styles from '../resources/styles';
 
-export default class DrawerMenu extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+const DrawerMenu = (props) => {
 
     handleSignOut = () => {
         firebase.auth().signOut();
     }
 
-    render() {
-        return (
+    return (
+        <StyleProvider style={getTheme(material)}>
             <Container>
                 <Header style={{ height: 150 }}>
                     <Body>
@@ -22,40 +23,20 @@ export default class DrawerMenu extends React.Component {
                             style={{ height: 100, width: 100, }}
                         />
                     </Body>
-                    <Right />
                 </Header>
                 <Content>
-                    <DrawerItems  {...this.props} />
+                    <DrawerItems  {...props} />
                 </Content>
                 <Footer>
                     <FooterTab>
                         <Button onPress={this.handleSignOut}>
-                            <Text style={styles.buttonText}>Logout </Text>
+                            <Text style={[styles.overline, { fontSize: 14 }]}>Logout </Text>
                         </Button>
                     </FooterTab>
                 </Footer>
             </Container>
-        )
-    }
+        </StyleProvider>
+    )
 }
 
-const styles = StyleSheet.create({
-
-    button: {
-        marginTop: 30,
-        marginBottom: 20,
-        paddingVertical: 0,
-        alignItems: 'center',
-        backgroundColor: '#e93766',
-        borderColor: '#e93766',
-        borderWidth: 1,
-        borderRadius: 5,
-        width: 200
-    },
-    buttonText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#fff'
-    },
-
-})
+export default DrawerMenu;

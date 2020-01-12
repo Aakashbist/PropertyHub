@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, Image, Text, TouchableOpacity, View, SafeAreaView } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Alert, FlatList, Image, TouchableOpacity, View } from 'react-native';
+import { Icon, Text, Card } from 'react-native-elements';
 import Firebase from '../../../../config/Firebase';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
 import { deletePropertiesWithId, propertyReference } from '../../../services/PropertyService';
 import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
-import { Header } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const PropertyListScreen = (props) => {
@@ -19,14 +18,14 @@ const PropertyListScreen = (props) => {
         setProperties(propertiesList);
     }
 
-    getListofProperties = () => {
+    getListOfProperties = () => {
         if (currentUser !== null) {
             propertyReference(currentUser, setPropertiesInState)
         }
     };
 
     useEffect(() => {
-        getListofProperties();
+        getListOfProperties();
     }, [])
 
     deleteProperties = (propertyId) => {
@@ -48,44 +47,51 @@ const PropertyListScreen = (props) => {
     }
 
 
-    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text style={{ fontSize: 18 }}> No available  properties </Text>
+    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
+        <Text style={{ fontSize: 28 }}> Properties </Text>
+        <Text style={{ fontSize: 18, marginTop: 16 }}> No available  properties </Text>
     </View> :
-        <FlatList
-            style={styles.cardContainer}
-            data={properties}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-                <View style={styles.card}>
-                    <Image style={styles.cardImage} source={{ uri: item.imageUrl }} />
-                    <View style={styles.containerFlexRow}>
-                        <Text style={{ flex: 1, fontSize: 16 }}>{item.address}</Text>
-                        <TouchableOpacity onPress={() => props.navigation.navigate(AppRoute.AddProperty,
-                            {
-                                key: item.id,
-                                mode: 'EDIT'
-                            })}>
-                            <Icon name='pencil' type='evilicon' size={36} color={colors.blue} />
-                        </TouchableOpacity>
+        <React.Fragment>
+            <FlatList
+                style={[styles.cardContainer, {}]}
+                data={properties}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <Card
+                        image={{ uri: item.imageUrl }}>
+                        <View style={styles.containerFlexRow}>
+                            <Text style={{ flex: 1, fontSize: 16 }}>{item.address}</Text>
+                            <TouchableOpacity
+                                style={{ marginHorizontal: 4 }}
+                                onPress={() => props.navigation.navigate(AppRoute.AddProperty,
+                                    {
+                                        key: item.id,
+                                        mode: 'EDIT'
+                                    })}>
+                                <Icon name='edit' type='entypo' size={20} color={colors.primaryDark} />
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => this.deleteProperties(item.id)}>
-                            <Icon name='trash' type='evilicon' size={36} color={colors.red} />
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ marginHorizontal: 4 }}
+                                onPress={() => this.deleteProperties(item.id)}>
+                                <Icon name='trash' type='entypo' size={20} color={colors.primaryDark} />
+                            </TouchableOpacity>
 
-                    </View>
-                    <Text style={styles.cardText}>${item.rent}</Text>
-                </View>
-            )}
-        />
+                        </View>
+                        <Text style={{ flex: 1, fontSize: 16 }}>Rent ${item.rent}</Text>
+                    </Card>
+                )}
+            />
+        </React.Fragment>
 
     return (
-        <ScrollView>
-            <SafeAreaView>
-                <View style={styles.containerFull} >
+        <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
+            <ScrollView>
+                <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
                     {view}
                 </View>
-            </SafeAreaView>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 

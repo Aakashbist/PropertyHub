@@ -1,9 +1,8 @@
 
-import { Container, Label, Picker, Input, ProgressBar, Header } from 'native-base';
+import { Container, Label, Picker } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ProgressBarAndroid, ActivityIndicator, Alert } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { Icon, Slider, SearchBar } from 'react-native-elements';
-import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Firebase from '../../../../config/Firebase';
@@ -11,7 +10,6 @@ import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import styles from '../../../../resources/styles';
-import GeneralStatusBarColor from '../../../GeneralStatusBarColor';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadImageUrl } from '../../../services/imageUploadService';
 import { getPropertyById } from '../../../services/PropertyService'
@@ -25,10 +23,6 @@ const AddProperty = {
     ADD_PROPERTY_SUCCESS: 1
 }
 
-
-
-
-
 const AddNewProperty = (props) => {
 
     const [latitude, setLatitude] = useState(0);
@@ -38,7 +32,7 @@ const AddNewProperty = (props) => {
     const [predictions, setPrediction] = useState([]);
     const [unitContent, setUnitContent] = useState(false);
     const [value, setValue] = useState(false);
-    const [propertyDescriptionView, setpropertyDescriptionView] = useState(false);
+    const [propertyDescriptionView, setPropertyDescriptionView] = useState(false);
     const [placeId, setPlaceID] = useState([])
     const [editMode, setEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +46,7 @@ const AddNewProperty = (props) => {
     const [address, setAddress] = useState([])
     const [imageFileName, setImageFileName] = useState();
     const [imageUri, setImageUri] = useState();
-    const [error, setError] = useState("All fiels are required *");
+    const [error, setError] = useState("All fields are required *");
 
     const currentUser = Firebase.auth().currentUser.uid;
 
@@ -117,7 +111,7 @@ const AddNewProperty = (props) => {
             .catch(error => setError(error))
     };
 
-    getPostalcode = (json) => {
+    getPostalCode = (json) => {
         const addressComponents = json.result.address_components;
         for (let i = 0; i < addressComponents.length; i++) {
             const typesArray = addressComponents[i].types;
@@ -140,7 +134,7 @@ const AddNewProperty = (props) => {
                 if (json.status === "OK") {
                     setLatitude(json.result.geometry.location.lat);
                     setLongitude(json.result.geometry.location.lng);
-                    setpropertyDescriptionView(true);
+                    setPropertyDescriptionView(true);
                 } else {
                     let errorMessage = parseMapApiError(json);
                     Alert.alert(errorMessage)
@@ -183,11 +177,10 @@ const AddNewProperty = (props) => {
         setUnitNumber(data.unitNumber);
         setLatitude(data.lat);
         setLongitude(data.lng);
-        setpropertyDescriptionView(true);
+        setPropertyDescriptionView(true);
     }
 
     clearFields = () => {
-        setp(null)
         setDestination('');
         setAddress([]);
         setBond(1);
@@ -234,175 +227,172 @@ const AddNewProperty = (props) => {
         </TouchableOpacity >
     )
 
-    let errorView = error ? <Text style={{ marginBottom: 5, fontSize: 16, color: colors.textColorError }}>{error}</Text> : null;
+    var searchBarAndSuggestions = <View>
+        <SearchBar
+            placeholder="Type Here..."
+            onChangeText={destination => this.onDestinationQueryChange(destination)}
+            value={destination}
+            lightTheme={true}
+            platform="android"
+        />
+        {suggestionView}
+    </View>
 
-    view = isLoading ? <ActivityIndicator style={{ flex: 1, justifyContent: 'center', height: 600 }} size="large" color={colors.green} /> : step === AddProperty.PROPERTY_DETAILS ?
-        <View style={{ marginTop: 10 }}>
-            {
-                !editMode ?
-                    <View>
-                        <SearchBar
-                            placeholder="Type Here..."
-                            onChangeText={destination => this.onDestinationQueryChange(destination)}
-                            value={destination}
-                            lightTheme={true}
-                            platform="android"
-                        />
+    var view = null;
+    if (isLoading) {
+        view = <ActivityIndicator
+            style={{ flex: 1, justifyContent: 'center', height: 600 }}
+            size="large" color={colors.green} />
+    } else {
+        switch (step) {
+            case AddProperty.PROPERTY_DETAILS:
+                view = <View>
+                    {!editMode ? searchBarAndSuggestions : null}
 
-                        {suggestionView}
+                    {propertyDescriptionView ?
+                        <View>
+                            <MapView
+                                style={styles.map}
+                                provider={PROVIDER_GOOGLE}
+                                region={{
+                                    latitude: latitude,
+                                    longitude: longitude,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421
+                                }}
+                                showsUserLocation={true}
+                                showsCompass={true} >
+                                <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
+                            </MapView>
 
-                    </View> : null}
+                            <View style={[styles.containerLeft, { paddingHorizontal: 16 }]}>
+                                <View style={{ marginVertical: 32, alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
+                                    <Icon name='location' type='evilicon' size={36} color={colors.secondary} iconStyle={{ marginEnd: 16 }} />
+                                    <Text style={[styles.textSubHeading, { flexShrink: 1 }]}>{address}</Text>
+                                </View>
 
-            {propertyDescriptionView ?
-                <View>
-                    <MapView
-                        style={styles.map}
-                        provider={PROVIDER_GOOGLE}
-                        intialRegion={{
-                            latitude: 37.422,
-                            longitude: -122.084,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421
+                                <View style={styles.inputBoxFull}>
+                                    <Picker
+                                        mode="dropdown"
+                                        selectedValue={propertyType === null ? "Property type" : propertyType}
+                                        onValueChange={(itemValue) => handleOnPropertyTypeChange(itemValue)}>
+                                        <Picker.Item label="Property type" value={null} />
+                                        <Picker.Item label="Unit" value={PropertyType.UNIT} />
+                                        <Picker.Item label="House" value={PropertyType.HOUSE} />
+                                        <Picker.Item label="Apartment" value={PropertyType.APARTMENT} />
+                                    </Picker>
+                                </View>
+
+                                {
+                                    unitContent ? <TextInput
+                                        style={styles.inputBoxFull}
+                                        keyboardType='number-pad'
+                                        value={unitNumber}
+                                        onChangeText={(unitNumber) => setUnitNumber(unitNumber)}
+                                        placeholder='Flat/Unit Number'
+                                        autoCapitalize='none' /> : null
+                                }
+
+                                <TextInput
+                                    style={styles.inputBoxFull}
+                                    value={rent}
+                                    keyboardType='number-pad'
+                                    onChangeText={(rent) => setRent(rent)}
+                                    placeholder='Rent Amount per Week ($)'
+                                    autoCapitalize='none'
+                                />
+
+                                <TextInput
+                                    style={styles.inputBoxFull}
+                                    value={bond}
+                                    keyboardType='number-pad'
+                                    onChangeText={(bond) => setBond(bond)}
+                                    placeholder='Bond Amount ($)'
+                                    autoCapitalize='none'
+                                />
+
+                                <View style={styles.containerFlexRow}>
+                                    <Label style={[styles.overline, { flex: 1 }]}>Bedrooms</Label>
+                                    <Label style={styles.overline}>{bedroom}</Label>
+                                </View>
+
+                                <Slider
+                                    style={{ width: '100%', height: 40 }}
+                                    minimumValue={1}
+                                    maximumValue={5}
+                                    step={1}
+                                    maximumTrackTintColor={colors.darkWhite2}
+                                    minimumTrackTintColor={colors.secondary}
+                                    thumbTintColor={colors.secondary}
+                                    value={bedroom}
+                                    onValueChange={value => setBedroom(value)}
+                                />
+
+                                <View style={styles.containerFlexRow}>
+                                    <Label style={[styles.overline, { flex: 1 }]}>Bathrooms</Label>
+                                    <Label style={styles.overline} >{bathroom}</Label>
+                                </View>
+
+                                <Slider
+                                    style={{ width: '100%', height: 40 }}
+                                    minimumValue={1}
+                                    maximumValue={5}
+                                    step={1}
+                                    maximumTrackTintColor={colors.darkWhite2}
+                                    minimumTrackTintColor={colors.secondary}
+                                    thumbTintColor={colors.secondary}
+                                    value={bathroom}
+                                    onValueChange={value => setBathroom(value)}
+                                />
+
+                                {
+                                    imageUri &&
+                                    <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
+                                }
+
+                                <TouchableOpacity
+                                    onPress={this.selectPropertyImage}
+                                    style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
+                                    <Text style={{ color: colors.primary, fontSize: 18 }}>Add a photo</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={[canAddProperty ? styles.button : styles.buttonDisabled, { alignSelf: 'center' }]}
+                                    onPress={this.handleAddProperty}
+                                    disabled={!canAddProperty}>
+                                    <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View> : null
+                    }
+                </View >
+                break;
+            case AddProperty.ADD_PROPERTY_SUCCESS:
+                view = <Container style={styles.containerFull}>
+                    <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
+                    <Text style={{ color: colors.green, marginBottom: 10, fontSize: 20 }}>Property Added</Text>
+                    <TouchableOpacity
+                        style={{
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                            alignItems: 'center',
                         }}
-
-                        region={{
-                            latitude: latitude,
-                            longitude: longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421
-                        }}
-                        showsUserLocation={true}
-                        showsCompass={true} >
-                        <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
-                    </MapView>
-
-                    <View style={styles.containerLeft}>
-
-                        <View style={styles.containerFlexRow}>
-                            <Icon name='location' type='evilicon' size={36} color={colors.green} />
-                            <Text style={styles.textSubHeading}>{address}</Text>
-                        </View>
-
-                        {errorView}
-
-                        <View style={styles.inputBoxFull}>
-                            <Picker
-                                mode="dropdown"
-                                selectedValue={propertyType === null ? "Select property type.." : propertyType}
-                                onValueChange={(itemValue) => handleOnPropertyTypeChange(itemValue)}>
-                                <Picker.Item label="Select property type.." value={null} />
-                                <Picker.Item label="Unit" value={PropertyType.UNIT} />
-                                <Picker.Item label="House" value={PropertyType.HOUSE} />
-                                <Picker.Item label="Apartment" value={PropertyType.APARTMENT} />
-                            </Picker>
-                        </View>
-
-                        {unitContent ?
-                            <Input
-                                style={styles.inputBoxFull}
-                                keyboardType='number-pad'
-                                value={unitNumber}
-                                onChangeText={(unitNumber) => setUnitNumber(unitNumber)}
-                                placeholder='Flat/Unit Number'
-                                autoCapitalize='none' /> : null
-                        }
-
-                        <Input
-                            style={styles.inputBoxFull}
-                            value={rent}
-                            keyboardType='number-pad'
-                            onChangeText={(rent) => setRent(rent)}
-                            placeholder='Rent Amount per Week ($)'
-                            autoCapitalize='none'
-                        />
-
-                        <Input
-                            style={styles.inputBoxFull}
-                            value={bond}
-                            keyboardType='number-pad'
-                            onChangeText={(bond) => setBond(bond)}
-                            placeholder='Bond Amount ($)'
-                            autoCapitalize='none'
-                        />
-
-                        <View style={styles.containerFlexRow}>
-                            <Label style={{ flex: 1 }}>Number of Bedroom</Label>
-                            <Label style={{ fontSize: 18, }}>{bedroom}</Label>
-                        </View>
-                        <Slider
-                            style={{ width: '100%', height: 40 }}
-                            minimumValue={1}
-                            maximumValue={5}
-                            step={1}
-                            maximumTrackTintColor={colors.darkWhite2}
-                            minimumTrackTintColor={colors.primary}
-                            value={bedroom}
-                            onValueChange={value => setBedroom(value)}
-                        />
-
-                        <View style={styles.containerFlexRow}>
-                            <Label style={{ flex: 1 }}>Number of Bathroom</Label>
-                            <Label style={{ fontSize: 18 }} >{bathroom}</Label>
-                        </View>
-                        <Slider
-                            style={{ width: '100%', height: 40 }}
-                            minimumValue={1}
-                            maximumValue={5}
-                            step={1}
-                            maximumTrackTintColor={colors.darkWhite2}
-                            minimumTrackTintColor={colors.primary}
-                            value={bathroom}
-                            onValueChange={value => setBathroom(value)}
-                        />
-
-                        {
-                            imageUri &&
-                            <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
-                        }
-
-                        <TouchableOpacity
-                            onPress={this.selectPropertyImage}
-                            style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
-                            <Text style={{ color: colors.primary, fontSize: 18 }}>Choose image..</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={this.handleAddProperty}
-                            disabled={!canAddProperty}>
-                            <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
-
-                        </TouchableOpacity>
-
-                    </View>
-                </View> : null}
-
-        </View > : step === AddProperty.ADD_PROPERTY_SUCCESS ?
-            <Container style={styles.containerFull}>
-                <Image style={{ width: 200, height: 250, margin: 10 }} source={require('../../../../assets/icon/homeIcon.png')} />
-                <Text style={{ color: colors.green, marginBottom: 10, fontSize: 20 }}>Property Added</Text>
-                <TouchableOpacity
-                    style={{
-                        justifyContent: 'center',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                    }}
-                    onPress={navigateToPropertyList}>
-                    <Icon name='chevron-left' type='evilicon' color={colors.primary} />
-                    <Text style={styles.primaryText}>Go Back to Property</Text>
-                </TouchableOpacity>
-
-            </Container> : null;
+                        onPress={navigateToPropertyList}>
+                        <Icon name='chevron-left' type='evilicon' color={colors.primary} />
+                        <Text style={styles.primaryText}>Go Back to Property</Text>
+                    </TouchableOpacity>
+                </Container>
+                break;
+        }
+    }
 
     return (
-        <SafeAreaView>
-            <ScrollView >
-                <View style={{ flex: 1 }}>
-                    <GeneralStatusBarColor backgroundColor={colors.primary} barStyle="light-content" />
-                    {view}
-                </View >
-            </ScrollView>
-        </SafeAreaView>
+        <ScrollView >
+            <View style={{ flex: 1 }}>
+                {view}
+            </View >
+        </ScrollView>
     )
 }
 
