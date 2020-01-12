@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
 import AppSwitchNavigator from './src/components/AppSwitchNavigator';
-import { ThemeProvider } from 'react-native-elements';
-import colors from './src/resources/colors';
+import { ThemeProvider, colors } from 'react-native-elements';
 
 const theme = {
   colors: {
     primary: colors.primary,
-    secondary: colors.secondary
+    secondary: colors.secondary,
   },
 }
 

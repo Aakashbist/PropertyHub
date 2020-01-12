@@ -3,17 +3,17 @@
 // "colorize.languages": ["typescript", "javascript", "css", "scss"]
 
 export default {
-    statusBar: "#ef2a6d",
+    statusBar: "#450934",
 
-    primary: "#ef718f",
-    secondary: "#00bbe5",
+    primary: "#670f52",
+    secondary: "#450934",
     success: "#2B7D2B",
     danger: "#BB0000",
     warning: "#E78C07",
     info: "#427cac",
 
-    accent: "#AB218E",
-    primaryDark: "#ef2a6d",
+    accent: "#df0321",
+    primaryDark: "#450934",
     primaryLight: "#ffafaf",
 
     white: "#ffffff",

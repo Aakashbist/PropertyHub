@@ -43,11 +43,11 @@ const PropertyTabNavigator = createBottomTabNavigator({
     tabBarOptions: {
       style: {
         height: 54,
-        backgroundColor: colors.black,
-        borderTopColor: colors.black,
+        backgroundColor: colors.primaryDark,
+        borderTopColor: colors.primaryDark,
         paddingBottom: 8
       },
-      activeTintColor: colors.primary,
+      activeTintColor: colors.accent,
       inactiveTintColor: colors.white,
       labelStyle: {
         fontSize: 12

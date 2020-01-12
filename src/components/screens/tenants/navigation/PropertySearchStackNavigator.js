@@ -5,15 +5,18 @@ import AppRoute from '../../../../resources/appRoute';
 import styles from '../../../../resources/styles';
 import { Icon } from 'react-native-elements';
 import React from 'react';
+import colors from '../../../../resources/colors';
+import { View } from 'react-native';
 
 const PropertySearchStackNavigator = createStackNavigator(
     {
-        PropertySearch: { screen: PropertySearch },
+        PropertySearch: {
+            screen: PropertySearch,
+        },
         PropertyDetails: { screen: PropertyDetails }
     },
     {
         initialRouteName: AppRoute.PropertySearch,
-        headerMode: 'none',
     },
 );
 

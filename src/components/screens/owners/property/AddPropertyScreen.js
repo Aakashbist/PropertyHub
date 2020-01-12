@@ -1,7 +1,7 @@
 
-import { Container, Label, Picker, Input } from 'native-base';
+import { Container, Label, Picker } from 'native-base';
 import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { Icon, Slider, SearchBar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -233,7 +233,6 @@ const AddNewProperty = (props) => {
         </TouchableOpacity >
     )
 
-    var errorView = error ? <Text style={{ marginBottom: 5, fontSize: 16, color: colors.textColorError }}>{error}</Text> : null;
     var searchBarAndSuggestions = <View>
         <SearchBar
             placeholder="Type Here..."
@@ -272,20 +271,18 @@ const AddNewProperty = (props) => {
                                 <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
                             </MapView>
 
-                            <View style={[styles.containerLeft, { marginHorizontal: 16, marginVertical: 16 }]}>
-                                <View style={[styles.containerFlexRow, { marginBottom: 16 }]}>
-                                    <Icon name='location' type='evilicon' size={36} color={colors.secondary} />
-                                    <Text style={styles.textSubHeading}>{address}</Text>
+                            <View style={[styles.containerLeft, { paddingHorizontal: 16 }]}>
+                                <View style={{ marginVertical: 32, alignSelf: 'stretch', justifyContent: 'space-between', flexDirection: 'row' }}>
+                                    <Icon name='location' type='evilicon' size={36} color={colors.secondary} iconStyle={{ marginEnd: 16 }} />
+                                    <Text style={[styles.textSubHeading, { flexShrink: 1 }]}>{address}</Text>
                                 </View>
-
-                                {errorView}
 
                                 <View style={styles.inputBoxFull}>
                                     <Picker
                                         mode="dropdown"
-                                        selectedValue={propertyType === null ? "Select property type.." : propertyType}
+                                        selectedValue={propertyType === null ? "Property type" : propertyType}
                                         onValueChange={(itemValue) => handleOnPropertyTypeChange(itemValue)}>
-                                        <Picker.Item label="Select property type.." value={null} />
+                                        <Picker.Item label="Property type" value={null} />
                                         <Picker.Item label="Unit" value={PropertyType.UNIT} />
                                         <Picker.Item label="House" value={PropertyType.HOUSE} />
                                         <Picker.Item label="Apartment" value={PropertyType.APARTMENT} />
@@ -293,7 +290,7 @@ const AddNewProperty = (props) => {
                                 </View>
 
                                 {
-                                    unitContent ? <Input
+                                    unitContent ? <TextInput
                                         style={styles.inputBoxFull}
                                         keyboardType='number-pad'
                                         value={unitNumber}
@@ -302,7 +299,7 @@ const AddNewProperty = (props) => {
                                         autoCapitalize='none' /> : null
                                 }
 
-                                <Input
+                                <TextInput
                                     style={styles.inputBoxFull}
                                     value={rent}
                                     keyboardType='number-pad'
@@ -311,7 +308,7 @@ const AddNewProperty = (props) => {
                                     autoCapitalize='none'
                                 />
 
-                                <Input
+                                <TextInput
                                     style={styles.inputBoxFull}
                                     value={bond}
                                     keyboardType='number-pad'
@@ -321,8 +318,8 @@ const AddNewProperty = (props) => {
                                 />
 
                                 <View style={styles.containerFlexRow}>
-                                    <Label style={{ flex: 1 }}>Number of Bedroom</Label>
-                                    <Label style={{ fontSize: 18, }}>{bedroom}</Label>
+                                    <Label style={[styles.overline, { flex: 1 }]}>Bedrooms</Label>
+                                    <Label style={styles.overline}>{bedroom}</Label>
                                 </View>
 
                                 <Slider
@@ -338,8 +335,8 @@ const AddNewProperty = (props) => {
                                 />
 
                                 <View style={styles.containerFlexRow}>
-                                    <Label style={{ flex: 1 }}>Number of Bathroom</Label>
-                                    <Label style={{ fontSize: 18 }} >{bathroom}</Label>
+                                    <Label style={[styles.overline, { flex: 1 }]}>Bathrooms</Label>
+                                    <Label style={styles.overline} >{bathroom}</Label>
                                 </View>
 
                                 <Slider
@@ -362,20 +359,20 @@ const AddNewProperty = (props) => {
                                 <TouchableOpacity
                                     onPress={this.selectPropertyImage}
                                     style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
-                                    <Text style={{ color: colors.primary, fontSize: 18 }}>Choose image..</Text>
+                                    <Text style={{ color: colors.primary, fontSize: 18 }}>Add a photo</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
-                                    style={canAddProperty ? styles.button : styles.buttonDisabled}
+                                    style={[canAddProperty ? styles.button : styles.buttonDisabled, { alignSelf: 'center' }]}
                                     onPress={this.handleAddProperty}
                                     disabled={!canAddProperty}>
                                     <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
-
                                 </TouchableOpacity>
 
                             </View>
-                        </View> : null}
-                </View>
+                        </View> : null
+                    }
+                </View >
                 break;
             case AddProperty.ADD_PROPERTY_SUCCESS:
                 view = <Container style={styles.containerFull}>

@@ -32,13 +32,12 @@ export default {
         borderBottomWidth: 1,
     },
     inputBoxFull: {
-        width: '100%',
-        padding: 15,
+        alignSelf: 'stretch',
         fontSize: 16,
         borderColor: colors.darkWhite2,
         backgroundColor: colors.darkWhite1,
         borderBottomWidth: 1,
-        marginBottom: 10
+        marginBottom: 16
     },
     buttonDisabled: {
         marginTop: 30,
@@ -137,6 +136,10 @@ export default {
         //backgroundColor:'black'
     },
     // To show pink text like "Sign up" under login button
+    overline: {
+        fontSize: 14,
+        textTransform: 'uppercase'
+    },
     primaryText: {
         color: colors.primary,
         fontSize: 14

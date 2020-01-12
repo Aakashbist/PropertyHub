@@ -48,8 +48,10 @@ const PropertyListScreen = (props) => {
         )
     }
 
-    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text style={{ fontSize: 18 }}> No available  properties </Text>
+
+    let view = properties == null ? <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
+        <Text style={{ fontSize: 28 }}> Properties </Text>
+        <Text style={{ fontSize: 18, marginTop: 16 }}> No available  properties </Text>
     </View> :
         <React.Fragment>
             <FlatList
@@ -68,13 +70,13 @@ const PropertyListScreen = (props) => {
                                         key: item.id,
                                         mode: 'EDIT'
                                     })}>
-                                <Icon name='edit' type='entypo' size={20} color={colors.blue} />
+                                <Icon name='edit' type='entypo' size={20} color={colors.primaryDark} />
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={{ marginHorizontal: 4 }}
                                 onPress={() => this.deleteProperties(item.id)}>
-                                <Icon name='trash' type='entypo' size={20} color={colors.red} />
+                                <Icon name='trash' type='entypo' size={20} color={colors.primaryDark} />
                             </TouchableOpacity>
 
                         </View>
@@ -86,15 +88,14 @@ const PropertyListScreen = (props) => {
 
 
     return (
-        <SafeAreaView>
+        <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
             <ScrollView>
-                <View style={[styles.containerLeft, { backgroundColor: '#f4f4f4', paddingBottom: 16 }]} >
+                <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
                     {view}
                 </View>
             </ScrollView>
-        </SafeAreaView>
-
-    );
+        </View>
+    )
 }
 
 PropertyListScreen.navigationOptions = (props) => ({
