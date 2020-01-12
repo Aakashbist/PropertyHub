@@ -20,23 +20,8 @@ const Login = (props) => {
     }, [email, password]);
 
     handleLogin = () => {
-        let result; 
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
-            .then((data) => {
-                result = data;
-                Firebase.auth().currentUser.getIdTokenResult();
-            })
-            .then((token) => {
-
-                if (result.user.emailVerified) {
-                    props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
-                } else {
-                    Firebase.auth().signOut()
-                        .then(() => setError('Please check your email for verification link'))
-                        .catch((error) => setError(parseFirebaseError(error)))
-                }
-            })
             .catch((error) => setError(parseFirebaseError(error)))
     }
 
