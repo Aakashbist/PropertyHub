@@ -27,19 +27,10 @@ const PropertyTabNavigator = createBottomTabNavigator({
         <Icon name='plus' type='entypo' size={size} color={tintColor} />
       ),
     }
-  },
-  ChatScreen: {
-    screen: ChatStackNavigator,
-    navigationOptions: {
-      tabBarLabel: 'CHATS',
-      tabBarIcon: ({ tintColor, size }) => (
-        <Icon name='typing' type='entypo' size={size} color={tintColor} />
-      ),
-    }
   }
 },
   {
-    initialRouteName: AppRoute.Chat,
+    initialRouteName: AppRoute.PropertyList,
     tabBarOptions: {
       style: {
         height: 54,

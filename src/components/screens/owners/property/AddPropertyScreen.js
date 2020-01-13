@@ -1,8 +1,8 @@
 
 import { Container, Label, Picker } from 'native-base';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
-import { Icon, Slider, SearchBar } from 'react-native-elements';
+import { Icon, Slider, SearchBar, Input } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Firebase from '../../../../config/Firebase';
@@ -13,7 +13,8 @@ import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadImageUrl } from '../../../services/imageUploadService';
-import { getPropertyById } from '../../../services/PropertyService';
+import { getPropertyById, createProperty, addPropertyReferenceToOwner, updateProperty } from '../../../services/PropertyService';
+import { updateLocale } from 'moment';
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -36,13 +37,15 @@ const AddNewProperty = (props) => {
     const [propertyType, setPropertyType] = useState(null);
     const [canAddProperty, setCanAddProperty] = useState('');
     const [unitNumber, setUnitNumber] = useState('');
-    const [bond, setBond] = useState();
-    const [rent, setRent] = useState();
+    const [bond, setBond] = useState('2');
+    const [rent, setRent] = useState('2');
     const [bedroom, setBedroom] = useState(1);
     const [bathroom, setBathroom] = useState(1);
     const [address, setAddress] = useState([])
     const [imageFileName, setImageFileName] = useState();
     const [imageUri, setImageUri] = useState();
+    const [propertyKey, setPropertyKey] = useState();
+    const [propertyDescription, setPropertyDescription] = useState();
     const [error, setError] = useState("All fields are required *");
 
     const currentUser = Firebase.auth().currentUser.uid;
@@ -56,16 +59,15 @@ const AddNewProperty = (props) => {
     }, [])
 
     useEffect(() => {
-        let _canAddProperty = rent != null && bond != null && propertyType != null && imageUri != null && !isLoading;
+        let _canAddProperty = rent != null && bond != null && propertyType != null && propertyDescription != null && imageUri != null && !isLoading;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
     }, [rent, bond, propertyType, isLoading, imageUri]);
 
     getProperty = (key, mode) => {
-        console.log(key, "ADD properties on edit click", currentUser)
-        getPropertyById(currentUser, key).then((data) => {
-            setPropertyFields(data, mode);
+        getPropertyById(key).then((data) => {
+            setPropertyFields(data, mode, key);
             console.log(data, "addProperty")
 
         }).catch((error) => console.log(error));
@@ -163,20 +165,23 @@ const AddNewProperty = (props) => {
         }
     }
 
-    setPropertyFields = (data, mode) => {
+    setPropertyFields = (data, mode, key) => {
         if (mode === "EDIT") {
             setEditMode(true)
+            setPropertyKey(key)
+            handleOnPropertyTypeChange(data.propertyType);
+            setAddress(data.address);
+            setBond(data.bond);
+            setRent(data.rent);
+            setBathroom(data.bathroom);
+            setBedroom(data.bedroom);
+            setUnitNumber(data.unitNumber);
+            setLatitude(data.lat);
+            setLongitude(data.lng);
+            setPropertyDescriptionView(true);
+            setImageUri(data.imageUrl)
+            setPropertyDescription(data.propertyDescription)
         }
-        handleOnPropertyTypeChange(data.propertyType);
-        setAddress(data.address);
-        setBond(data.bond);
-        setRent(data.rent);
-        setBathroom(data.bathroom);
-        setBedroom(data.bedroom);
-        setUnitNumber(data.unitNumber);
-        setLatitude(data.lat);
-        setLongitude(data.lng);
-        setPropertyDescriptionView(true);
     }
 
     clearFields = () => {
@@ -188,28 +193,25 @@ const AddNewProperty = (props) => {
         setBathroom(1);
         setBedroom(1);
         setUnitNumber('');
-        setImageUri()
+        setImageUri();
+        setPropertyDescription();
         setPropertyDescriptionView(false);
     }
 
     handleAddProperty = () => {
         setIsLoading(true);
-        let property, userDb;
+        let property;
         getDownloadImageUrl(imageUri, imageFileName)
             .then((url) => {
-                property = new Property(address, unitNumber, bedroom, bathroom, propertyType,
-                    rent, bond, url, latitude, longitude)
-                userDb = 'property';
-                let propertyDbRef = Firebase.database().ref().child(userDb + '/' + currentUser)
-                propertyDbRef.push(property)
-                    .then(() => {
+                property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
+                    rent, bond, url, latitude, longitude, currentUser)
+                createProperty(property).then((key) => {
+                    setStep(AddProperty.ADD_PROPERTY_SUCCESS);
+                }).catch((error) => {
+                    errorMessage = setError(parseFirebaseError(error))
+                    setError(errorMessage)
+                })
 
-                        setStep(AddProperty.ADD_PROPERTY_SUCCESS);
-                    })
-                    .catch(error => {
-                        errorMessage = setError(parseFirebaseError(error))
-                        setError(errorMessage)
-                    });
             })
             .catch(error => {
                 let errorMessage = parseFirebaseError(error);
@@ -220,6 +222,25 @@ const AddNewProperty = (props) => {
                 setIsLoading(false)
             });
     }
+
+    handleUpdateProperty = () => {
+        setIsLoading(true);
+        let property;
+        property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
+            rent, bond, imageUri, latitude, longitude, currentUser);
+        setIsLoading(false)
+        console.log(property);
+        updateProperty(property, propertyKey)
+            .then(navigateToPropertyList())
+            .catch(error => {
+                let errorMessage = parseFirebaseError(error);
+                setError(errorMessage);
+            })
+            .finally(() => {
+                setIsLoading(false)
+            });
+    }
+
     onFocusedChange = () => {
         setFocused(true)
     }
@@ -280,6 +301,7 @@ const AddNewProperty = (props) => {
                                 <View style={styles.inputBoxFull}>
                                     <Picker
                                         mode="dropdown"
+                                        enabled={editMode ? false : true}
                                         selectedValue={propertyType === null ? "Property type" : propertyType}
                                         onValueChange={(itemValue) => handleOnPropertyTypeChange(itemValue)}>
                                         <Picker.Item label="Property type" value={null} />
@@ -298,6 +320,16 @@ const AddNewProperty = (props) => {
                                         placeholder='Flat/Unit Number'
                                         autoCapitalize='none' /> : null
                                 }
+
+                                <TextInput
+                                    style={styles.inputBoxFull}
+                                    multiline={true}
+                                    value={propertyDescription}
+                                    onChangeText={(description) => setPropertyDescription(description)}
+                                    placeholder='Description'
+                                    autoCapitalize='none'
+
+                                />
 
                                 <TextInput
                                     style={styles.inputBoxFull}
@@ -356,18 +388,28 @@ const AddNewProperty = (props) => {
                                     <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
                                 }
 
-                                <TouchableOpacity
-                                    onPress={this.selectPropertyImage}
-                                    style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
-                                    <Text style={{ color: colors.primary, fontSize: 18 }}>Add a photo</Text>
-                                </TouchableOpacity>
 
-                                <TouchableOpacity
-                                    style={[canAddProperty ? styles.button : styles.buttonDisabled, { alignSelf: 'center' }]}
-                                    onPress={this.handleAddProperty}
-                                    disabled={!canAddProperty}>
-                                    <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
-                                </TouchableOpacity>
+                                {editMode ?
+                                    <TouchableOpacity
+                                        style={[styles.button, { alignSelf: 'center' }]}
+                                        onPress={this.handleUpdateProperty}
+                                    >
+                                        <Text style={styles.buttonText}>Update Property </Text>
+                                    </TouchableOpacity> :
+                                    <Fragment>
+                                        <TouchableOpacity
+                                            onPress={this.selectPropertyImage}
+                                            style={{ justifyContent: 'flex-start', flexDirection: 'row', alignContent: 'center', margin: 10 }} >
+                                            <Text style={{ color: colors.primary, fontSize: 18 }}>Add a photo</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[canAddProperty ? styles.button : styles.buttonDisabled, { alignSelf: 'center' }]}
+                                            onPress={this.handleAddProperty}
+                                            disabled={!canAddProperty}>
+                                            <Text style={canAddProperty ? styles.buttonText : styles.buttonTextDisabled}>Add Property </Text>
+                                        </TouchableOpacity>
+                                    </Fragment>
+                                }
 
                             </View>
                         </View> : null

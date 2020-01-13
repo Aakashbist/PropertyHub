@@ -15,7 +15,6 @@ export default class AuthLoading extends Component {
             if (user) {
                 user.getIdTokenResult().then((token) => {
                     if (user && user.emailVerified) {
-                        console.log(token.claims, 'AuthLoading')
                         this.props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
                     } else {
                         this.props.navigation.navigate(AppRoute.Auth)

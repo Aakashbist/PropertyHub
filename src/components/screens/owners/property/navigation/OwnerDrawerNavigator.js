@@ -5,10 +5,12 @@ import DashboardScreen from '../../../DashboardScreen';
 import PropertyTabNavigation from './PropertyTabNavigation';
 import AppRoute from '../../../../../resources/appRoute';
 import colors from '../../../../../resources/colors';
+import ChatStackNavigator from '../../../../ChatStackNavigator';
 
 const DrawerNavigator = createDrawerNavigator({
     DashboardScreen: { screen: DashboardScreen },
     PropertyListScreen: PropertyTabNavigation,
+    ChatScreen: ChatStackNavigator
 },
     {
         initialRouteName: AppRoute.PropertyList,

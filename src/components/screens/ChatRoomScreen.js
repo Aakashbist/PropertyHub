@@ -20,6 +20,7 @@ const ChatRoomScreen = (props) => {
 
     getMessages = (chatRoomId) => {
         loadMessages(chatRoomId, (message) => {
+
             setMessages(
                 previous => GiftedChat.append(previous, message)
             )
@@ -59,14 +60,7 @@ const ChatRoomScreen = (props) => {
 
     return (
         <View style={styles.containerFull}>
-            <Header
-                barStyle="light-content"
-                style={{ height: 150 }}
-                placement="left"
-                leftComponent={{ icon: 'chevron-left', color: colors.white, onPress: () => props.navigation.goBack() }}
-                centerComponent={{ text: userName, style: { fontSize: 20, color: colors.white } }}
-                statusBarProps={{ translucent: true }}
-            />
+
             <View style={styles.chatContainer}>
                 <GiftedChat
                     showUserAvatar={true}
@@ -82,6 +76,13 @@ const ChatRoomScreen = (props) => {
 
     );
 }
+ChatRoomScreen.navigationOptions = (props) => ({
+    title: 'XXX',
+    headerStyle: {
+        backgroundColor: colors.primary,
+    },
+    headerTintColor: colors.white,
+});
 
 
 

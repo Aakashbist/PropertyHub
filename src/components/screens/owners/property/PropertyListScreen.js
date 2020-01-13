@@ -37,7 +37,7 @@ const PropertyListScreen = (props) => {
             [
                 { text: 'Cancel' },
                 {
-                    text: 'OK', onPress: () => deletePropertiesWithId(currentUser, propertyId)
+                    text: 'OK', onPress: () => deletePropertiesWithId(propertyId)
                         .catch(error => {
                             errorMessage = parseFirebaseError(error);
                             Alert.alert(errorMessage);

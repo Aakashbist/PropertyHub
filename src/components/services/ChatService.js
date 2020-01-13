@@ -13,10 +13,11 @@ export function getChatRoomId(senderId, receiverId) {
 
 export function loadMessages(chatRoomId, callback) {
     messagesRef = Firebase.database().ref('chat' + '/' + chatRoomId);
+    var aa = messagesRef.toString()
+    console.log(aa);
     messagesRef.off();
     const onResponse = (data) => {
         const message = data.val();
-        console.log(JSON.stringify(message))
         callback({
             _id: data.key,
             text: message.text,
