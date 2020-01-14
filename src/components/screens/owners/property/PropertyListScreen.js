@@ -1,3 +1,4 @@
+import { Fab } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, Image, TouchableOpacity, View } from 'react-native';
 import { Icon, Text, Card } from 'react-native-elements';
@@ -8,6 +9,7 @@ import styles from '../../../../resources/styles';
 import { deletePropertiesWithId, propertyReference } from '../../../services/PropertyService';
 import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 import { ScrollView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-navigation';
 
 const PropertyListScreen = (props) => {
     const [properties, setProperties] = useState([]);
@@ -35,7 +37,7 @@ const PropertyListScreen = (props) => {
             [
                 { text: 'Cancel' },
                 {
-                    text: 'OK', onPress: () => deletePropertiesWithId(currentUser, propertyId)
+                    text: 'OK', onPress: () => deletePropertiesWithId(propertyId)
                         .catch(error => {
                             errorMessage = parseFirebaseError(error);
                             Alert.alert(errorMessage);
@@ -84,6 +86,7 @@ const PropertyListScreen = (props) => {
             />
         </React.Fragment>
 
+
     return (
         <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
             <ScrollView>
@@ -94,5 +97,15 @@ const PropertyListScreen = (props) => {
         </View>
     )
 }
+
+PropertyListScreen.navigationOptions = (props) => ({
+    title: 'Property list',
+    drawerIcon: ({ }) => (
+        <Icon name='home'
+            type='font-awesome'
+            style={styles.drawerIcon}
+        />
+    ),
+});
 
 export default PropertyListScreen;

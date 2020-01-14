@@ -12,10 +12,12 @@ const AppRoute = {
     PropertyDetailsTenant: 'PropertyDetails',
     Login: 'LoginScreen',
     Signup: 'SignupScreen',
-    Property: 'PropertyListScreen',
+    PropertyList: 'PropertyListScreen',
     AddProperty: 'AddPropertyScreen',
     LeasedProperty: 'LeasedPropertyScreen',
-    PropertyDetails: 'PropertyDetailScreen'
+    PropertyDetails: 'PropertyDetailScreen',
+    Chat: 'ChatScreen',
+    ChatRoom: 'ChatRoomScreen'
 }
 
 export default AppRoute

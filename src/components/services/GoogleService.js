@@ -1,7 +1,7 @@
 import APIKeys from "../../resources/mapApiKey";
 
 export async function getGooglePlaceAutocomplete(destination) {
-    const autoCompleteApiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key= ${APIKeys.GOOGLE_MAP_API_KEY}&input=${destination}&radius=2000`;
+    const autoCompleteApiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${APIKeys.GOOGLE_MAP_API_KEY}&input=${destination}&radius=2000`;
     try {
         const result = await fetch(autoCompleteApiUrl);
         const json = await result.json();

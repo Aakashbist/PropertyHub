@@ -17,7 +17,7 @@ const DrawerMenu = (props) => {
     return (
         <StyleProvider style={getTheme(material)}>
             <Container>
-                <Header style={{ height: 150 }}>
+                <Header style={{ height: 250 }}>
                     <Body>
                         <Image source={require('../assets/icon/homeIcon.png')}
                             style={{ height: 100, width: 100, }}

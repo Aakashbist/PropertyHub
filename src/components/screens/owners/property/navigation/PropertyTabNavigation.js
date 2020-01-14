@@ -1,14 +1,13 @@
-import { Label, View } from 'native-base';
 import React from 'react';
 import { Icon } from "react-native-elements";
 import { createAppContainer } from "react-navigation";
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AppRoute from "../../../../../resources/appRoute";
 import colors from "../../../../../resources/colors";
-import AddPropertyScreen from '../AddPropertyScreen';
-import LeasedPropertyScreen from '../LeasedPropertyScreen';
-import PropertyStackNavigator from '../navigation/PropertyStackNavigation';
 import styles from '../../../../../resources/styles';
+import ChatStackNavigator from '../../../../ChatStackNavigator';
+import AddPropertyScreen from '../AddPropertyScreen';
+import PropertyStackNavigator from '../navigation/PropertyStackNavigation';
 
 const PropertyTabNavigator = createBottomTabNavigator({
   PropertyListScreen: {
@@ -28,19 +27,10 @@ const PropertyTabNavigator = createBottomTabNavigator({
         <Icon name='plus' type='entypo' size={size} color={tintColor} />
       ),
     }
-  },
-  LeasedPropertyScreen: {
-    screen: LeasedPropertyScreen,
-    navigationOptions: {
-      tabBarLabel: 'CHATS',
-      tabBarIcon: ({ tintColor, size }) => (
-        <Icon name='typing' type='entypo' size={size} color={tintColor} />
-      ),
-    }
   }
 },
   {
-    initialRouteName: AppRoute.Property,
+    initialRouteName: AppRoute.PropertyList,
     tabBarOptions: {
       style: {
         height: 54,

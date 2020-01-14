@@ -45,7 +45,7 @@ const Signup = (props) => {
     let currentUser;
     Firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((data) => {
-        let user, userDb;
+        let user, userDb = "users";
         currentUser = data.user;
         switch (userType) {
           case UserType.TENANT:
@@ -59,9 +59,20 @@ const Signup = (props) => {
         }
         Firebase.database().ref().child(userDb + '/' + user.id).set(user);
       })
-      .then(() => currentUser.sendEmailVerification())
+
+      .then(() => {
+        currentUser.sendEmailVerification();
+        Firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            user.updateProfile({
+              displayName: name
+            })
+          }
+        })
+      })
       .then(() => {
         clearFields();
+        Firebase.auth().signOut();
         setStep(SignupSteps.SIGNUP_SUCCESS);
       })
       .catch((error) => {
