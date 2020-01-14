@@ -1,26 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../resources/styles';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, FlatList } from 'react-native';
 import { Header, icon, Text, Button, Icon } from 'react-native-elements';
 import colors from '../../resources/colors';
 import Firebase from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
+import { getChatHistoryById } from '../services/ChatService';
+import { TouchableOpacity } from 'react-native';
+import { getUserById } from '../services/UserService';
 
 const ChatScreen = (props) => {
-    navigateToChatRoom = () => {
+
+    const [chatUsers, setChatUsers] = useState();
+
+    useEffect(() => {
+        initializeChat();
+    }, []);
+
+    initializeChat = () => {
         const user = Firebase.auth().currentUser;
-        if (user.uid === "5UjrK6Yki9d2uDK440W4XMR1Mlz1") {
-            props.navigation.navigate(AppRoute.ChatRoom, { key: 'I5vdiDnW71XEZmAdByDB0Xsj3rj1' })
-        }
-        else {
-            props.navigation.navigate(AppRoute.ChatRoom, { key: '5UjrK6Yki9d2uDK440W4XMR1Mlz1' })
-        }
+        var isOwner;
+        user.getIdTokenResult()
+            .then((token) => {
+                isOwner = token.claims.isOwner;
+                console.log(isOwner, "claims");
+                return getChatHistoryById(user.uid);
+            })
+            .then((chatees) => {
+                console.log(chatees, "chatees");
+
+                const promises = [];
+                chatees.forEach(user => {
+                    promises.push(getUserById(user.chatee, isOwner))
+                });
+                return Promise.all(promises)
+            })
+            .then((values) => {
+                console.log(values, 'promiseall');
+
+                setChatUsers(values)
+            })
+            .catch(error => alert(error))
     }
+
+    let view = chatUsers == null ? <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
+        <Text style={{ fontSize: 28 }}> History </Text>
+        <Text style={{ fontSize: 18, marginTop: 16 }}> No Messages </Text>
+    </View> :
+        <React.Fragment>
+            <FlatList
+                style={[styles.cardContainer, {}]}
+                data={chatUsers}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <View style={styles.flatView}>
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: item.id })}
+                        >
+                            <Text>{item.name}</Text>
+                        </TouchableOpacity>
+
+                    </View>
+
+                )}
+            />
+        </React.Fragment>
+
+
 
     return (
         <ScrollView>
             <View style={styles.containerFull} >
-                <Button title='chat' onPress={() => navigateToChatRoom()}></Button>
+                {view}
             </View>
         </ScrollView>
     );

@@ -45,26 +45,25 @@ const Signup = (props) => {
     let currentUser;
     Firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((data) => {
-        let user, userDb;
+        let user, userDb = "users";
         currentUser = data.user;
         switch (userType) {
           case UserType.TENANT:
             user = new Tenant(data.user.uid, name, data.user.email);
-            userDb = "tenants";
+            // userDb = "tenants";
             break;
           case UserType.OWNER:
             user = new Owner(data.user.uid, name, data.user.email);
-            userDb = "owners";
+            // userDb = "owners";
             break;
         }
         Firebase.database().ref().child(userDb + '/' + user.id).set(user);
       })
+
       .then(() => {
         currentUser.sendEmailVerification();
         Firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            user.getIdToken(true);
-            console.log(user);
             user.updateProfile({
               displayName: name
             })

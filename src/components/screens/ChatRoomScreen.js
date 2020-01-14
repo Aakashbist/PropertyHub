@@ -20,7 +20,6 @@ const ChatRoomScreen = (props) => {
 
     getMessages = (chatRoomId) => {
         loadMessages(chatRoomId, (message) => {
-
             setMessages(
                 previous => GiftedChat.append(previous, message)
             )
@@ -35,7 +34,9 @@ const ChatRoomScreen = (props) => {
             userName = user.displayName;
         }
         // passed as params from react navigation
+
         receiverId = props.navigation.getParam('key');
+        alert(receiverId);
         roomId = getChatRoomId(senderId, receiverId);
         setChatRoomId(roomId);
         setSenderId(senderId)
@@ -43,9 +44,11 @@ const ChatRoomScreen = (props) => {
         setUserName(userName)
         getMessages(roomId);
     }
+
     checkVisible = () => {
         setIsVisible(!isVisible)
     }
+
     useEffect(() => {
         initializeChatRoom();
     }, [])
@@ -65,7 +68,7 @@ const ChatRoomScreen = (props) => {
                 <GiftedChat
                     showUserAvatar={true}
                     messages={messages}
-                    onSend={(newMessage) => sendMessage(newMessage, chatRoomId)}
+                    onSend={(newMessage) => sendMessage(newMessage, chatRoomId, senderId, receiverId)}
                     user={{
                         _id: senderId,
                         name: userName,

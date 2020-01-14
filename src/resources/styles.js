@@ -22,6 +22,12 @@ export default {
         flex: 1,
         width: '100%',
     },
+    flatView: {
+        justifyContent: 'center',
+        paddingTop: 30,
+        borderRadius: 2,
+    },
+
     inputBox: {
         width: '80%',
         margin: 10,

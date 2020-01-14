@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Image, View } from 'react-native';
+import { ActivityIndicator, Image, View, Alert } from 'react-native';
 import Firebase from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import styles from '../../resources/styles';
@@ -16,6 +16,7 @@ export default class AuthLoading extends Component {
                 user.getIdTokenResult().then((token) => {
                     if (user && user.emailVerified) {
                         this.props.navigation.navigate(token.claims.isOwner ? AppRoute.Owner : AppRoute.Tenant);
+
                     } else {
                         this.props.navigation.navigate(AppRoute.Auth)
                     }
