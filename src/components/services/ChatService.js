@@ -35,7 +35,7 @@ export function loadMessages(chatRoomId, callback) {
 }
 
 // send the message to the Backend
-export function sendMessage(message, chatRoomId, senderId, receiverId) {
+export function sendMessage(message, chatRoomId) {
     messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`)
     for (let i = 0; i < message.length; i++) {
         messagesRef.push({

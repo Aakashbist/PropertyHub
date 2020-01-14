@@ -50,11 +50,11 @@ const Signup = (props) => {
         switch (userType) {
           case UserType.TENANT:
             user = new Tenant(data.user.uid, name, data.user.email);
-            // userDb = "tenants";
+            userDb = "tenants";
             break;
           case UserType.OWNER:
             user = new Owner(data.user.uid, name, data.user.email);
-            // userDb = "owners";
+            userDb = "owners";
             break;
         }
         Firebase.database().ref().child(userDb + '/' + user.id).set(user);

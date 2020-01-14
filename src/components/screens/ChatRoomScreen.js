@@ -13,7 +13,6 @@ const ChatRoomScreen = (props) => {
     const [messages, setMessages] = useState([]);
     const [chatRoomId, setChatRoomId] = useState();
     const [senderId, setSenderId] = useState();
-    const [receiverId, setReceiverId] = useState();
     const [userName, setUserName] = useState();
     const [limit, setLimit] = useState(2);
     const [isVisible, setIsVisible] = useState(true)
@@ -31,17 +30,12 @@ const ChatRoomScreen = (props) => {
         const user = Firebase.auth().currentUser;
         if (user !== null) {
             senderId = user.uid;
-            userName = user.displayName;
         }
-        // passed as params from react navigation
 
         receiverId = props.navigation.getParam('key');
-        alert(receiverId);
         roomId = getChatRoomId(senderId, receiverId);
         setChatRoomId(roomId);
         setSenderId(senderId)
-        setReceiverId(receiverId)
-        setUserName(userName)
         getMessages(roomId);
     }
 
@@ -68,7 +62,7 @@ const ChatRoomScreen = (props) => {
                 <GiftedChat
                     showUserAvatar={true}
                     messages={messages}
-                    onSend={(newMessage) => sendMessage(newMessage, chatRoomId, senderId, receiverId)}
+                    onSend={(newMessage) => sendMessage(newMessage, chatRoomId)}
                     user={{
                         _id: senderId,
                         name: userName,
@@ -79,14 +73,14 @@ const ChatRoomScreen = (props) => {
 
     );
 }
-ChatRoomScreen.navigationOptions = (props) => ({
-    title: 'XXX',
+
+ChatRoomScreen.navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.title}`,
     headerStyle: {
         backgroundColor: colors.primary,
     },
     headerTintColor: colors.white,
+
 });
-
-
 
 export default ChatRoomScreen;

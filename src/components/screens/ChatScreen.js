@@ -5,7 +5,7 @@ import { Header, icon, Text, Button, Icon } from 'react-native-elements';
 import colors from '../../resources/colors';
 import Firebase from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
-import { getChatHistoryById } from '../services/ChatService';
+import { getChatHistoryById, shouldCreateChatHistory } from '../services/ChatService';
 import { TouchableOpacity } from 'react-native';
 import { getUserById } from '../services/UserService';
 
@@ -23,12 +23,9 @@ const ChatScreen = (props) => {
         user.getIdTokenResult()
             .then((token) => {
                 isOwner = token.claims.isOwner;
-                console.log(isOwner, "claims");
                 return getChatHistoryById(user.uid);
             })
             .then((chatees) => {
-                console.log(chatees, "chatees");
-
                 const promises = [];
                 chatees.forEach(user => {
                     promises.push(getUserById(user.chatee, isOwner))
@@ -36,11 +33,14 @@ const ChatScreen = (props) => {
                 return Promise.all(promises)
             })
             .then((values) => {
-                console.log(values, 'promiseall');
-
                 setChatUsers(values)
             })
             .catch(error => alert(error))
+    }
+
+    createchatHistory = () => {
+        const userId = Firebase.auth().currentUser.uid;
+        shouldCreateChatHistory(userId, "kLE8oU1F6zL6dpwU7RpfCWoDd7B2")
     }
 
     let view = chatUsers == null ? <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
@@ -55,7 +55,7 @@ const ChatScreen = (props) => {
                 renderItem={({ item }) => (
                     <View style={styles.flatView}>
                         <TouchableOpacity
-                            onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: item.id })}
+                            onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: item.id, title: item.name })}
                         >
                             <Text>{item.name}</Text>
                         </TouchableOpacity>
@@ -71,6 +71,7 @@ const ChatScreen = (props) => {
     return (
         <ScrollView>
             <View style={styles.containerFull} >
+                <Button title="create chat" onPress={() => createchatHistory()}></Button>
                 {view}
             </View>
         </ScrollView>
