@@ -30,12 +30,14 @@ const ChatRoomScreen = (props) => {
         const user = Firebase.auth().currentUser;
         if (user !== null) {
             senderId = user.uid;
+            userName = user.displayName
         }
 
         receiverId = props.navigation.getParam('key');
         roomId = getChatRoomId(senderId, receiverId);
         setChatRoomId(roomId);
-        setSenderId(senderId)
+        setUserName(userName);
+        setSenderId(senderId);
         getMessages(roomId);
     }
 
