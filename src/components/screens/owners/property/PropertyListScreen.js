@@ -89,11 +89,13 @@ const PropertyListScreen = (props) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
-            <ScrollView>
-                <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
-                    {view}
-                </View>
-            </ScrollView>
+            <SafeAreaView>
+                <ScrollView>
+                    <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
+                        {view}
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
         </View>
     )
 }

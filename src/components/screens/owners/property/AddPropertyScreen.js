@@ -37,8 +37,8 @@ const AddNewProperty = (props) => {
     const [propertyType, setPropertyType] = useState(null);
     const [canAddProperty, setCanAddProperty] = useState('');
     const [unitNumber, setUnitNumber] = useState('');
-    const [bond, setBond] = useState('2');
-    const [rent, setRent] = useState('2');
+    const [bond, setBond] = useState();
+    const [rent, setRent] = useState();
     const [bedroom, setBedroom] = useState(1);
     const [bathroom, setBathroom] = useState(1);
     const [address, setAddress] = useState([])

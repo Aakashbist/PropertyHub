@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import { once } from 'lodash';
 import { Header } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
@@ -15,8 +15,6 @@ const ChatRoomScreen = (props) => {
     const [chatRoomId, setChatRoomId] = useState();
     const [senderId, setSenderId] = useState();
     const [userName, setUserName] = useState();
-    const [limit, setLimit] = useState(2);
-    const [isVisible, setIsVisible] = useState(true)
 
     useEffect(() => {
         initializeChatRoom();
@@ -35,9 +33,8 @@ const ChatRoomScreen = (props) => {
         const user = Firebase.auth().currentUser;
         if (user !== null) {
             senderId = user.uid;
-            userName = user.displayName
+            userName = user.displayName;
         }
-
         receiverId = props.navigation.getParam('key');
         roomId = getChatRoomId(senderId, receiverId);
         setChatRoomId(roomId);
@@ -48,15 +45,10 @@ const ChatRoomScreen = (props) => {
 
     createHistory = () => {
         const receiverId = props.navigation.getParam('key');
-        console.log(senderId, receiverId, 'tes');
         shouldCreateChatHistory(senderId, receiverId)
     }
 
     const initiateChat = once(createHistory)
-
-    checkVisible = () => {
-        setIsVisible(!isVisible)
-    }
 
     loadMoreMessage = () => {
         loadMessages(chatRoomId, (message) => {

@@ -15,14 +15,12 @@ const PropertyDetailScreen = (props) => {
     useEffect(() => {
         if (props.navigation.state.params) {
             const { key } = props.navigation.state.params;
-            console.log(key, "detailscreen")
             getProperty(key);
         }
     }, [])
     getProperty = (key) => {
         getPropertyById(currentUser, key).then((data) => {
             setProperties(data);
-            console.log(data, "details")
         }).catch((error) => console.log(error));
     }
     return (

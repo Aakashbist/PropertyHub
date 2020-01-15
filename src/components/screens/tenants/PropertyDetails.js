@@ -24,16 +24,13 @@ const PropertyDetails = (props) => {
         if (propertyId) {
             getPropertyById(propertyId)
                 .then((property) => {
-                    console.log("prop", property)
                     setProperty(property);
                     return getOwnerById(property.ownerId);
                 })
                 .then((owner) => {
-                    console.log(owner, 'ower');
                     setOwner(owner)
                 })
                 .catch((error) => {
-                    console.log("null", error)
                     setError(error);
                 })
         }

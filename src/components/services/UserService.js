@@ -10,7 +10,6 @@ export function getUserById(key) {
             [getTenantById(key),
             getOwnerById(key)]
         ).then(([tenant, owner]) => {
-            console.log(tenant, owner, "datasss");
             resolve(tenant ? tenant : owner);
         }).catch(error => reject(error));
     });
