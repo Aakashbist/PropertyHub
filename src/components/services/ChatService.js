@@ -74,19 +74,30 @@ export function getChatHistoryById(userId) {
 
 export function shouldCreateChatHistory(senderId, receiverId) {
     //check for id before pushing
+    let promises = [];
     getChatHistoryById(senderId).then(data => {
-        data.forEach(element => {
-            if (element.chatee === receiverId) {
-                return;
-            }
-            else {
-                const senderRef = Firebase.database().ref(`${chatHistoryCollection}/${senderId}/`);
-                senderRef.push({ chatee: receiverId })
-                const receiverRef = Firebase.database().ref(`${chatHistoryCollection}/${receiverId}/`);
-                receiverRef.push({ chatee: senderId })
-            }
-        });
+        console.log(data, "sender array");
+        const found = data.find(element => element.chatee === receiverId)
+        if (!found) {
+            promises.push(addChateeForUser(senderId, receiverId))
+        }
+    });
+    getChatHistoryById(receiverId).then(data => {
+        console.log(data, "receiver array");
+        const found = data.find(element => element.chatee === senderId)
+        if (!found) {
+            promises.push(addChateeForUser(receiverId, senderId))
+        }
+    });
+    return Promise.all(promises);
+}
+
+function addChateeForUser(userId, chateeId) {
+    return new Promise((resolve, reject) => {
+        const senderRef = Firebase.database().ref(`${chatHistoryCollection}/${userId}/`);
+        senderRef.push({ chatee: chateeId }, data => resolve(data))
     })
+
 }
 
 // close the connection to the Backend

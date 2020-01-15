@@ -6,17 +6,11 @@ const propertyCollection = 'property';
 
 export function getPropertiesBySearch(searchTerm) {
     return new Promise((resolve, reject) => {
-        Firebase.database().ref('property').once(
+        Firebase.database().ref(`${propertyCollection}`).once(
             'value',
             snapshot => {
                 var data = snapshot.val();
-                var properties = flatMap(data, (ownerList, ownerId) => {
-                    return flatMap(ownerList, (property, propertyId) => {
-                        property.id = propertyId;
-                        return property;
-                    });
-                });
-
+                const properties = mapToArray(data);
                 if (searchTerm) {
                     var matching = filter(properties, (property) => {
                         return property.address.toLowerCase().includes(searchTerm.toLowerCase());
