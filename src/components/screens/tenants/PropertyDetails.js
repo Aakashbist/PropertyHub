@@ -7,7 +7,7 @@ import {
     TouchableOpacity
 } from 'react-native';
 import styles from '../../../resources/styles';
-import { getAnyPropertyById } from '../../services/PropertyService';
+import { getPropertyById } from '../../services/PropertyService';
 import { Header, Image, Button, Icon, Divider } from 'react-native-elements';
 import colors from '../../../resources/colors';
 
@@ -18,7 +18,7 @@ const PropertyDetails = (props) => {
     useEffect(() => {
         const { propertyId } = props.navigation.state.params;
         if (propertyId) {
-            getAnyPropertyById(propertyId)
+            getPropertyById(propertyId)
                 .then((property) => {
                     console.log("prop", property)
                     setProperty(property);
@@ -46,8 +46,6 @@ const PropertyDetails = (props) => {
                     <Icon name='map-marker' type='font-awesome' size={28} color={colors.secondary} iconStyle={{ marginEnd: 16, width: 40 }} />
                     <Text style={[styles.textSubHeading, { flexShrink: 1 }]}>{property.address}</Text>
                 </View>
-
-
 
                 <View style={{ marginVertical: 16, alignSelf: 'stretch', flexDirection: 'row' }}>
                     <View style={{ marginRight: 60, alignSelf: 'stretch', flexDirection: 'row' }}>
