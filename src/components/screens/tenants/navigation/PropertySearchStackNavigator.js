@@ -7,13 +7,20 @@ import { Icon } from 'react-native-elements';
 import React from 'react';
 import colors from '../../../../resources/colors';
 import { View } from 'react-native';
+import ChatScreen from '../../ChatScreen';
+import ChatRoomScreen from '../../ChatRoomScreen';
 
 const PropertySearchStackNavigator = createStackNavigator(
     {
         PropertySearch: {
             screen: PropertySearch,
         },
-        PropertyDetails: { screen: PropertyDetails }
+        PropertyDetails: {
+            screen: PropertyDetails
+        },
+        ChatRoomScreen: {
+            screen: ChatRoomScreen
+        }
     },
     {
         initialRouteName: AppRoute.PropertySearch,

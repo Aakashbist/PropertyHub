@@ -9,8 +9,9 @@ import {
 import styles from '../../../resources/styles';
 import { getPropertyById } from '../../services/PropertyService';
 import { getOwnerById } from '../../services/UserService';
-import { Header, Image, Button, Icon, Divider, Badge } from 'react-native-elements';
+import { Header, Image, Button, Icon, Divider, Badge, Avatar } from 'react-native-elements';
 import colors from '../../../resources/colors';
+import AppRoute from '../../../resources/appRoute';
 
 const PropertyDetails = (props) => {
     const [property, setProperty] = useState(undefined);
@@ -36,6 +37,16 @@ const PropertyDetails = (props) => {
                 })
         }
     }, []);
+
+    getNameInitials = (name) => {
+        const names = name.split(' ');
+        const initials = names.map(namePart => namePart.charAt(0).toUpperCase())
+        if (initials.length > 1) {
+            return `${initials[0]}${initials[initials.length - 1]}`;
+        } else {
+            return initials[0];
+        }
+    }
 
     const view = property ?
         <View style={[styles.containerFull, { paddingBottom: 80 }]}>
@@ -78,11 +89,23 @@ const PropertyDetails = (props) => {
                 <Text style={styles.overline}>Description</Text>
                 <Text style={[styles.textSubHeading, { fontWeight: 'bold', fontSize: 18, flexShrink: 1, marginTop: 8 }]}>{property.propertyDescription}</Text>
 
-                {owner && <View> 
+                {owner && <View>
                     <Divider style={{ marginVertical: 16 }} />
                     <Text style={styles.overline}>Property Owner</Text>
-                    <Text style={[styles.textSubHeading, { fontWeight: 'bold', fontSize: 18, flexShrink: 1, marginTop: 8 }]}>{owner.name}</Text>
-                </View> 
+                    <View style={{ flex: 1, flexDirection: 'row', marginTop: 8 }}>
+                        <Avatar rounded size="medium"
+                            title={getNameInitials(owner.name)} containerStyle={{ marginRight: 10 }} />
+                        <Text style={[styles.textSubHeading, {
+                            alignSelf: 'center',
+                            fontWeight: 'bold',
+                            fontSize: 24,
+                            flex: 1,
+                            marginTop: 8
+                        }]}>{owner.name}</Text>
+                        <Icon name='comments' type='font-awesome' size={24} color={colors.secondary}
+                            containerStyle={{ alignSelf: 'center' }} onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: owner.id, title: owner.name })} />
+                    </View>
+                </View>
                 }
 
                 <Divider style={{ marginTop: 16, marginBottom: 40 }} />
