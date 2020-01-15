@@ -48,12 +48,12 @@ const PropertyDetails = (props) => {
                 </View>
 
                 <View style={{ marginVertical: 16, alignSelf: 'stretch', flexDirection: 'row' }}>
-                    <View style={{ marginRight: 60, alignSelf: 'stretch', flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', alignSelf: 'center', flex: 1, flexDirection: 'row' }}>
                         <Icon name='bed' type='font-awesome' size={28} color={colors.secondary} iconStyle={{ marginEnd: 16, width: 40 }} />
                         <Text style={[styles.textSubHeading, { flexShrink: 1 }]}>{property.bedroom}</Text>
                     </View>
 
-                    <View style={{ alignSelf: 'stretch', flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', flex: 1, flexDirection: 'row' }}>
                         <Icon name='bath' type='font-awesome' size={24} color={colors.secondary} iconStyle={{ marginEnd: 16, width: 40 }} />
                         <Text style={[styles.textSubHeading, { flexShrink: 1 }]}>{property.bathroom}</Text>
                     </View>
