@@ -8,11 +8,13 @@ import {
 } from 'react-native';
 import styles from '../../../resources/styles';
 import { getPropertyById } from '../../services/PropertyService';
-import { Header, Image, Button, Icon, Divider } from 'react-native-elements';
+import { getOwnerById } from '../../services/UserService';
+import { Header, Image, Button, Icon, Divider, Badge } from 'react-native-elements';
 import colors from '../../../resources/colors';
 
 const PropertyDetails = (props) => {
     const [property, setProperty] = useState(undefined);
+    const [owner, setOwner] = useState(undefined);
     const [error, setError] = useState();
 
     useEffect(() => {
@@ -22,6 +24,11 @@ const PropertyDetails = (props) => {
                 .then((property) => {
                     console.log("prop", property)
                     setProperty(property);
+                    return getOwnerById(property.ownerId);
+                })
+                .then((owner) => {
+                    console.log(owner, 'ower');
+                    setOwner(owner)
                 })
                 .catch((error) => {
                     console.log("null", error)
@@ -66,6 +73,17 @@ const PropertyDetails = (props) => {
                 <Divider style={{ marginVertical: 16 }} />
                 <Text style={styles.overline}>Rented Weekly</Text>
                 <Text style={[styles.textSubHeading, { fontWeight: 'bold', fontSize: 32 }]}>${property.rent}</Text>
+
+                <Divider style={{ marginVertical: 16 }} />
+                <Text style={styles.overline}>Description</Text>
+                <Text style={[styles.textSubHeading, { fontWeight: 'bold', fontSize: 18, flexShrink: 1, marginTop: 8 }]}>{property.propertyDescription}</Text>
+
+                {owner && <View> 
+                    <Divider style={{ marginVertical: 16 }} />
+                    <Text style={styles.overline}>Property Owner</Text>
+                    <Text style={[styles.textSubHeading, { fontWeight: 'bold', fontSize: 18, flexShrink: 1, marginTop: 8 }]}>{owner.name}</Text>
+                </View> 
+                }
 
                 <Divider style={{ marginTop: 16, marginBottom: 40 }} />
 
