@@ -1,12 +1,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { once } from 'lodash';
 import { Header } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
-import { getChatRoomId, loadMessages, sendMessage } from '../services/ChatService';
+import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory } from '../services/ChatService';
 
 const ChatRoomScreen = (props) => {
 
@@ -16,6 +17,10 @@ const ChatRoomScreen = (props) => {
     const [userName, setUserName] = useState();
     const [limit, setLimit] = useState(2);
     const [isVisible, setIsVisible] = useState(true)
+
+    useEffect(() => {
+        initializeChatRoom();
+    }, [])
 
     getMessages = (chatRoomId) => {
         loadMessages(chatRoomId, (message) => {
@@ -41,13 +46,17 @@ const ChatRoomScreen = (props) => {
         getMessages(roomId);
     }
 
+    createHistory = () => {
+        const receiverId = props.navigation.getParam('key');
+        console.log(senderId, receiverId, 'tes');
+        shouldCreateChatHistory(senderId, receiverId)
+    }
+
+    const initiateChat = once(createHistory)
+
     checkVisible = () => {
         setIsVisible(!isVisible)
     }
-
-    useEffect(() => {
-        initializeChatRoom();
-    }, [])
 
     loadMoreMessage = () => {
         loadMessages(chatRoomId, (message) => {
@@ -64,7 +73,10 @@ const ChatRoomScreen = (props) => {
                 <GiftedChat
                     showUserAvatar={true}
                     messages={messages}
-                    onSend={(newMessage) => sendMessage(newMessage, chatRoomId)}
+                    onSend={(newMessage) => {
+                        initiateChat();
+                        sendMessage(newMessage, chatRoomId)
+                    }}
                     user={{
                         _id: senderId,
                         name: userName,

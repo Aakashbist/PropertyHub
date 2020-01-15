@@ -12,6 +12,7 @@ import { getOwnerById } from '../../services/UserService';
 import { Header, Image, Button, Icon, Divider, Badge, Avatar } from 'react-native-elements';
 import colors from '../../../resources/colors';
 import AppRoute from '../../../resources/appRoute';
+import { getNameInitials } from '../../utils/TextUtils';
 
 const PropertyDetails = (props) => {
     const [property, setProperty] = useState(undefined);
@@ -38,15 +39,6 @@ const PropertyDetails = (props) => {
         }
     }, []);
 
-    getNameInitials = (name) => {
-        const names = name.split(' ');
-        const initials = names.map(namePart => namePart.charAt(0).toUpperCase())
-        if (initials.length > 1) {
-            return `${initials[0]}${initials[initials.length - 1]}`;
-        } else {
-            return initials[0];
-        }
-    }
 
     const view = property ?
         <View style={[styles.containerFull, { paddingBottom: 80 }]}>
