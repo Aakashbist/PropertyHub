@@ -39,6 +39,9 @@ target 'PropertyHub' do
  pod 'react-native-google-maps', :path => rn_maps_path
  pod 'GoogleMaps'
  pod 'Google-Maps-iOS-Utils'
+
+ # document upload
+ pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
   use_native_modules!
 end
 

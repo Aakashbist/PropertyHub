@@ -12,9 +12,11 @@ import colors from '../../../../resources/colors';
 import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
-import { getDownloadImageUrl } from '../../../services/imageUploadService';
+import { getDownloadUrl } from '../../../services/UploadService';
 import { getPropertyById, createProperty, addPropertyReferenceToOwner, updateProperty } from '../../../services/PropertyService';
-import { updateLocale } from 'moment';
+
+
+
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -65,6 +67,9 @@ const AddNewProperty = (props) => {
             setCanAddProperty(_canAddProperty);
         }
     }, [rent, bond, propertyType, isLoading, imageUri]);
+
+
+
 
     getProperty = (key, mode) => {
         getPropertyById(key).then((data) => {
@@ -202,7 +207,7 @@ const AddNewProperty = (props) => {
     handleAddProperty = () => {
         setIsLoading(true);
         let property;
-        getDownloadImageUrl(imageUri, imageFileName)
+        getDownloadUrl(imageUri, imageFileName)
             .then((url) => {
                 property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
                     rent, bond, url, latitude, longitude, currentUser)

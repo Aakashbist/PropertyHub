@@ -75,9 +75,9 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-	 <key>NSPhotoLibraryUsageDescription</key>
-    <string> would like access to your photo gallery</string>
-    <key>NSCameraUsageDescription</key>
-    <string>would like to use your camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string> would like access to your photo gallery</string>
+	<key>NSCameraUsageDescription</key>
+	<string>would like to use your camera</string>
 </dict>
 </plist>

@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* PropertyHubTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* PropertyHubTests.m */; };
 		0F1E7D87AF16436F8CFE039E /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 757011F2C6B94E65807A21BA /* MaterialCommunityIcons.ttf */; };

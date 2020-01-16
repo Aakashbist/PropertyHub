@@ -30,6 +30,7 @@ const PropertyListScreen = (props) => {
         getListOfProperties();
     }, [])
 
+
     deleteProperties = (propertyId) => {
         Alert.alert(
             'Delete Address',
@@ -65,11 +66,13 @@ const PropertyListScreen = (props) => {
                             <Text style={{ flex: 1, fontSize: 16 }}>{item.address}</Text>
                             <TouchableOpacity
                                 style={{ marginHorizontal: 4 }}
+                                onPress={this.openDocumentPicker}
                                 onPress={() => props.navigation.navigate(AppRoute.AddProperty,
                                     {
                                         key: item.id,
                                         mode: 'EDIT'
-                                    })}>
+                                    })}
+                            >
                                 <Icon name='edit' type='entypo' size={20} color={colors.primaryDark} />
                             </TouchableOpacity>
 

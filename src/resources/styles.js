@@ -134,6 +134,11 @@ export default {
         right: 30,
         bottom: 30,
     },
+    customActionsContainer: {
+        flex: 1,
+        flexDirection: "row",
+        paddingBottom: 8
+    },
 
     FloatingButtonStyle: {
         resizeMode: 'contain',
