@@ -56,6 +56,7 @@ const AddNewProperty = (props) => {
             getProperty(key, mode);
         }
 
+
     }, [])
 
     useEffect(() => {
