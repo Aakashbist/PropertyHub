@@ -82,6 +82,7 @@ const AddNewProperty = (props) => {
     selectPropertyImage = () => {
         ImagePicker.showImagePicker({ noData: true, mediaType: 'photo' }, (response) => {
             setImageUri(response.uri);
+            console.log(response.uri)
             setImageFileName(response.fileName)
         })
     }

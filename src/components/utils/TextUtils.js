@@ -1,3 +1,4 @@
+import { UrlTile } from "react-native-maps";
 
 export function getNameInitials(name) {
     const names = name.split(' ');
@@ -8,3 +9,6 @@ export function getNameInitials(name) {
         return initials[0];
     }
 }
+
+
+

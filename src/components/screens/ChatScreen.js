@@ -34,7 +34,6 @@ const ChatScreen = (props) => {
                 return Promise.all(promises)
             })
             .then((values) => {
-                console.log(values, 'chattee');
                 setChatUsers(values)
             })
             .catch(error => alert(error))
