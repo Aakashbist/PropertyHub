@@ -1,4 +1,4 @@
-import { filter, flatMap } from 'lodash';
+import { filter } from 'lodash';
 import Firebase from '../../config/Firebase';
 import { mapToArray } from '../../utils/firebaseArray';
 
@@ -10,14 +10,18 @@ export function getPropertiesBySearch(searchTerm) {
             'value',
             snapshot => {
                 var data = snapshot.val();
-                const properties = mapToArray(data);
-                if (searchTerm) {
-                    var matching = filter(properties, (property) => {
-                        return property.address.toLowerCase().includes(searchTerm.toLowerCase());
-                    });
-                    resolve(matching);
+                if (data) {
+                    const properties = mapToArray(data);
+                    if (searchTerm) {
+                        var matching = filter(properties, (property) => {
+                            return property.address.toLowerCase().includes(searchTerm.toLowerCase());
+                        });
+                        resolve(matching);
+                    } else {
+                        resolve(properties);
+                    }
                 } else {
-                    resolve(properties);
+                    resolve([]);
                 }
             },
             error => reject(error));

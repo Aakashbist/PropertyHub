@@ -21,32 +21,33 @@ export function loadMessages(chatRoomId, callback) {
     messagesRef.off();
     const onResponse = (data) => {
         const message = data.val();
-        callback({
-            _id: data.key,
-            text: message.text,
-            createdAt: new Date(message.timeStamp),
-            image: message.image,
-            user: {
-                _id: message.user._id,
-                name: message.user.name,
-            },
-        });
+        message.createdAt = message.timeStamp
+        callback(message);
     }
     messagesRef.orderByChild('timeStamp').limitToLast(50).on('child_added', onResponse);
 }
 
 // send the message to the Backend
-export function sendMessage(message, chatRoomId) {
-    messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`)
-    for (let i = 0; i < message.length; i++) {
-        messagesRef.push({
-            text: message[i].text,
-            user: message[i].user,
-            createdAt: - 1 * moment().valueOf(),
-            timeStamp: firebase.database.ServerValue.TIMESTAMP,
-        });
-    }
+export function sendMessage(messages, chatRoomId) {
+    var promises = []
+    const messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`)
 
+    messages.forEach(message => {
+        promises.push(new Promise((resolve, reject) => {
+            message.createdAt = - 1 * moment().valueOf();
+            message.timeStamp = firebase.database.ServerValue.TIMESTAMP;
+
+            messagesRef.push(message, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve()
+                }
+            });
+        }))
+    });
+
+    return Promise.all(promises)
 }
 
 export function createChat(senderId, receiverId) {
