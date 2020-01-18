@@ -1,4 +1,4 @@
-import { Body, Button, Container, Content, Footer, FooterTab, Header, Right, StyleProvider } from 'native-base';
+import { Body, Button, Container, Content, Footer, FooterTab, Header, Right, StyleProvider, Title } from 'native-base';
 import React from 'react';
 import { Text, Avatar } from 'react-native-elements';
 import { Image, StyleSheet, View } from 'react-native';
@@ -20,21 +20,13 @@ const DrawerMenu = (props) => {
     return (
         <StyleProvider style={getTheme(material)}>
             <Container>
-                <Header style={{ height: 250 }}>
-                    <Body>
+                <Header style={{ height: 140, justifyContent: 'center' }}>
+                    <Body style={{ alignItems: "center" }}>
                         <Avatar rounded size="large"
-                            title={getNameInitials(user.displayName)} containerStyle={{ marginRight: 10, marginTop: 60 }} />
-                        <View style={[styles.textSubHeading, {
-                            alignSelf: 'flex-start',
-                            fontWeight: 'bold',
-                            fontSize: 24,
-                            flex: 1,
-                            marginTop: 8,
-
-                        }]}>
-                            <Text style={{ color: colors.white }}>{user.email}</Text>
-                            <Text style={{ color: colors.white }}>{user.displayName}</Text>
-                        </View>
+                            overlayContainerStyle={{ backgroundColor: colors.accent }}
+                            titleStyle={{ color: colors.white }}
+                            title={getNameInitials(user.displayName)} />
+                        <Title style={{ marginTop: 8 }}>{user.displayName}</Title>
                     </Body>
                 </Header>
                 <Content>
@@ -43,12 +35,12 @@ const DrawerMenu = (props) => {
                 <Footer>
                     <FooterTab>
                         <Button onPress={this.handleSignOut}>
-                            <Text style={[styles.overline, { fontSize: 14 }]}>Logout </Text>
+                            <Text style={[styles.overline, { fontSize: 14, color: colors.white }]}>Logout </Text>
                         </Button>
                     </FooterTab>
                 </Footer>
             </Container>
-        </StyleProvider>
+        </StyleProvider >
     )
 }
 
