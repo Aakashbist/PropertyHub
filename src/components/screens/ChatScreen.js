@@ -53,15 +53,14 @@ const ChatScreen = (props) => {
                         <TouchableOpacity
                             style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}
                             onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: item.id, title: item.name })}>
-                            <Avatar rounded size="medium"
+                            <Avatar rounded
                                 overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
-                                title={getNameInitials(item.name)} containerStyle={{ marginRight: 20 }} />
+                                title={getNameInitials(item.name)} containerStyle={{ marginRight: 16 }} />
                             <Text style={[styles.textSubHeading, {
                                 alignSelf: 'center',
                                 fontWeight: 'bold',
-                                fontSize: 24,
-                                flex: 1,
-                                marginTop: 8
+                                fontSize: 16,
+                                flex: 1
                             }]}>{item.name}</Text>
                         </TouchableOpacity>
                         <Divider />
