@@ -1,4 +1,4 @@
-import Firebase from '../../config/Firebase';
+import { Firebase } from '../../config/Firebase';
 import DocumentPicker from 'react-native-document-picker';
 
 const collection = "Documents"
@@ -45,10 +45,8 @@ export function openDocumentPicker() {
             if (DocumentPicker.isCancel(err)) {
                 //If user canceled the document selection
                 reject(error)
-                console.log('Canceled from single doc picker');
             } else {
                 reject(error)
-                console.log('Unknown Error: ' + JSON.stringify(err));
                 throw err;
             }
         }

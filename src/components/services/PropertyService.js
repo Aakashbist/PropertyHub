@@ -1,6 +1,6 @@
-import { filter, flatMap } from 'lodash';
-import Firebase from '../../config/Firebase';
-import { mapToArray } from '../../utils/firebaseArray';
+import { filter } from 'lodash';
+import { Firebase } from '../../config/Firebase';
+import { mapToArray } from '../utils/firebaseArray';
 
 const propertyCollection = 'property';
 
@@ -10,14 +10,18 @@ export function getPropertiesBySearch(searchTerm) {
             'value',
             snapshot => {
                 var data = snapshot.val();
-                const properties = mapToArray(data);
-                if (searchTerm) {
-                    var matching = filter(properties, (property) => {
-                        return property.address.toLowerCase().includes(searchTerm.toLowerCase());
-                    });
-                    resolve(matching);
+                if (data) {
+                    const properties = mapToArray(data);
+                    if (searchTerm) {
+                        var matching = filter(properties, (property) => {
+                            return property.address.toLowerCase().includes(searchTerm.toLowerCase());
+                        });
+                        resolve(matching);
+                    } else {
+                        resolve(properties);
+                    }
                 } else {
-                    resolve(properties);
+                    resolve([]);
                 }
             },
             error => reject(error));
@@ -43,10 +47,9 @@ export function propertyReference(userId, callback) {
 
 export function deletePropertiesWithId(propertyId) {
     let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/${propertyId}`);
-    console.log(dbPropertyRef.toString());
     return new Promise((resolve, reject) => {
         return dbPropertyRef.remove()
-            .then(resolve(), console.log("resolve"))
+            .then(resolve())
             .catch(error => reject(error))
     })
 }

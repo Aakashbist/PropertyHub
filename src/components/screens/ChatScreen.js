@@ -3,7 +3,7 @@ import styles from '../../resources/styles';
 import { ScrollView, View, FlatList } from 'react-native';
 import { Header, icon, Text, Button, Icon, Avatar, Divider } from 'react-native-elements';
 import colors from '../../resources/colors';
-import Firebase from '../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import { getChatHistoryById } from '../services/ChatService';
 import { TouchableOpacity } from 'react-native';
@@ -19,7 +19,7 @@ const ChatScreen = (props) => {
     }, []);
 
     initializeChat = () => {
-        const user = Firebase.auth().currentUser;
+        const user = getCurrentUser();
         var isOwner;
         user.getIdTokenResult()
             .then((token) => {
@@ -53,14 +53,14 @@ const ChatScreen = (props) => {
                         <TouchableOpacity
                             style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}
                             onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: item.id, title: item.name })}>
-                            <Avatar rounded size="medium"
-                                title={getNameInitials(item.name)} containerStyle={{ marginRight: 20 }} />
+                            <Avatar rounded
+                                overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
+                                title={getNameInitials(item.name)} containerStyle={{ marginRight: 16 }} />
                             <Text style={[styles.textSubHeading, {
                                 alignSelf: 'center',
                                 fontWeight: 'bold',
-                                fontSize: 24,
-                                flex: 1,
-                                marginTop: 8
+                                fontSize: 16,
+                                flex: 1
                             }]}>{item.name}</Text>
                         </TouchableOpacity>
                         <Divider />

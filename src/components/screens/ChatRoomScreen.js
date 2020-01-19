@@ -1,15 +1,16 @@
 
 import { once } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { Avatar, Icon, Image } from 'react-native-elements';
-import { GiftedChat } from 'react-native-gifted-chat';
-import Firebase from '../../config/Firebase';
+import { View, ToastAndroid } from 'react-native';
+import { once } from 'lodash';
+import moment from 'moment';
+import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
+import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
+import { Firebase, getCurrentUser } from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
-import { deleteChatWithId, getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, sendMultipleMessage } from '../services/ChatService';
-import { openDocumentPicker } from '../services/UploadService';
-import { ActivityIndicator } from 'react-native';
+import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, observeChatRoomMessages } from '../services/ChatService';
+import { getDownloadUrl, openDocumentPicker } from '../services/UploadService';
 
 const ChatRoomScreen = (props) => {
 
@@ -17,23 +18,24 @@ const ChatRoomScreen = (props) => {
     const [chatRoomId, setChatRoomId] = useState();
     const [senderId, setSenderId] = useState();
     const [userName, setUserName] = useState();
-    const [attachmentDataList, setAttachmentDataList] = useState([]);
+    const [customText, setCustomText] = useState('');
+    const [imageUri, setImageUri] = useState();
+    const [fileType, setFileType] = useState([]);
+    const [observerRef, setObserverRef] = useState();
 
     useEffect(() => {
         initializeChatRoom();
-    }, [])
+    }, []);
 
-    getMessages = (chatRoomId) => {
-        loadMessages(chatRoomId, (message) => {
-            setMessages(
-                previous => GiftedChat.append(previous, message)
-            )
-        });
-    }
+    setNewMessages = (newMessages) => {
+        var messages = newMessages.sort((a, b) => b.createdAt - a.createdAt);
+        console.log(messages);
+        setMessages(messages);
+    };
 
     initializeChatRoom = () => {
         let senderId, receiverId, userName, roomId;
-        const user = Firebase.auth().currentUser;
+        const user = getCurrentUser();
         if (user !== null) {
             senderId = user.uid;
             userName = user.displayName;
@@ -43,22 +45,22 @@ const ChatRoomScreen = (props) => {
         setChatRoomId(roomId);
         setUserName(userName);
         setSenderId(senderId);
-        getMessages(roomId);
-    }
 
+        const observerRef = observeChatRoomMessages(roomId, (messages) => {
+            setNewMessages(messages);
+        });
+        setObserverRef(observerRef);
+    };
+
+    // once to check and create chat only once
     createHistory = () => {
         const receiverId = props.navigation.getParam('key');
         shouldCreateChatHistory(senderId, receiverId)
-    }
-
-    const initiateChat = once(createHistory)
+    };
+    const initiateChat = once(createHistory);
 
     loadMoreMessage = () => {
-        loadMessages(chatRoomId, (message) => {
-            setMessages(
-                previous => GiftedChat.append(previous, message)
-            )
-        });
+        ToastAndroid.show('Feature Coming Soon !', ToastAndroid.SHORT);
     }
     getDocumentExtension = (fileName) => {
         var i = fileName.lastIndexOf('.');
@@ -135,14 +137,21 @@ const ChatRoomScreen = (props) => {
                     showUserAvatar={true}
                     alwaysShowSend={attachmentDataList.length > 0 ? true : false}
                     renderAccessory={this.renderAccessory}
-                    messages={messages} onSend={(newMessages) => {
+                    messages={messages}
+                    loadEarlier={true}
+                    onLoadEarlier={() => this.loadMoreMessage()}
+                    onQuickReply={(replies) => {
+                        const messages = replies.map(reply => {
+                            return {
+                                text: reply.title
+                            };
+                        })
+                        console.log(messages, "hhh");
+                        sendMessage(messages, chatRoomId);
+                    }}
+                    onSend={(newMessages) => {
                         initiateChat();
-                        {
-                            console.log(attachmentDataList, "onsend")
-                            attachmentDataList.length > 0 ?
-                                sendMultipleMessage(newMessages, attachmentDataList, chatRoomId) :
-                                sendMessage(newMessages, chatRoomId)
-                        }
+                        sendMessage(newMessages, chatRoomId)
                     }}
                     user={{
                         _id: senderId,

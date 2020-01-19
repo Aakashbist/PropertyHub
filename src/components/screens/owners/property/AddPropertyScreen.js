@@ -5,7 +5,7 @@ import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, Activity
 import { Icon, Slider, SearchBar, Input } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Firebase from '../../../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../../../config/Firebase';
 import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
@@ -14,9 +14,6 @@ import styles from '../../../../resources/styles';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadUrl } from '../../../services/UploadService';
 import { getPropertyById, createProperty, addPropertyReferenceToOwner, updateProperty } from '../../../services/PropertyService';
-
-
-
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -50,7 +47,7 @@ const AddNewProperty = (props) => {
     const [propertyDescription, setPropertyDescription] = useState();
     const [error, setError] = useState("All fields are required *");
 
-    const currentUser = Firebase.auth().currentUser.uid;
+    const currentUser = getCurrentUser().uid;
 
     useEffect(() => {
         if (props.navigation.state.params) {
@@ -68,13 +65,9 @@ const AddNewProperty = (props) => {
         }
     }, [rent, bond, propertyType, isLoading, imageUri]);
 
-
-
-
     getProperty = (key, mode) => {
         getPropertyById(key).then((data) => {
             setPropertyFields(data, mode, key);
-            console.log(data, "addProperty")
 
         }).catch((error) => console.log(error));
     }
@@ -126,11 +119,9 @@ const AddNewProperty = (props) => {
             for (let j = 0; j < typesArray.length; j++) {
                 if (typesArray[j].toString() === "postal_code") {
                     const postalCode = addressComponents[i].long_name;
-                    console.log("postal code = ", postalCode)
                 }
                 if (typesArray[j].toString() === "locality") {
                     const locality = addressComponents[i].long_name;
-                    console.log("locality  = ", locality)
                 }
             }
         }
@@ -148,7 +139,7 @@ const AddNewProperty = (props) => {
                     Alert.alert(errorMessage)
                 }
             })
-            .catch(error => { console.log(JSON.stringify(json.status), "then"); setError(error) })
+            .catch(error => setError(error));
     }
 
     handleOnPropertyTypeChange = (value) => {
@@ -236,7 +227,6 @@ const AddNewProperty = (props) => {
         property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
             rent, bond, imageUri, latitude, longitude, currentUser);
         setIsLoading(false)
-        console.log(property);
         updateProperty(property, propertyKey)
             .then(navigateToPropertyList())
             .catch(error => {

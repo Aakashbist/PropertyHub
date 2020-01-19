@@ -13,6 +13,8 @@ import { Header, Image, Button, Icon, Divider, Badge, Avatar } from 'react-nativ
 import colors from '../../../resources/colors';
 import AppRoute from '../../../resources/appRoute';
 import { getNameInitials } from '../../utils/TextUtils';
+import { getChatRoomId, shouldCreateChatHistory, sendMessage } from '../../services/ChatService';
+import { Firebase, getCurrentUser } from '../../../config/Firebase';
 
 const PropertyDetails = (props) => {
     const [property, setProperty] = useState(undefined);
@@ -36,6 +38,43 @@ const PropertyDetails = (props) => {
         }
     }, []);
 
+    applyProperty = (ownerId) => {
+        if (property) {
+            const userId = getCurrentUser().uid;
+            shouldCreateChatHistory(userId, ownerId).then(() => {
+                const message = {
+                    text: `Hello ! I am interested in this property \n\n${createPropertyReference(property)}`,
+                    quickReplies: {
+                        type: 'radio',
+                        keepIt: false,
+                        values: [
+                            {
+                                title: 'What documents would you need?',
+                                value: 'documents',
+                            },
+                            {
+                                title: '😃',
+                                value: 'smiley',
+                            },
+                        ],
+                    },
+                };
+                const chatRoomId = getChatRoomId(userId, ownerId);
+
+                sendMessage([message], chatRoomId).then(() => {
+                    navigateToChatRoom(owner);
+                });
+            });
+        }
+    }
+
+    navigateToChatRoom = (owner) => {
+        props.navigation.navigate(AppRoute.ChatRoom, { key: owner.id, title: owner.name })
+    }
+
+    createPropertyReference = (property) => {
+        return property.address
+    }
 
     const view = property ?
         <View style={[styles.containerFull, { paddingBottom: 80 }]}>
@@ -92,19 +131,20 @@ const PropertyDetails = (props) => {
                             marginTop: 8
                         }]}>{owner.name}</Text>
                         <Icon name='comments' type='font-awesome' size={24} color={colors.secondary}
-                            containerStyle={{ alignSelf: 'center' }} onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: owner.id, title: owner.name })} />
+                            containerStyle={{ alignSelf: 'center' }} onPress={() => this.navigateToChatRoom(owner)} />
                     </View>
+
+                    <Divider style={{ marginTop: 16, marginBottom: 40 }} />
+
+                    <TouchableOpacity
+                        style={[styles.button, { alignSelf: 'center' }]}
+                        onPress={() => this.applyProperty(owner.id)}
+                    >
+                        <Text style={styles.buttonText}>Apply Property</Text>
+                    </TouchableOpacity>
                 </View>
                 }
 
-                <Divider style={{ marginTop: 16, marginBottom: 40 }} />
-
-                <TouchableOpacity
-                    style={[styles.button, { alignSelf: 'center' }]}
-                // onPress={this.handleAddProperty}
-                >
-                    <Text style={styles.buttonText}>Apply Property</Text>
-                </TouchableOpacity>
             </View>
         </View > : <ActivityIndicator size="large" color={colors.primary} />;
 
