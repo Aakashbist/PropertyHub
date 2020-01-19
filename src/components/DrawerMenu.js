@@ -3,7 +3,7 @@ import React from 'react';
 import { Text, Avatar } from 'react-native-elements';
 import { Image, StyleSheet, View } from 'react-native';
 import { DrawerItems } from 'react-navigation-drawer';
-import { Firebase } from '../config/Firebase';
+import { Firebase, getCurrentUser } from '../config/Firebase';
 import getTheme from '../../native-base-theme/components';
 import material from '../../native-base-theme/variables/material';
 import colors from '../resources/colors';
@@ -16,7 +16,7 @@ const DrawerMenu = (props) => {
     handleSignOut = () => {
         Firebase.auth().signOut();
     }
-    const user = Firebase.auth().currentUser;
+    const user = getCurrentUser();
     return (
         <StyleProvider style={getTheme(material)}>
             <Container>

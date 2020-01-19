@@ -14,7 +14,7 @@ import colors from '../../../resources/colors';
 import AppRoute from '../../../resources/appRoute';
 import { getNameInitials } from '../../utils/TextUtils';
 import { getChatRoomId, shouldCreateChatHistory, sendMessage } from '../../services/ChatService';
-import { Firebase } from '../../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../../config/Firebase';
 
 const PropertyDetails = (props) => {
     const [property, setProperty] = useState(undefined);
@@ -40,7 +40,7 @@ const PropertyDetails = (props) => {
 
     applyProperty = (ownerId) => {
         if (property) {
-            const userId = Firebase.auth().currentUser.uid
+            const userId = getCurrentUser().uid;
             shouldCreateChatHistory(userId, ownerId).then(() => {
                 const message = {
                     text: `Hello ! I am interested in this property \n\n${createPropertyReference(property)}`,

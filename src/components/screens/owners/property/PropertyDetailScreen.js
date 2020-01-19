@@ -4,13 +4,13 @@ import styles from '../../../../resources/styles';
 import { Image } from 'native-base';
 import { Icon } from 'react-native-elements';
 import { getPropertyById } from '../../../services/PropertyService';
-import Firebase from '../../../../config/Firebase';
+import {Firebase, getCurrentUser} from '../../../../config/Firebase';
 
 
 const PropertyDetailScreen = (props) => {
     const [properties, setProperties] = useState([]);
 
-    const currentUser = Firebase.auth().currentUser.id;
+    const currentUser = getCurrentUser.uid;
 
     useEffect(() => {
         if (props.navigation.state.params) {

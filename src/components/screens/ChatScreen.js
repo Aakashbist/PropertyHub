@@ -3,7 +3,7 @@ import styles from '../../resources/styles';
 import { ScrollView, View, FlatList } from 'react-native';
 import { Header, icon, Text, Button, Icon, Avatar, Divider } from 'react-native-elements';
 import colors from '../../resources/colors';
-import { Firebase } from '../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import { getChatHistoryById } from '../services/ChatService';
 import { TouchableOpacity } from 'react-native';
@@ -19,7 +19,7 @@ const ChatScreen = (props) => {
     }, []);
 
     initializeChat = () => {
-        const user = Firebase.auth().currentUser;
+        const user = getCurrentUser();
         var isOwner;
         user.getIdTokenResult()
             .then((token) => {

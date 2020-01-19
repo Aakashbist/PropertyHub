@@ -69,7 +69,7 @@ export function sendMessage(messages, chatRoomId) {
             message.user = {
                 _id: user.uid,
                 name: user.displayName
-            }
+            };
 
             messagesRef.push(message, (error) => {
                 if (error) {

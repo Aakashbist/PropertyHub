@@ -5,7 +5,7 @@ import { once } from 'lodash';
 import moment from 'moment';
 import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
 import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
-import { Firebase } from '../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, observeChatRoomMessages } from '../services/ChatService';
@@ -34,7 +34,7 @@ const ChatRoomScreen = (props) => {
 
     initializeChatRoom = () => {
         let senderId, receiverId, userName, roomId;
-        const user = Firebase.auth().currentUser;
+        const user = getCurrentUser();
         if (user !== null) {
             senderId = user.uid;
             userName = user.displayName;
