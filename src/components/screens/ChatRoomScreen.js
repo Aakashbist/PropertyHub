@@ -1,8 +1,7 @@
 
 import { once } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { View, ToastAndroid } from 'react-native';
-import { once } from 'lodash';
+import { View, ToastAndroid, ActivityIndicator } from 'react-native';
 import moment from 'moment';
 import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
 import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
@@ -18,9 +17,7 @@ const ChatRoomScreen = (props) => {
     const [chatRoomId, setChatRoomId] = useState();
     const [senderId, setSenderId] = useState();
     const [userName, setUserName] = useState();
-    const [customText, setCustomText] = useState('');
-    const [imageUri, setImageUri] = useState();
-    const [fileType, setFileType] = useState([]);
+    const [attachmentDataList, setAttachmentDataList] = useState([]);
     const [observerRef, setObserverRef] = useState();
 
     useEffect(() => {
@@ -151,7 +148,47 @@ const ChatRoomScreen = (props) => {
                     }}
                     onSend={(newMessages) => {
                         initiateChat();
-                        sendMessage(newMessages, chatRoomId)
+                        if (attachmentDataList.length) {
+                            const attachmentUrl = [];
+                            const promises = [];
+                            attachmentDataList.forEach(attachment =>
+                                promises.push(
+                                    new Promise((resolve, reject) => {
+                                        getDownloadUrl(attachment.fileUri, attachment.fileName)
+                                            .then(url => {
+                                                attachmentUrl.push({
+                                                    url: url,
+                                                    fileName: attachment.fileName,
+                                                    extension: attachment.extension
+                                                });
+                                                resolve();
+                                            }).catch(error => reject(error))
+                                    })
+                                )
+                            )
+                            Promise.all(promises).then(() => {
+                                const messages = attachmentUrl.map(data => {
+                                    switch (data.extension) {
+                                        case "jpg":
+                                        case "jpeg":
+                                        case "png":
+                                            return {
+                                                image: data.url,
+                                                text: data.fileName
+                                            }
+                                        default:
+                                            return {
+                                                text: data.url
+                                            }
+                                    }
+                                })
+                                sendMessage(messages, chatRoomId);
+                                setAttachmentDataList([]);
+                            })
+                        } else {
+                            sendMessage(newMessages, chatRoomId)
+                        }
+
                     }}
                     user={{
                         _id: senderId,
