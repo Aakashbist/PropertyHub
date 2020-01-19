@@ -5,7 +5,7 @@ import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, Activity
 import { Icon, Slider, SearchBar, Input } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Firebase from '../../../../config/Firebase';
+import { Firebase } from '../../../../config/Firebase';
 import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Image, View, Alert } from 'react-native';
-import Firebase from '../../config/Firebase';
+import { Firebase } from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import styles from '../../resources/styles';
 

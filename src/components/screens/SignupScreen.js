@@ -2,7 +2,7 @@ import { Container } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { Image, ProgressBarAndroid, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ButtonGroup, Icon } from 'react-native-elements';
-import Firebase from '../../config/Firebase';
+import { Firebase } from '../../config/Firebase';
 import { Owner, Tenant } from '../../models/userModels';
 import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';

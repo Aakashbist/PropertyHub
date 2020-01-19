@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Firebase from '../../config/Firebase';
+import { Firebase } from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';

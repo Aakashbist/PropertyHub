@@ -1,4 +1,4 @@
-import Firebase from '../../config/Firebase';
+import { Firebase } from '../../config/Firebase';
 import DocumentPicker from 'react-native-document-picker';
 
 const collection = "Documents"

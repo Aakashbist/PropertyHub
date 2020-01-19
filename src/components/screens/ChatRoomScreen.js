@@ -5,7 +5,7 @@ import { once } from 'lodash';
 import moment from 'moment';
 import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
 import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
-import Firebase from '../../config/Firebase';
+import { Firebase } from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, observeChatRoomMessages } from '../services/ChatService';
@@ -24,10 +24,6 @@ const ChatRoomScreen = (props) => {
 
     useEffect(() => {
         initializeChatRoom();
-
-        return () => {
-            observerRef.off();
-        }
     }, []);
 
     setNewMessages = (newMessages) => {
@@ -111,6 +107,15 @@ const ChatRoomScreen = (props) => {
                     messages={messages}
                     loadEarlier={true}
                     onLoadEarlier={() => this.loadMoreMessage()}
+                    onQuickReply={(replies) => {
+                        const messages = replies.map(reply => {
+                            return {
+                                text: reply.title
+                            };
+                        })
+                        console.log(messages, "hhh");
+                        sendMessage(messages, chatRoomId);
+                    }}
                     onSend={(newMessages) => {
                         initiateChat();
                         sendMessage(newMessages, chatRoomId)
@@ -119,7 +124,6 @@ const ChatRoomScreen = (props) => {
                         _id: senderId,
                         name: userName,
                     }}
-
                 />
             </View>
         </View>

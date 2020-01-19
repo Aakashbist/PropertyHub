@@ -1,4 +1,4 @@
-import Firebase from '../../config/Firebase'
+import { Firebase } from '../../config/Firebase'
 
 const ownerCollectionName = 'owners';
 const tenantCollectionName = 'tenants';

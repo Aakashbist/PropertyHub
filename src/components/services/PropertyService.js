@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
-import Firebase from '../../config/Firebase';
-import { mapToArray } from '../../utils/firebaseArray';
+import { Firebase } from '../../config/Firebase';
+import { mapToArray } from '../utils/firebaseArray';
 
 const propertyCollection = 'property';
 

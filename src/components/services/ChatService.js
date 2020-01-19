@@ -1,7 +1,7 @@
-import Firebase from '../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../config/Firebase';
 import firebase from 'firebase';
 import moment from 'moment';
-import { mapToArray, mapToArray2 } from '../../utils/firebaseArray';
+import { mapToArray } from '../utils/firebaseArray';
 
 const chatCollection = 'chat';
 const chatHistoryCollection = 'chatHistory';
@@ -59,12 +59,17 @@ export function observeChatRoomMessages(chatRoomId, callback) {
 // send the message to the Backend
 export function sendMessage(messages, chatRoomId) {
     var promises = []
+    const user = getCurrentUser()
     const messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`)
 
     messages.forEach(message => {
         promises.push(new Promise((resolve, reject) => {
             message.timeStamp = - 1 * moment().valueOf();
             message.createdAt = firebase.database.ServerValue.TIMESTAMP;
+            message.user = {
+                _id: user.uid,
+                name: user.displayName
+            }
 
             messagesRef.push(message, (error) => {
                 if (error) {
