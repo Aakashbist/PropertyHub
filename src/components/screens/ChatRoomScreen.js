@@ -1,14 +1,14 @@
 
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, ToastAndroid } from 'react-native';
 import { once } from 'lodash';
+import moment from 'moment';
 import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
 import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
 import Firebase from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
-import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory } from '../services/ChatService';
-
+import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, observeChatRoomMessages } from '../services/ChatService';
 import { getDownloadUrl, openDocumentPicker } from '../services/UploadService';
 
 const ChatRoomScreen = (props) => {
@@ -20,19 +20,21 @@ const ChatRoomScreen = (props) => {
     const [customText, setCustomText] = useState('');
     const [imageUri, setImageUri] = useState();
     const [fileType, setFileType] = useState([]);
+    const [observerRef, setObserverRef] = useState();
 
     useEffect(() => {
         initializeChatRoom();
-    }, [])
 
-    getMessages = (chatRoomId) => {
-        loadMessages(chatRoomId, (message) => {
-            console.log(message)
-            setMessages(
-                previous => GiftedChat.append(previous, message)
-            )
-        });
-    }
+        return () => {
+            observerRef.off();
+        }
+    }, []);
+
+    setNewMessages = (newMessages) => {
+        var messages = newMessages.sort((a, b) => b.createdAt - a.createdAt);
+        console.log(messages);
+        setMessages(messages);
+    };
 
     initializeChatRoom = () => {
         let senderId, receiverId, userName, roomId;
@@ -46,23 +48,24 @@ const ChatRoomScreen = (props) => {
         setChatRoomId(roomId);
         setUserName(userName);
         setSenderId(senderId);
-        getMessages(roomId);
-    }
 
+        const observerRef = observeChatRoomMessages(roomId, (messages) => {
+            setNewMessages(messages);
+        });
+        setObserverRef(observerRef);
+    };
+
+    // once to check and create chat only once
     createHistory = () => {
         const receiverId = props.navigation.getParam('key');
         shouldCreateChatHistory(senderId, receiverId)
-    }
-
-    const initiateChat = once(createHistory)
+    };
+    const initiateChat = once(createHistory);
 
     loadMoreMessage = () => {
-        loadMessages(chatRoomId, (message) => {
-            setMessages(
-                previous => GiftedChat.append(previous, message)
-            )
-        });
-    }
+        //increasePageSize()
+        ToastAndroid.show('Feature Coming Soon !', ToastAndroid.SHORT);
+    };
 
     renderAccessory = () => {
         return (
@@ -80,26 +83,21 @@ const ChatRoomScreen = (props) => {
                 }
             </View>
         );
-    }
-
+    };
 
     chooseDocument = () => {
         openDocumentPicker().then(res => {
-            console.log(res);
             const fileType = []
             res.forEach(res => {
                 getDownloadUrl(res.uri, res.name).then(url => {
                     setImageUri(url);
                     fileType.push(res.type);
-                    console.log(url)
                 })
             })
             setFileType(fileType)
 
         })
-    }
-
-
+    };
 
     return (
         <View style={styles.containerFull}>
@@ -110,7 +108,10 @@ const ChatRoomScreen = (props) => {
                     image={imageUri}
                     showUserAvatar={true}
                     renderAccessory={this.renderAccessory}
-                    messages={messages} onSend={(newMessage) => {
+                    messages={messages}
+                    loadEarlier={true}
+                    onLoadEarlier={() => this.loadMoreMessage()}
+                    onSend={(newMessages) => {
                         initiateChat();
                         sendMessage(newMessages, chatRoomId)
                     }}

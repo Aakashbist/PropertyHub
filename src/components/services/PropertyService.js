@@ -47,10 +47,9 @@ export function propertyReference(userId, callback) {
 
 export function deletePropertiesWithId(propertyId) {
     let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/${propertyId}`);
-    console.log(dbPropertyRef.toString());
     return new Promise((resolve, reject) => {
         return dbPropertyRef.remove()
-            .then(resolve(), console.log("resolve"))
+            .then(resolve())
             .catch(error => reject(error))
     })
 }

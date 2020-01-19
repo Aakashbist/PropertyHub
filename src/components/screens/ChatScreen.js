@@ -34,7 +34,6 @@ const ChatScreen = (props) => {
                 return Promise.all(promises)
             })
             .then((values) => {
-                console.log(values, 'chattee');
                 setChatUsers(values)
             })
             .catch(error => alert(error))
@@ -55,6 +54,7 @@ const ChatScreen = (props) => {
                             style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}
                             onPress={() => props.navigation.navigate(AppRoute.ChatRoom, { key: item.id, title: item.name })}>
                             <Avatar rounded size="medium"
+                                overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
                                 title={getNameInitials(item.name)} containerStyle={{ marginRight: 20 }} />
                             <Text style={[styles.textSubHeading, {
                                 alignSelf: 'center',

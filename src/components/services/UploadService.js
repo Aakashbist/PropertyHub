@@ -43,10 +43,8 @@ export function openDocumentPicker() {
             if (DocumentPicker.isCancel(err)) {
                 //If user canceled the document selection
                 reject(error)
-                console.log('Canceled from single doc picker');
             } else {
                 reject(error)
-                console.log('Unknown Error: ' + JSON.stringify(err));
                 throw err;
             }
         }

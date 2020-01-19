@@ -68,13 +68,9 @@ const AddNewProperty = (props) => {
         }
     }, [rent, bond, propertyType, isLoading, imageUri]);
 
-
-
-
     getProperty = (key, mode) => {
         getPropertyById(key).then((data) => {
             setPropertyFields(data, mode, key);
-            console.log(data, "addProperty")
 
         }).catch((error) => console.log(error));
     }
@@ -125,11 +121,9 @@ const AddNewProperty = (props) => {
             for (let j = 0; j < typesArray.length; j++) {
                 if (typesArray[j].toString() === "postal_code") {
                     const postalCode = addressComponents[i].long_name;
-                    console.log("postal code = ", postalCode)
                 }
                 if (typesArray[j].toString() === "locality") {
                     const locality = addressComponents[i].long_name;
-                    console.log("locality  = ", locality)
                 }
             }
         }
@@ -147,7 +141,7 @@ const AddNewProperty = (props) => {
                     Alert.alert(errorMessage)
                 }
             })
-            .catch(error => { console.log(JSON.stringify(json.status), "then"); setError(error) })
+            .catch(error => setError(error));
     }
 
     handleOnPropertyTypeChange = (value) => {
@@ -235,7 +229,6 @@ const AddNewProperty = (props) => {
         property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
             rent, bond, imageUri, latitude, longitude, currentUser);
         setIsLoading(false)
-        console.log(property);
         updateProperty(property, propertyKey)
             .then(navigateToPropertyList())
             .catch(error => {

@@ -1,10 +1,11 @@
 import Firebase from '../../config/Firebase';
-import firebase from 'firebase'
-import moment from 'moment'
-import { mapToArray } from '../../utils/firebaseArray';
+import firebase from 'firebase';
+import moment from 'moment';
+import { mapToArray, mapToArray2 } from '../../utils/firebaseArray';
 
 const chatCollection = 'chat';
 const chatHistoryCollection = 'chatHistory';
+const pageLength = 100;
 
 export function getChatRoomId(senderId, receiverId) {
     const chatRoomId = [];
@@ -14,17 +15,45 @@ export function getChatRoomId(senderId, receiverId) {
     return chatRoomId.join('_');
 }
 
-export function loadMessages(chatRoomId, callback) {
-    messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`);
-    var aa = messagesRef.toString()
-    console.log(aa);
-    messagesRef.off();
+export function loadMessages(chatRoomId, startFrom, callback) {
+
     const onResponse = (data) => {
-        const message = data.val();
-        message.createdAt = message.timeStamp
-        callback(message);
+        if (data) {
+            if (data.val()) {
+                var messages = mapToArray(data.val());
+                callback(messages.sort((a, b) => b.createdAt - a.createdAt));
+            } else {
+                callback([]);
+            }
+        } else {
+            callback([]);
+        }
+
     }
-    messagesRef.orderByChild('timeStamp').limitToLast(50).on('child_added', onResponse);
+    const messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`)
+        .orderByChild('createdAt')
+        .limitToFirst(pageLength)
+        .startAt(startFrom).once('value', onResponse);
+}
+
+export function observeChatRoomMessages(chatRoomId, callback) {
+    const onResponse = (data) => {
+        if (data) {
+            if (data.val()) {
+                var messages = mapToArray(data.val());
+                console.log(messages, "observe");
+                callback(messages.sort((a, b) => b.createdAt - a.createdAt));
+            } else {
+                callback([]);
+            }
+        } else {
+            callback([]);
+        }
+    }
+    const messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`);
+    messagesRef.orderByChild('createdAt')
+        .limitToLast(100).on('value', onResponse);
+    return messagesRef;
 }
 
 // send the message to the Backend
@@ -34,8 +63,8 @@ export function sendMessage(messages, chatRoomId) {
 
     messages.forEach(message => {
         promises.push(new Promise((resolve, reject) => {
-            message.createdAt = - 1 * moment().valueOf();
-            message.timeStamp = firebase.database.ServerValue.TIMESTAMP;
+            message.timeStamp = - 1 * moment().valueOf();
+            message.createdAt = firebase.database.ServerValue.TIMESTAMP;
 
             messagesRef.push(message, (error) => {
                 if (error) {
@@ -78,14 +107,12 @@ export function shouldCreateChatHistory(senderId, receiverId) {
     //check for id before pushing
     let promises = [];
     getChatHistoryById(senderId).then(data => {
-        console.log(data, "sender array");
         const found = data.find(element => element.chatee === receiverId)
         if (!found) {
             promises.push(addChateeForUser(senderId, receiverId))
         }
     });
     getChatHistoryById(receiverId).then(data => {
-        console.log(data, "receiver array");
         const found = data.find(element => element.chatee === senderId)
         if (!found) {
             promises.push(addChateeForUser(receiverId, senderId))
