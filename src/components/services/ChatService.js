@@ -15,48 +15,25 @@ export function getChatRoomId(senderId, receiverId) {
     return chatRoomId.join('_');
 }
 
-export function loadMessages(chatRoomId, startFrom, callback) {
-
-    const onResponse = (data) => {
-        if (data) {
-            if (data.val()) {
-                var messages = mapToArray(data.val());
-                callback(messages.sort((a, b) => b.createdAt - a.createdAt));
-            } else {
-                callback([]);
-            }
-        } else {
-            callback([]);
-        }
-
-    }
-    const messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`)
-        .orderByChild('createdAt')
-        .limitToFirst(pageLength)
-        .startAt(startFrom).once('value', onResponse);
-}
-
 export function observeChatRoomMessages(chatRoomId, callback) {
     const onResponse = (data) => {
-        if (data) {
-            if (data.val()) {
-                var messages = mapToArray(data.val());
-                console.log(messages, "observe");
-                callback(messages.sort((a, b) => b.createdAt - a.createdAt));
-            } else {
-                callback([]);
-            }
+        if (data && data.val()) {
+            var messages = mapToArray(data.val());
+            console.log(messages, "observe");
+            callback(messages.sort((a, b) => b.createdAt - a.createdAt));
         } else {
             callback([]);
         }
     }
     const messagesRef = Firebase.database().ref(`${chatCollection}/${chatRoomId}`);
     messagesRef.orderByChild('createdAt')
-        .limitToLast(100).on('value', onResponse);
+        .limitToLast(pageLength).on('value', onResponse);
     return messagesRef;
 }
 
 // send the message to the Backend
+// adding timeStamp , createdAt, user
+// hence support quick replies 
 export function sendMessage(messages, chatRoomId) {
     var promises = []
     const user = getCurrentUser()
@@ -84,13 +61,6 @@ export function sendMessage(messages, chatRoomId) {
     return Promise.all(promises)
 }
 
-export function createChat(senderId, receiverId) {
-    const senderRef = Firebase.database().ref(`${chatHistoryCollection}/${senderId}/`);
-    senderRef.push({ chatee: receiverId });
-    const receiverRef = Firebase.database().ref(`${chatHistoryCollection}/${receiverId}/`);
-    receiverRef.push({ chatee: senderId });
-}
-
 export function getChatHistoryById(userId) {
     return new Promise((resolve, reject) => {
         const ref = Firebase.database().ref(`${chatHistoryCollection}/${userId}`);
@@ -106,7 +76,6 @@ export function getChatHistoryById(userId) {
         }, error => reject(error))
     })
 }
-
 
 export function shouldCreateChatHistory(senderId, receiverId) {
     //check for id before pushing
@@ -130,16 +99,5 @@ function addChateeForUser(userId, chateeId) {
     return new Promise((resolve, reject) => {
         const senderRef = Firebase.database().ref(`${chatHistoryCollection}/${userId}/`);
         senderRef.push({ chatee: chateeId }, data => resolve(data))
-    })
-
+    });
 }
-
-// close the connection to the Backend
-export function closeChat() {
-    if (messagesRef) {
-        messagesRef.off();
-    }
-}
-
-
-
