@@ -1,11 +1,11 @@
 
 import { once } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { View, ToastAndroid, ActivityIndicator } from 'react-native';
+import { View, ToastAndroid, ActivityIndicator, DatePickerAndroid, TimePickerAndroid } from 'react-native';
 import moment from 'moment';
 import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
 import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
-import { Firebase, getCurrentUser } from '../../config/Firebase';
+import { Firebase, getCurrentUser, getCurrentUserClaims} from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, observeChatRoomMessages } from '../services/ChatService';
@@ -19,9 +19,13 @@ const ChatRoomScreen = (props) => {
     const [userName, setUserName] = useState();
     const [attachmentDataList, setAttachmentDataList] = useState([]);
     const [observerRef, setObserverRef] = useState();
+    const [isOwner, setIsOwner] = useState(false);
 
     useEffect(() => {
         initializeChatRoom();
+        getCurrentUserClaims().then((isOwner) => {
+          setIsOwner(isOwner);
+        })
     }, []);
 
     setNewMessages = (newMessages) => {
@@ -77,12 +81,73 @@ const ChatRoomScreen = (props) => {
         })
     }
 
+    openDatePicker = async () => {
+        try {
+            var today = moment()
+            var dateAfterTwoMonth = moment(today).add(2, "months").toDate();
+            console.warn('Cannot open date picker', dateAfterTwoMonth);
+
+            const { action, year, month, day } = await DatePickerAndroid.open({
+                date: new Date(),
+                minDate: new Date(),
+                maxDate: dateAfterTwoMonth
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                console.log(moment([year, month, day]).format('ll'));
+                openTimePicker(moment([year, month, day]));
+            }
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    }
+
+    openTimePicker = async (date) => {
+        try {
+            const { action, hour, minute } = await TimePickerAndroid.open({
+                hour: 12,
+                minute: 0,
+                is24Hour: false,
+            });
+            if (action !== TimePickerAndroid.dismissedAction && date) {
+                const dateTime = date.minute(minute).hour(hour);
+                const formattedDateTimeString = dateTime.format('llll');
+                sendInspectionMessage(formattedDateTimeString);
+            }
+
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    }
+
+    sendInspectionMessage = (dateTimeString) => {
+      const message = {
+          text: `Hello ! We will will be conducting property Inspection on ${dateTimeString}`,
+      };
+      if (chatRoomId) {
+        sendMessage([message], chatRoomId).then(() => {
+          navigateToChatRoom(owner);
+        });
+      }
+    }
+
     const imageTypes = ["jpg", "jpeg", "png"];
 
     renderAccessory = () => {
         return (
-            <View style={styles.customActionsContainer}>
-                <Icon name='paperclip' type='evilicon' size={36} color={colors.primaryDark} onPress={this.chooseDocument} />
+            <View style={[styles.customActionsContainer, { paddingLeft: 8, paddingTop: 4, paddingBottom: 4 }]}>
+
+              { isOwner &&
+                <View style={[styles.boxCenter, { height: 36, backgroundColor: colors.primaryDark, borderRadius: 18, marginRight: 4 }]}>
+                    <Text onPress={this.openDatePicker} style={{ color: colors.darkWhite2, paddingHorizontal: 8 }} > Inspection </Text>
+                </View>
+              }
+                <View style={[styles.boxCenter, { width: 36, height: 36, backgroundColor: colors.primaryDark, borderRadius: 18 }]}>
+                    <Icon name='paperclip'
+                        type='evilicon'
+                        size={26}
+                        color={colors.white}
+                        onPress={this.chooseDocument} />
+                </View>
 
                 {
                     attachmentDataList.filter(attachment => imageTypes.includes(attachment.extension))
