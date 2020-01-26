@@ -29,7 +29,7 @@ build/
 .gradle
 local.properties
 *.iml
-
+nbproject/
 # node.js
 #
 node_modules/
@@ -61,3 +61,4 @@ buck-out/
 # project
 mapApiKey.js
 firebaseApiKey.js
+/nbproject/private/

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Text, View, FlatList, StatusBar } from 'react-native';
-import { Header, Icon, SearchBar, ListItem } from 'react-native-elements';
+import { FlatList, ScrollView, View } from 'react-native';
+import { Icon, ListItem, SearchBar } from 'react-native-elements';
+import SafeAreaView from 'react-native-safe-area-view';
+import AppRoute from '../../../resources/appRoute';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
 import { getPropertiesBySearch } from '../../services/PropertyService';
 import useDebounce from '../../useDebounce';
-import AppRoute from '../../../resources/appRoute';
-import SafeAreaView from 'react-native-safe-area-view';
 
 
 const PropertySearch = (props) => {
@@ -23,7 +23,7 @@ const PropertySearch = (props) => {
       .catch((error) => {
         setError(error);
       });
-  }
+  };
 
   useEffect(() => {
     searchProperties();

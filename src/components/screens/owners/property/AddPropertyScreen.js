@@ -1,4 +1,3 @@
-
 import { Container, Label, Picker } from 'native-base';
 import React, { useEffect, useState, Fragment } from 'react';
 import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
@@ -18,7 +17,7 @@ import { getPropertyById, createProperty, addPropertyReferenceToOwner, updatePro
 const AddProperty = {
     PROPERTY_DETAILS: 0,
     ADD_PROPERTY_SUCCESS: 1
-}
+};
 
 const AddNewProperty = (props) => {
 
@@ -30,7 +29,7 @@ const AddNewProperty = (props) => {
     const [unitContent, setUnitContent] = useState(false);
     const [value, setValue] = useState(false);
     const [propertyDescriptionView, setPropertyDescriptionView] = useState(false);
-    const [placeId, setPlaceID] = useState([])
+    const [placeId, setPlaceID] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [propertyType, setPropertyType] = useState(null);
@@ -40,7 +39,7 @@ const AddNewProperty = (props) => {
     const [rent, setRent] = useState();
     const [bedroom, setBedroom] = useState(1);
     const [bathroom, setBathroom] = useState(1);
-    const [address, setAddress] = useState([])
+    const [address, setAddress] = useState([]);
     const [imageFileName, setImageFileName] = useState();
     const [imageUri, setImageUri] = useState();
     const [propertyKey, setPropertyKey] = useState();
@@ -56,10 +55,10 @@ const AddNewProperty = (props) => {
         }
 
 
-    }, [])
+    }, []);
 
     useEffect(() => {
-        let _canAddProperty = rent != null && bond != null && propertyType != null && propertyDescription != null && imageUri != null && !isLoading;
+        let _canAddProperty = rent !== null && bond !== null && propertyType !== null && propertyDescription !== null && imageUri !==null && !isLoading;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
@@ -70,33 +69,33 @@ const AddNewProperty = (props) => {
             setPropertyFields(data, mode, key);
 
         }).catch((error) => console.log(error));
-    }
+    };
 
     selectPropertyImage = () => {
         ImagePicker.showImagePicker({ noData: true, mediaType: 'photo' }, (response) => {
             setImageUri(response.uri);
-            console.log(response.uri)
-            setImageFileName(response.fileName)
-        })
-    }
+            console.log(response.uri);
+            setImageFileName(response.fileName);
+        });
+    };
 
     onPredictionSelected = place => {
         setDestination(place.description);
         setPlaceID(place.place_id);
-        setAddress(place.description)
+        setAddress(place.description);
         setPrediction([]);
         loadCoordinatesByPlaceId(place.place_id);
-    }
+    };
 
     unitInputBoxShow = () => {
-        setValue(!value)
-        setUnitContent(!unitContent)
-    }
+        setValue(!value);
+        setUnitContent(!unitContent);
+    };
 
     navigateToPropertyList = () => {
         props.navigation.navigate(AppRoute.PropertyList);
-        setStep(AddProperty.PROPERTY_DETAILS)
-    }
+        setStep(AddProperty.PROPERTY_DETAILS);
+    };
 
     onDestinationQueryChange = (destination) => {
         setDestination(destination);
@@ -109,7 +108,7 @@ const AddNewProperty = (props) => {
                     Alert.alert(errorMessage);
                 }
             })
-            .catch(error => setError(error))
+            .catch(error => setError(error));
     };
 
     getPostalCode = (json) => {
@@ -125,7 +124,7 @@ const AddNewProperty = (props) => {
                 }
             }
         }
-    }
+    };
 
     loadCoordinatesByPlaceId = (placeId) => {
         getGooglePlaceDetails(placeId)
@@ -136,37 +135,37 @@ const AddNewProperty = (props) => {
                     setPropertyDescriptionView(true);
                 } else {
                     let errorMessage = parseMapApiError(json);
-                    Alert.alert(errorMessage)
+                    Alert.alert(errorMessage);
                 }
             })
             .catch(error => setError(error));
-    }
+    };
 
     handleOnPropertyTypeChange = (value) => {
         switch (value) {
             case PropertyType.APARTMENT:
-                setPropertyType(PropertyType.APARTMENT)
-                setUnitContent(true)
+                setPropertyType(PropertyType.APARTMENT);
+                setUnitContent(true);
                 break;
             case PropertyType.HOUSE:
-                setPropertyType(PropertyType.HOUSE)
-                setUnitContent(false)
+                setPropertyType(PropertyType.HOUSE);
+                setUnitContent(false);
                 break;
             case PropertyType.UNIT:
-                setPropertyType(PropertyType.UNIT)
-                setUnitContent(true)
+                setPropertyType(PropertyType.UNIT);
+                setUnitContent(true);
                 break;
             default:
-                setPropertyType(null)
-                setUnitContent(false)
+                setPropertyType(null);
+                setUnitContent(false);
                 break;
         }
-    }
+    };
 
     setPropertyFields = (data, mode, key) => {
         if (mode === "EDIT") {
-            setEditMode(true)
-            setPropertyKey(key)
+            setEditMode(true);
+            setPropertyKey(key);
             handleOnPropertyTypeChange(data.propertyType);
             setAddress(data.address);
             setBond(data.bond);
@@ -177,10 +176,10 @@ const AddNewProperty = (props) => {
             setLatitude(data.lat);
             setLongitude(data.lng);
             setPropertyDescriptionView(true);
-            setImageUri(data.imageUrl)
-            setPropertyDescription(data.propertyDescription)
+            setImageUri(data.imageUrl);
+            setPropertyDescription(data.propertyDescription);
         }
-    }
+    };
 
     clearFields = () => {
         setPropertyType(null);
@@ -194,7 +193,7 @@ const AddNewProperty = (props) => {
         setImageUri();
         setPropertyDescription();
         setPropertyDescriptionView(false);
-    }
+    };
 
     handleAddProperty = () => {
         setIsLoading(true);
@@ -202,13 +201,13 @@ const AddNewProperty = (props) => {
         getDownloadUrl(imageUri, imageFileName)
             .then((url) => {
                 property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
-                    rent, bond, url, latitude, longitude, currentUser)
+                    rent, bond, url, latitude, longitude, currentUser);
                 createProperty(property).then((key) => {
                     setStep(AddProperty.ADD_PROPERTY_SUCCESS);
                 }).catch((error) => {
-                    errorMessage = setError(parseFirebaseError(error))
-                    setError(errorMessage)
-                })
+                    errorMessage = setError(parseFirebaseError(error));
+                    setError(errorMessage);
+                });
 
             })
             .catch(error => {
@@ -217,16 +216,16 @@ const AddNewProperty = (props) => {
             })
             .finally(() => {
                 clearFields();
-                setIsLoading(false)
+                setIsLoading(false);
             });
-    }
+    };
 
     handleUpdateProperty = () => {
         setIsLoading(true);
         let property;
         property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
             rent, bond, imageUri, latitude, longitude, currentUser);
-        setIsLoading(false)
+        setIsLoading(false);
         updateProperty(property, propertyKey)
             .then(navigateToPropertyList())
             .catch(error => {
@@ -234,13 +233,13 @@ const AddNewProperty = (props) => {
                 setError(errorMessage);
             })
             .finally(() => {
-                setIsLoading(false)
+                setIsLoading(false);
             });
-    }
+    };
 
     onFocusedChange = () => {
-        setFocused(true)
-    }
+        setFocused(true);
+    };
 
     const suggestionView = predictions.map(item =>
         <TouchableOpacity
@@ -249,7 +248,7 @@ const AddNewProperty = (props) => {
             <Icon name='location' type='evilicon' size={36} color={colors.green} />
             <Text key={item.id} style={{ fontSize: 16 }}> {item.description}</Text>
         </TouchableOpacity >
-    )
+    );
 
     var searchBarAndSuggestions = <View>
         <SearchBar
@@ -260,13 +259,13 @@ const AddNewProperty = (props) => {
             platform="android"
         />
         {suggestionView}
-    </View>
+    </View>;
 
     var view = null;
     if (isLoading) {
         view = <ActivityIndicator
             style={{ flex: 1, justifyContent: 'center', height: 600 }}
-            size="large" color={colors.green} />
+            size="large" color={colors.green} />;
     } else {
         switch (step) {
             case AddProperty.PROPERTY_DETAILS:
@@ -433,7 +432,6 @@ const AddNewProperty = (props) => {
     }
 
     return (
-
         <ScrollView >
             <SafeAreaView>
                 <View style={{ flex: 1 }}>
@@ -442,8 +440,8 @@ const AddNewProperty = (props) => {
             </SafeAreaView>
         </ScrollView >
 
-    )
-}
+    );
+};
 
 export default AddNewProperty;
 
