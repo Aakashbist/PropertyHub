@@ -27,7 +27,10 @@ export default {
         paddingTop: 30,
         borderRadius: 2,
     },
-
+    boxCenter: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     inputBox: {
         width: '80%',
         margin: 10,
@@ -137,7 +140,8 @@ export default {
     customActionsContainer: {
         flex: 1,
         flexDirection: "row",
-        paddingBottom: 8
+        justifyContent: "flex-start",
+        alignItems: "center",
     },
 
     FloatingButtonStyle: {
