@@ -23,7 +23,7 @@ const PropertySearch = (props) => {
       .catch((error) => {
         setError(error);
       });
-  }
+  };
 
   useEffect(() => {
     searchProperties();
