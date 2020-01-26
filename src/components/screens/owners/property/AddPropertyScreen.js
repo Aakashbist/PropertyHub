@@ -252,7 +252,7 @@ const AddNewProperty = (props) => {
 
     onMarkAsLeasedClicked = () => {
         if (appliers) {
-            console.log("in on click");
+            console.log("in on click", appliers);
             let promises = [];
 
             appliers.forEach(item => {
@@ -270,10 +270,12 @@ const AddNewProperty = (props) => {
     }
 
     onSetLeasedUser = (userId) => {
+        console.log(userId);
         const { key, mode } = props.navigation.state.params;
         leaseProperty(key, userId).then(() => {
             setShowLeasedUserPicker(false);
-        });
+            Alert("Leased");
+        }).catch((error) => Alert(error));
     }
 
     onFocusedChange = () => {
@@ -326,7 +328,7 @@ const AddNewProperty = (props) => {
                         renderItem={({ item }) => (
                             <View >
                                 <TouchableOpacity
-                                    onPress={() => onItem}
+                                    onPress={() => onSetLeasedUser(item.id)}
                                     style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}>
                                     <Avatar rounded
                                         overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
