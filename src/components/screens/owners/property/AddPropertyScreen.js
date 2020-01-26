@@ -1,7 +1,7 @@
 import { Container, Label, Picker } from 'native-base';
 import React, { useEffect, useState, Fragment } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
-import { Icon, Slider, SearchBar, Input } from 'react-native-elements';
+import { Image, SafeAreaView, ScrollView, Text, FlatList, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
+import { Icon, Slider, SearchBar, Input, Overlay, Avatar, Divider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Firebase, getCurrentUser } from '../../../../config/Firebase';
@@ -12,7 +12,10 @@ import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { getDownloadUrl } from '../../../services/UploadService';
-import { getPropertyById, createProperty, addPropertyReferenceToOwner, updateProperty } from '../../../services/PropertyService';
+import { getPropertyById, createProperty, updateProperty, getUsersWhoAppliedProperty, leaseProperty } from '../../../services/PropertyService';
+import { getUserById } from '../../../services/UserService';
+import { getNameInitials } from '../../../utils/TextUtils';
+
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -46,19 +49,29 @@ const AddNewProperty = (props) => {
     const [propertyDescription, setPropertyDescription] = useState();
     const [error, setError] = useState("All fields are required *");
 
+    // leased User data
+    const [leased, setLeased] = useState(false);
+    const [showLeasedUserPicker, setShowLeasedUserPicker] = useState(false);
+    const [interstedUsers, setInterestedUsers] = useState([]);
+    const [appliers, setAppliers] = useState([]);
+
     const currentUser = getCurrentUser().uid;
 
     useEffect(() => {
         if (props.navigation.state.params) {
             const { key, mode } = props.navigation.state.params;
             getProperty(key, mode);
+            getUsersWhoAppliedProperty(key)
+                .then((data) => {
+                    setAppliers(data)
+                })
+                .catch((error) => setError(error));
         }
-
-
+        return () => setShowLeasedUserPicker(false);
     }, []);
 
     useEffect(() => {
-        let _canAddProperty = rent !== null && bond !== null && propertyType !== null && propertyDescription !== null && imageUri !==null && !isLoading;
+        let _canAddProperty = rent !== null && bond !== null && propertyType !== null && propertyDescription !== null && imageUri !== null && !isLoading;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
@@ -237,6 +250,32 @@ const AddNewProperty = (props) => {
             });
     };
 
+    onMarkAsLeasedClicked = () => {
+        if (appliers) {
+            console.log("in on click");
+            let promises = [];
+
+            appliers.forEach(item => {
+                promises.push(getUserById(item.applicatorId));
+            });
+
+            Promise.all(promises)
+                .then((value) => {
+                    console.log(value, "values sss");
+                    setInterestedUsers(value);
+                    setShowLeasedUserPicker(true);
+                })
+                .catch((error) => setError(error));
+        }
+    }
+
+    onSetLeasedUser = (userId) => {
+        const { key, mode } = props.navigation.state.params;
+        leaseProperty(key, userId).then(() => {
+            setShowLeasedUserPicker(false);
+        });
+    }
+
     onFocusedChange = () => {
         setFocused(true);
     };
@@ -260,6 +299,53 @@ const AddNewProperty = (props) => {
         />
         {suggestionView}
     </View>;
+
+    var markAsLeased = (editMode && step === AddProperty.PROPERTY_DETAILS && appliers.length > 0) ? (
+        <React.Fragment>
+            <TouchableOpacity
+                style={[styles.button, { alignSelf: 'center' }]}
+                onPress={this.onMarkAsLeasedClicked}>
+                <Text style={styles.buttonText}>Mark As Leased</Text>
+            </TouchableOpacity>
+            <Overlay
+                isVisible={showLeasedUserPicker}
+                onBackdropPress={() => setShowLeasedUserPicker(false)}
+                windowBackgroundColor="rgba(255, 255, 255, .5)"
+                onRequestClose={() => setShowLeasedUserPicker(false)}
+                overlayBackgroundColor={colors.white}
+                height={200}>
+                <View style={{ flex: 1, flexShrink: 1 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ flex: 1, fontSize: 24, flexGrow: 1 }}> Choose a tenant </Text>
+                        <Icon name='close' type='evilicon' size={36} color={colors.primaryDark} onPress={() => setShowLeasedUserPicker(false)} />
+                    </View>
+                    {interstedUsers && <FlatList
+                        style={styles.cardContainer}
+                        data={interstedUsers}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <View >
+                                <TouchableOpacity
+                                    onPress={() => onItem}
+                                    style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}>
+                                    <Avatar rounded
+                                        overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
+                                        title={getNameInitials(item.name)} containerStyle={{ marginRight: 16 }} />
+                                    <Text style={[styles.textSubHeading, {
+                                        alignSelf: 'center',
+                                        fontWeight: 'bold',
+                                        fontSize: 16,
+                                        flex: 1
+                                    }]}>{item.name}</Text>
+                                </TouchableOpacity>
+                                <Divider />
+                            </View>
+                        )}
+                    />}
+                </View>
+            </Overlay>
+        </React.Fragment>
+    ) : null;
 
     var view = null;
     if (isLoading) {
@@ -388,8 +474,7 @@ const AddNewProperty = (props) => {
                                 {editMode ?
                                     <TouchableOpacity
                                         style={[styles.button, { alignSelf: 'center' }]}
-                                        onPress={this.handleUpdateProperty}
-                                    >
+                                        onPress={this.handleUpdateProperty}>
                                         <Text style={styles.buttonText}>Update Property </Text>
                                     </TouchableOpacity> :
                                     <Fragment>
@@ -406,7 +491,7 @@ const AddNewProperty = (props) => {
                                         </TouchableOpacity>
                                     </Fragment>
                                 }
-
+                                {markAsLeased}
                             </View>
                         </View> : null
                     }
@@ -439,7 +524,6 @@ const AddNewProperty = (props) => {
                 </View >
             </SafeAreaView>
         </ScrollView >
-
     );
 };
 

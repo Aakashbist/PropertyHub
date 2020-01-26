@@ -4,6 +4,7 @@ import { mapToArray } from '../utils/firebaseArray';
 
 const propertyCollection = 'property';
 const propertyAppliedCollection = 'apply';
+const propertyLeasedCollection = 'leaseProperty';
 
 export function getPropertiesBySearch(searchTerm) {
     return new Promise((resolve, reject) => {
@@ -23,7 +24,7 @@ export function getPropertiesBySearch(searchTerm) {
                 resolve([]);
             }
         },
-        error => reject(error));
+            error => reject(error));
     });
 }
 
@@ -49,7 +50,7 @@ export function deletePropertiesWithId(propertyId) {
     return new Promise((resolve, reject) => {
         return dbPropertyRef.remove()
             .then(resolve())
-            .ca;ch(error => reject(error));
+            .ca; ch(error => reject(error));
     });
 }
 
@@ -84,29 +85,29 @@ export function updateProperty(property, key) {
 }
 
 export function applyForProperty(propertyId, applicatorId) {
-  return new Promise((resolve, reject) => {
-      console.log(propertyId, applicatorId);
-      let propertyApplyRef = Firebase.database().ref().child(`${propertyAppliedCollection}/${propertyId}`);
-      let data = {
-        applicatorId: applicatorId,
-        createdAt: getServerTimestamp()
-      };
-      propertyApplyRef.push(data, (error) => {
-          console.log(error, "push");
-          if (error) {
-              reject(error);
-          }else {
-              resolve();
-          }
-      })
-  });
+    return new Promise((resolve, reject) => {
+        console.log(propertyId, applicatorId);
+        let propertyApplyRef = Firebase.database().ref().child(`${propertyAppliedCollection}/${propertyId}`);
+        let data = {
+            applicatorId: applicatorId,
+            createdAt: getServerTimestamp()
+        };
+        propertyApplyRef.push(data, (error) => {
+            console.log(error, "push");
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        })
+    });
 }
 
 export function checkAlreadyApplied(propertyId, applicatorId) {
-  return new Promise((resolve, reject) => {
-      let propertyApplyRef = Firebase.database().ref().child(`${propertyAppliedCollection}/${propertyId}`)
-        .orderByChild("applicatorId").equalTo(applicatorId);
-      propertyApplyRef.once("value", snapShot => {
+    return new Promise((resolve, reject) => {
+        let propertyApplyRef = Firebase.database().ref().child(`${propertyAppliedCollection}/${propertyId}`)
+            .orderByChild("applicatorId").equalTo(applicatorId);
+        propertyApplyRef.once("value", snapShot => {
             const data = snapShot.val();
             if (data) {
                 resolve(true);
@@ -114,5 +115,44 @@ export function checkAlreadyApplied(propertyId, applicatorId) {
                 resolve(false);
             }
         }, error => reject(error));
-  });
+    });
+}
+
+export function leaseProperty(propertyId, leaseToUser) {
+    return new Promise((resolve, reject) => {
+        console.log(propertyId, applicatorId);
+        let propertyApplyRef = Firebase.database().ref().child(`${propertyLeasedCollection}/${propertyId}`);
+        let data = {
+            leasedTo: leaseToUser,
+            createdAt: getServerTimestamp()
+        };
+        propertyApplyRef.push(data, (error) => {
+            console.log(error, "push");
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        })
+    });
+}
+
+export function getUsersWhoAppliedProperty(propertyId) {
+    return new Promise((resolve, reject) => {
+        let propertyApplyRef = Firebase.database().ref().child(`${propertyAppliedCollection}/${propertyId}`);
+        propertyApplyRef.once("value", snapShot => {
+            const data = snapShot.val();
+            if (data) {
+                const array = mapToArray(data);
+                if (array) {
+                    console.log("users a", array);
+                    resolve(array);
+                } else {
+                    resolve([]);
+                }
+            } else {
+                resolve([]);
+            }
+        }, error => reject(error));
+    });
 }
