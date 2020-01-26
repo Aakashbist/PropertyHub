@@ -8,7 +8,6 @@ import AppRoute from '../../resources/appRoute';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
 import parseFirebaseError from '../errorParser/FirebaseErrorParser';
-import { Property } from '../../models/propertyModels';
 
 const SignupSteps = {
   SIGNUP: 0,

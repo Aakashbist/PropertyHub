@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
-import styles from '../../../resources/styles';
-import { getPropertyById, checkAlreadyApplied, applyForProperty } from '../../services/PropertyService';
-import { getOwnerById } from '../../services/UserService';
-import { Header, Image, Button, Icon, Divider, Badge, Avatar } from 'react-native-elements';
-import colors from '../../../resources/colors';
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Avatar, Divider, Icon, Image } from 'react-native-elements';
+import { getCurrentUser } from '../../../config/Firebase';
 import AppRoute from '../../../resources/appRoute';
+import colors from '../../../resources/colors';
+import styles from '../../../resources/styles';
+import { getChatRoomId, sendMessage, shouldCreateChatHistory } from '../../services/ChatService';
+import { applyForProperty, checkAlreadyApplied, getPropertyById } from '../../services/PropertyService';
+import { getOwnerById } from '../../services/UserService';
 import { getNameInitials } from '../../utils/TextUtils';
-import { getChatRoomId, shouldCreateChatHistory, sendMessage } from '../../services/ChatService';
-import { Firebase, getCurrentUser } from '../../../config/Firebase';
 
 const PropertyDetails = props => {
     const [property, setProperty] = useState(undefined);

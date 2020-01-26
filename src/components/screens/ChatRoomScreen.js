@@ -1,14 +1,14 @@
 
 import { once } from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { View, ToastAndroid, ActivityIndicator, DatePickerAndroid, TimePickerAndroid } from 'react-native';
 import moment from 'moment';
-import { Text, TouchableOpacity, Icon, Image, Avatar } from 'react-native-elements';
-import { GiftedChat, Composer, Send, Bubble, MessageImage } from 'react-native-gifted-chat';
-import { Firebase, getCurrentUser, getCurrentUserClaims} from '../../config/Firebase';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, DatePickerAndroid, TimePickerAndroid, ToastAndroid, View } from 'react-native';
+import { Avatar, Icon, Image, Text } from 'react-native-elements';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { getCurrentUser, getCurrentUserClaims } from '../../config/Firebase';
 import colors from '../../resources/colors';
 import styles from '../../resources/styles';
-import { getChatRoomId, loadMessages, sendMessage, shouldCreateChatHistory, observeChatRoomMessages } from '../services/ChatService';
+import { getChatRoomId, observeChatRoomMessages, sendMessage, shouldCreateChatHistory } from '../services/ChatService';
 import { getDownloadUrl, openDocumentPicker } from '../services/UploadService';
 
 const ChatRoomScreen = (props) => {
