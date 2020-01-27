@@ -6,14 +6,15 @@ import PropertyTabNavigation from './PropertyTabNavigation';
 import AppRoute from '../../../../../resources/appRoute';
 import colors from '../../../../../resources/colors';
 import ChatStackNavigator from '../../../../ChatStackNavigator';
+import DashboardStackNavigator from '../../../../DashboardStackNavigator';
 
 const DrawerNavigator = createDrawerNavigator({
-    DashboardScreen: { screen: DashboardScreen },
+    DashboardScreen: DashboardStackNavigator,
     PropertyListScreen: PropertyTabNavigation,
     ChatScreen: ChatStackNavigator
 },
     {
-        initialRouteName: AppRoute.PropertyList,
+        initialRouteName: AppRoute.Dashboard,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,

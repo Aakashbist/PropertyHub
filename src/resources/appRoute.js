@@ -16,7 +16,8 @@ const AppRoute = {
     AddProperty: 'AddPropertyScreen',
     LeasedProperty: 'LeasedPropertyScreen',
     Chat: 'ChatScreen',
-    ChatRoom: 'ChatRoomScreen'
+    ChatRoom: 'ChatRoomScreen',
+    RentDetails: 'RentDetailsScreen'
 }
 
 export default AppRoute

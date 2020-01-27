@@ -45,12 +45,22 @@ export function propertyReference(userId, callback) {
     dbPropertyRef.orderByChild(`ownerId`).equalTo(userId).on('value', onResponse);
 }
 
+export function propertyCountByUserId(userId) {
+    return new Promise((resolve, reject) => {
+        let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/`);
+        dbPropertyRef.orderByChild(`ownerId`).equalTo(userId).once('value', snapShot => {
+            const numberOfProperties = snapShot.numChildren();
+            resolve(numberOfProperties);
+        }, error => reject(error));
+    })
+}
+
 export function deletePropertiesWithId(propertyId) {
     let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/${propertyId}`);
     return new Promise((resolve, reject) => {
         return dbPropertyRef.remove()
             .then(resolve())
-            .ca; ch(error => reject(error));
+            .catch(error => reject(error));
     });
 }
 

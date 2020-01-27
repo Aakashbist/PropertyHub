@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import styles from '../../resources/styles';
-import { ScrollView, View, FlatList } from 'react-native';
-import { Header, icon, Text, Button, Icon, Avatar, Divider } from 'react-native-elements';
-import colors from '../../resources/colors';
-import { Firebase, getCurrentUser } from '../../config/Firebase';
+import { FlatList, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Avatar, Divider, Icon, Text } from 'react-native-elements';
+import { getCurrentUser } from '../../config/Firebase';
 import AppRoute from '../../resources/appRoute';
+import colors from '../../resources/colors';
+import styles from '../../resources/styles';
 import { getChatHistoryById } from '../services/ChatService';
-import { TouchableOpacity } from 'react-native';
 import { getUserById } from '../services/UserService';
 import { getNameInitials } from '../utils/TextUtils';
 
