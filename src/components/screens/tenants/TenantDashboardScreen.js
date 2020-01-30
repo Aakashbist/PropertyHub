@@ -8,6 +8,8 @@ import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
 import { getLeasedPropertiesByTenantId, getPropertyById } from '../../services/PropertyService';
 import { getRentHistory } from '../../services/RentService';
+import { Property } from '../../../models/propertyModels';
+import { Label } from 'native-base';
 
 
 const TenantDashboard = (props) => {
@@ -16,6 +18,7 @@ const TenantDashboard = (props) => {
     const [properties, setProperties] = useState([]);
     const [pickerSelectedValue, setPickerSelectedValue] = useState([]);
     const [property, setProperty] = useState({});
+    const [propertyKey, setPropertyKey] = useState();
     const [dashboardComponentVisible, setDashboardComponentVisible] = useState(false);
     const [rentHistory, setRentHistory] = useState([
         { time: date, description: '250', title: 'Rent Collected' },
@@ -42,7 +45,7 @@ const TenantDashboard = (props) => {
                         new Promise((resolve, reject) => {
                             getPropertyById(data.propertyId)
                                 .then(value => {
-                                    console.log(value, "cccc")
+                                    value.id = data.propertyId
                                     resolve(value);
                                 }).catch(error => reject(error))
                         })
@@ -50,35 +53,22 @@ const TenantDashboard = (props) => {
                 });
                 Promise.all(promises).then((values) => {
                     setProperties(values);
+                    console.log(values);
+                    setPropertyKey(propertyKey);
                 })
-            })
-
+            });
     }
 
-
-    updateDashBoardView = (propertyAddress) => {
-        setPickerSelectedValue(propertyAddress);
-        if (propertyAddress !== null) {
-            const pp = properties.filter(
-                property => {
-                    if (property.address === propertyAddress) {
-                        console.log(property.id, "ccc");
-                        return {
-                            property: property,
-                            id: property.id
-                        };
-                    }
+    updateDashBoardView = (propertyId) => {
+        if (propertyId) {
+            const data = properties.find(property => property.id === propertyId)
+            if (data) {
+                setProperty(data);
+                getRentHistory(data.id).then(data => {
+                    console.log(data);
                 });
-            console.log(pp, "xxxx");
-
-
-            pp.map(property => {
-                getRentHistory(property.id).then((lastrent) => {
-
-                })
-                setProperty(property);
-            })
-            setDashboardComponentVisible(true);
+                setDashboardComponentVisible(true);
+            }
         }
         else {
             setProperty({});
@@ -87,9 +77,9 @@ const TenantDashboard = (props) => {
     }
 
     renderPicker = (properties) => {
-        return properties.map(property =>
-            < Picker.Item key={property.id} label={property.address} value={property.address} />
-        )
+        return properties.map(property => (
+            < Picker.Item key={property.id} label={property.address} value={property.id} />
+        ))
     }
 
     payRent = () => {
@@ -109,8 +99,8 @@ const TenantDashboard = (props) => {
                 <View style={[styles.inputBoxFull, { padding: 16 }]}>
                     < Picker
                         mode='dropdown'
-                        selectedValue={pickerSelectedValue}
-                        onValueChange={(propertyAddress) => updateDashBoardView(propertyAddress)}>
+                        selectedValue={property.id}
+                        onValueChange={(propertyId) => updateDashBoardView(propertyId)}>
                         <Picker.Item label="select address" value={null} />
                         {renderPicker(properties)}
                     </Picker>

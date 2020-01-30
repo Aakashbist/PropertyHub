@@ -2,7 +2,7 @@ import { Firebase, getServerTimestamp } from '../../config/Firebase';
 
 const RentCollection = "RentHistory"
 export function createRentHistory(propertyKey, tenantId, leasedStartDate) {
-    alert("hello");
+
     return new Promise((resolve, reject) => {
         const dbRef = Firebase.database().ref().child(`${RentCollection}/${propertyKey}/`);
         let data = {
