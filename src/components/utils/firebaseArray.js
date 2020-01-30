@@ -4,4 +4,4 @@ export function mapToArray(data) {
         data[key].id = key;
         return data[key];
     });
-}
+}  

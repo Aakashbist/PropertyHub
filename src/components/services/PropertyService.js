@@ -33,7 +33,6 @@ export function propertyReference(userId, callback) {
 
     dbPropertyRef.off();
     const onResponse = (dataSnapshot) => {
-
         if (dataSnapshot.exists()) {
             let data = dataSnapshot.val();
             let result = mapToArray(data);
@@ -43,6 +42,22 @@ export function propertyReference(userId, callback) {
         }
     };
     dbPropertyRef.orderByChild(`ownerId`).equalTo(userId).on('value', onResponse);
+}
+
+export function getLeasedPropertiesByTenantId(userId) {
+    return new Promise((resolve, reject) => {
+        let dbPropertyRef = Firebase.database().ref(`${propertyLeasedCollection}`);
+        dbPropertyRef.orderByChild(`tenantId`).equalTo(userId).once('value', snapShot => {
+            if (snapShot.exists()) {
+                let data = snapShot.val();
+                let result = mapToArray(data);
+                resolve(result);
+            }
+            else {
+                resolve([]);
+            }
+        }, error => reject(error));
+    })
 }
 
 export function propertyCountByUserId(userId) {

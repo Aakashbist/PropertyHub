@@ -83,7 +83,12 @@ const PropertyListScreen = (props) => {
                             </TouchableOpacity>
 
                         </View>
-                        <Text style={{ flex: 1, fontSize: 16 }}>Rent ${item.rent}</Text>
+                        <View style={styles.containerFlexRow}>
+                            <Text style={{ flex: 1, fontSize: 15 }}>Rent ${item.rent}</Text>
+                            {item.leased &&
+                                <Icon name='lock' type='evilicon' size={34} color={colors.danger} />
+                            }
+                        </View>
                     </Card>
                 )}
             />

@@ -1,22 +1,23 @@
+import { once } from 'lodash';
+import moment from 'moment';
 import { Container, Label, Picker } from 'native-base';
-import React, { useEffect, useState, Fragment } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, FlatList, TouchableOpacity, View, ActivityIndicator, Alert, TextInput, DatePickerAndroid } from 'react-native';
-import { Icon, Slider, SearchBar, Input, Overlay, Avatar, Divider } from 'react-native-elements';
+import React, { Fragment, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, DatePickerAndroid, FlatList, Image, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Avatar, Divider, Icon, Overlay, SearchBar, Slider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Firebase, getCurrentUser } from '../../../../config/Firebase';
+import { getCurrentUser } from '../../../../config/Firebase';
 import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
+import { createProperty, getPropertyById, getUsersWhoAppliedProperty, leaseProperty, updateProperty } from '../../../services/PropertyService';
+import { createRentHistory } from '../../../services/RentService';
 import { getDownloadUrl } from '../../../services/UploadService';
-import { getPropertyById, createProperty, updateProperty, getUsersWhoAppliedProperty, leaseProperty } from '../../../services/PropertyService';
 import { getUserById } from '../../../services/UserService';
 import { getNameInitials } from '../../../utils/TextUtils';
-import moment from 'moment';
-
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -149,7 +150,7 @@ const AddNewProperty = (props) => {
             });
             if (action !== DatePickerAndroid.dismissedAction) {
                 var startOfLeased = moment([year, month, day]).format('ll');
-                var endOfLeased = moment(startOfLeased).add(2, "months").format('ll');
+                var endOfLeased = moment(startOfLeased).add(6, "months").format('ll');
                 setLeasedStartDate(startOfLeased);
                 setLeasedEndDate(endOfLeased);
                 console.log(xx)
@@ -303,20 +304,23 @@ const AddNewProperty = (props) => {
         const property = {
             leased: true
         }
-
+        initiateRentHistory(tenantId);
         updateProperty(property, propertyKey)
             .then(() => {
                 leaseProperty(propertyKey, tenantId, leasedStartDate, leasedEndDate)
-                    .then(() => props.navigation.navigate(AppRoute.PropertyList))
-                    .catch(error => console.log(error));
+                    .then(() => props.navigation.navigate(AppRoute.PropertyList));
             })
-            .catch(error => console.log(error));
-
+            .catch(error => console.log(error))
 
     }
+
     onFocusedChange = () => {
         setFocused(true);
     };
+
+    initiateRentHistory = (tenantId) => {
+        createRentHistory(propertyKey, tenantId, leasedStartDate);
+    }
 
     const suggestionView = predictions.map(item =>
         <TouchableOpacity
