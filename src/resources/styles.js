@@ -144,8 +144,7 @@ export default {
         alignItems: "center",
     },
     dashboardViewWithShadow: {
-
-        margin: 10,
+        margin: 16,
         alignSelf: 'stretch',
         borderRadius: 8,
         backgroundColor: colors.white,
@@ -192,7 +191,7 @@ export default {
         fontSize: 14
     },
     textSubHeading: {
-        fontSize: 18
+        fontSize: 17
     },
     primaryTextHeading: {
         color: colors.primary,

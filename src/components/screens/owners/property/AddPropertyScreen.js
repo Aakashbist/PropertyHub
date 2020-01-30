@@ -1,6 +1,6 @@
 import { Container, Label, Picker } from 'native-base';
 import React, { useEffect, useState, Fragment } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, FlatList, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, FlatList, TouchableOpacity, View, ActivityIndicator, Alert, TextInput, DatePickerAndroid } from 'react-native';
 import { Icon, Slider, SearchBar, Input, Overlay, Avatar, Divider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -15,6 +15,7 @@ import { getDownloadUrl } from '../../../services/UploadService';
 import { getPropertyById, createProperty, updateProperty, getUsersWhoAppliedProperty, leaseProperty } from '../../../services/PropertyService';
 import { getUserById } from '../../../services/UserService';
 import { getNameInitials } from '../../../utils/TextUtils';
+import moment from 'moment';
 
 
 const AddProperty = {
@@ -54,6 +55,9 @@ const AddNewProperty = (props) => {
     const [showLeasedUserPicker, setShowLeasedUserPicker] = useState(false);
     const [interstedUsers, setInterestedUsers] = useState([]);
     const [appliers, setAppliers] = useState([]);
+    const [leasedStartDate, setLeasedStartDate] = useState();
+    const [leasedEndDate, setLeasedEndDate] = useState();
+    const [canLeasedProperty, setCanLeasedProperty] = useState('');
 
     const currentUser = getCurrentUser().uid;
 
@@ -76,6 +80,14 @@ const AddNewProperty = (props) => {
             setCanAddProperty(_canAddProperty);
         }
     }, [rent, bond, propertyType, isLoading, imageUri]);
+
+    getProperty = (key, mode) => {
+        getPropertyById(key).then((data) => {
+            setPropertyFields(data, mode, key);
+
+        }).catch((error) => console.log(error));
+    };
+
 
     getProperty = (key, mode) => {
         getPropertyById(key).then((data) => {
@@ -124,20 +136,29 @@ const AddNewProperty = (props) => {
             .catch(error => setError(error));
     };
 
-    getPostalCode = (json) => {
-        const addressComponents = json.result.address_components;
-        for (let i = 0; i < addressComponents.length; i++) {
-            const typesArray = addressComponents[i].types;
-            for (let j = 0; j < typesArray.length; j++) {
-                if (typesArray[j].toString() === "postal_code") {
-                    const postalCode = addressComponents[i].long_name;
-                }
-                if (typesArray[j].toString() === "locality") {
-                    const locality = addressComponents[i].long_name;
-                }
+
+    openDatePicker = async () => {
+        try {
+            var today = moment()
+            var dateAfterTwoMonth = moment(today).add(2, "months").toDate();
+
+            const { action, year, month, day } = await DatePickerAndroid.open({
+                date: new Date(),
+                minDate: new Date(),
+                maxDate: dateAfterTwoMonth
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                var startOfLeased = moment([year, month, day]).format('ll');
+                var endOfLeased = moment(startOfLeased).add(2, "months").format('ll');
+                setLeasedStartDate(startOfLeased);
+                setLeasedEndDate(endOfLeased);
+                console.log(xx)
             }
+
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
         }
-    };
+    }
 
     loadCoordinatesByPlaceId = (placeId) => {
         getGooglePlaceDetails(placeId)
@@ -191,6 +212,7 @@ const AddNewProperty = (props) => {
             setPropertyDescriptionView(true);
             setImageUri(data.imageUrl);
             setPropertyDescription(data.propertyDescription);
+            setLeased(data.leased);
         }
     };
 
@@ -276,6 +298,22 @@ const AddNewProperty = (props) => {
         });
     }
 
+    createLeasedProperty = (tenantId) => {
+        setShowLeasedUserPicker(false);
+        const property = {
+            leased: true
+        }
+
+        updateProperty(property, propertyKey)
+            .then(() => {
+                leaseProperty(propertyKey, tenantId, leasedStartDate, leasedEndDate)
+                    .then(() => props.navigation.navigate(AppRoute.PropertyList))
+                    .catch(error => console.log(error));
+            })
+            .catch(error => console.log(error));
+
+
+    }
     onFocusedChange = () => {
         setFocused(true);
     };
@@ -303,9 +341,11 @@ const AddNewProperty = (props) => {
     var markAsLeased = (editMode && step === AddProperty.PROPERTY_DETAILS && appliers.length > 0) ? (
         <React.Fragment>
             <TouchableOpacity
-                style={[styles.button, { alignSelf: 'center' }]}
-                onPress={this.onMarkAsLeasedClicked}>
-                <Text style={styles.buttonText}>Mark As Leased</Text>
+                style={[leased ? styles.buttonDisabled : styles.button, { alignSelf: 'center' }]}
+                onPress={this.onMarkAsLeasedClicked}
+                disabled={leased}
+            >
+                <Text style={leased ? styles.buttonTextDisabled : styles.buttonText}>Mark As Leased</Text>
             </TouchableOpacity>
             <Overlay
                 isVisible={showLeasedUserPicker}
@@ -326,7 +366,7 @@ const AddNewProperty = (props) => {
                         renderItem={({ item }) => (
                             <View >
                                 <TouchableOpacity
-                                    onPress={() => onItem}
+                                    onPress={() => createLeasedProperty(item.id)}
                                     style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}>
                                     <Avatar rounded
                                         overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
@@ -472,11 +512,23 @@ const AddNewProperty = (props) => {
 
 
                                 {editMode ?
-                                    <TouchableOpacity
-                                        style={[styles.button, { alignSelf: 'center' }]}
-                                        onPress={this.handleUpdateProperty}>
-                                        <Text style={styles.buttonText}>Update Property </Text>
-                                    </TouchableOpacity> :
+                                    <Fragment>
+
+                                        <View style={[styles.containerFlexRow, { alignContent: 'center' }]}>
+                                            <TouchableOpacity
+                                                style={[styles.button, { alignSelf: 'center', marginRight: 4 }]}
+                                                onPress={this.openDatePicker}>
+                                                <Text style={styles.buttonText}>Leased Start</Text>
+                                            </TouchableOpacity>
+                                            {markAsLeased}
+                                        </View>
+                                        <Label>{leasedEndDate}</Label>
+                                        <TouchableOpacity
+                                            style={[styles.button, { alignSelf: 'center' }]}
+                                            onPress={this.handleUpdateProperty}>
+                                            <Text style={styles.buttonText}>Update Property </Text>
+                                        </TouchableOpacity>
+                                    </Fragment> :
                                     <Fragment>
                                         <TouchableOpacity
                                             onPress={this.selectPropertyImage}
@@ -491,7 +543,6 @@ const AddNewProperty = (props) => {
                                         </TouchableOpacity>
                                     </Fragment>
                                 }
-                                {markAsLeased}
                             </View>
                         </View> : null
                     }

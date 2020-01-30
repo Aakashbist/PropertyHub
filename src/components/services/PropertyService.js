@@ -128,12 +128,14 @@ export function checkAlreadyApplied(propertyId, applicatorId) {
     });
 }
 
-export function leaseProperty(propertyId, leaseToUser) {
+export function leaseProperty(propertyId, leaseToUser, startDate, endDate) {
     return new Promise((resolve, reject) => {
-        console.log(propertyId, applicatorId);
-        let propertyApplyRef = Firebase.database().ref().child(`${propertyLeasedCollection}/${propertyId}`);
+        let propertyApplyRef = Firebase.database().ref().child(`${propertyLeasedCollection}`);
         let data = {
-            leasedTo: leaseToUser,
+            tenantId: leaseToUser,
+            leasedStartDate: startDate,
+            leasedEndDate: endDate,
+            propertyId: propertyId,
             createdAt: getServerTimestamp()
         };
         propertyApplyRef.push(data, (error) => {

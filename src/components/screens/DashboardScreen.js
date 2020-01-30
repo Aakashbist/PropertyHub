@@ -76,28 +76,26 @@ const Dashboard = (props) => {
     const calculateDifference = new Date("February 1, 2020").getTime() - new Date().getTime();    //Future date - current date
     const dueDate = Math.floor(calculateDifference / (1000 * 60 * 60 * 24));
     setRentDue(dueDate)
-    console.log(dueDate, "dueDate");
   }
 
-  const view = <View>
+  const view =
     <View style={[styles.containerLeft]}>
-
-      <View style={styles.inputBoxFull}>
-
-        < Picker
-          mode="dialogue"
-          selectedValue={property.address}
-          onValueChange={(property) => updateDashBoardView(property)}>
-          <Picker.Item label="select address" value={null} />
-          {renderPicker(properties)}
-        </Picker>
-      </View>
-
+      {properties !== null &&
+        <View style={[styles.inputBoxFull, { padding: 16 }]}>
+          < Picker
+            mode="dialogue"
+            selectedValue={property.address}
+            onValueChange={(property) => updateDashBoardView(property)}>
+            <Picker.Item label="select address" value={null} />
+            {renderPicker(properties)}
+          </Picker>
+        </View>
+      }
       {isOwner && dashboardComponentVisible &&
         <Fragment>
-          <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column' }]}>
+          <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column', padding: 16 }]}>
             <View style={[styles.containerFlexRow, { marginHorizontal: 5 }]}>
-              <Text style={[styles.textSubHeading, { flex: 1, color: colors.blue }]}>Rent collected {address}</Text>
+              <Text style={{ flex: 1, fontSize: 21, color: colors.blue }}>Rent collected</Text>
               <Icon
                 name="timeline"
                 type="material"
@@ -105,20 +103,17 @@ const Dashboard = (props) => {
                 color={colors.blue}
               />
             </View>
-
             <View>
-              <Text style={[styles.textSubHeading]}> Total: ${property.rent} </Text>
-
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5 }}>
-                <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}> Last Transaction :{date} </Text>
+              <Text style={[styles.textSubHeading]}> Total: $5000 </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> Last Transaction : {date} </Text>
               </View>
+              <TimeLine
+                style={styles.list}
+                data={rentHistory}
+                showtime={false}
 
-              <View style={styles.timelineContainer} >
-                <TimeLine
-                  style={styles.list}
-                  data={rentHistory}
-                />
-              </View>
+              />
             </View>
           </View>
         </Fragment>
@@ -126,9 +121,9 @@ const Dashboard = (props) => {
       }
       {!isOwner &&
         <Fragment>
-          <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column' }]}>
-            <View style={[styles.containerFlexRow, { marginHorizontal: 5 }]}>
-              <Text style={[styles.textSubHeading, { flex: 1, color: colors.green }]}>Upcoming</Text>
+          <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column', padding: 16 }]}>
+            <View style={styles.containerFlexRow}>
+              <Text style={[styles.textSubHeading, { flex: 1, fontSize: 21, color: colors.green }]}>Upcoming Rent</Text>
               <Icon
                 name="update"
                 type="material"
@@ -155,29 +150,24 @@ const Dashboard = (props) => {
                 <Icon
                   name="bolt"
                   type="font-awesome"
-                  size={34}
+                  size={24}
                   color={colors.warning}
                 />
-                <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}> Rent Due in {rentDue} Days </Text>
+                <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}>Due in {rentDue} Days </Text>
                 <TouchableOpacity
-                  style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 5, backgroundColor: colors.green }}
+                  style={[styles.button, { margin: 8 }]}
                   onPress={() => payRent()}
                 >
-                  <Text style={styles.buttonText}>Pay</Text>
-                  <Icon
-                    name="chevron-circle-right"
-                    type="font-awesome"
-                    size={18}
-                    color={colors.white}
-                  />
+                  <Text style={[styles.buttonText, {}]}>Pay</Text>
+
                 </TouchableOpacity >
               </View>
             </View>
           </View>
 
-          <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column' }]}>
+          <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column', padding: 16 }]}>
             <View style={[styles.containerFlexRow, { marginHorizontal: 5 }]}>
-              <Text style={[styles.textSubHeading, { flex: 1, color: colors.blue }]}>Rent Paid</Text>
+              <Text style={{ flex: 1, fontSize: 21, color: colors.blue }}>Rent Paid</Text>
               <Icon
                 name="timeline"
                 type="material"
@@ -187,8 +177,8 @@ const Dashboard = (props) => {
             </View>
             <View>
               <Text style={[styles.textSubHeading]}> Total: $450 </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5 }}>
-                <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}> Last Transaction :{" "} </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> Last Transaction : {date}</Text>
               </View>
               <TimeLine
                 style={styles.list}
@@ -201,8 +191,8 @@ const Dashboard = (props) => {
 
         </Fragment>
       }
-    </View>
-  </View >
+    </View >
+
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1, margin: 10 }}>
