@@ -532,7 +532,7 @@ const AddNewProperty = (props) => {
                                                 <Label style={{ color: colors.success, fontSize: 15 }}> Leasing From: {leasedEndDate}</Label>
                                             }{
                                                 error &&
-                                                <Label style={{ color: colors.danger, fontSize: 15 }}>{error}</Label>
+                                                < Label style={{ color: colors.danger, fontSize: 15 }}>{error}</Label>
                                             }
                                         </View>
                                         <TouchableOpacity
