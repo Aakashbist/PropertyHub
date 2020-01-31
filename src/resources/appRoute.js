@@ -8,7 +8,6 @@ const AppRoute = {
     AuthLoading: 'AuthLoading',
     OwnerDashBoard: 'OwnerDashboardScreen',
     TenantDashboard: 'TenantDashboardScreen',
-    Dashboard: 'DashboardScreen',
     Profile: 'ProfileScreen',
     PropertySearch: 'PropertySearch',
     PropertyDetailsTenant: 'PropertyDetails',

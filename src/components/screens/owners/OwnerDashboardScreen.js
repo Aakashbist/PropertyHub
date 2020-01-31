@@ -45,12 +45,13 @@ const OwnerDashboard = (props) => {
         setProperties(propertiesList);
     }
 
-    updateDashBoardView = (propertyAddress) => {
-        setPickerSelectedValue(propertyAddress);
-        if (propertyAddress !== null) {
-            properties.filter(property => property.address === propertyAddress)
-                .map(property => setProperty(property));
-            setDashboardComponentVisible(true);
+    updateDashBoardView = (propertyId) => {
+        if (propertyId) {
+            const data = properties.find(property => property.id === propertyId)
+            if (data) {
+                setProperty(data);
+                setDashboardComponentVisible(true);
+            }
         }
         else {
             setProperty({});
@@ -58,9 +59,10 @@ const OwnerDashboard = (props) => {
         }
     }
 
+
     renderPicker = (properties) => {
         return properties.map(property =>
-            < Picker.Item key={property.id} label={property.address} value={property.address} />
+            < Picker.Item key={property.id} label={property.address} value={property.id} />
         )
     }
 
@@ -77,8 +79,8 @@ const OwnerDashboard = (props) => {
                 <View style={[styles.inputBoxFull, { padding: 16 }]}>
                     < Picker
                         mode='dropdown'
-                        selectedValue={pickerSelectedValue}
-                        onValueChange={(propertyAddress) => updateDashBoardView(propertyAddress)}>
+                        selectedValue={property.id}
+                        onValueChange={(propertyId) => updateDashBoardView(propertyId)}>
                         <Picker.Item label="select address" value={null} />
                         {renderPicker(properties)}
                     </Picker>
