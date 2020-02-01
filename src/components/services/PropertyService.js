@@ -8,7 +8,7 @@ const propertyLeasedCollection = 'leaseProperty';
 
 export function getPropertiesBySearch(searchTerm) {
     return new Promise((resolve, reject) => {
-        Firebase.database().ref(`${propertyCollection}`).once('value', snapshot => {
+        Firebase.database().ref(`${propertyCollection}`).orderByChild("leased").equalTo(false).once('value', snapshot => {
             var data = snapshot.val();
             if (data) {
                 const properties = mapToArray(data);

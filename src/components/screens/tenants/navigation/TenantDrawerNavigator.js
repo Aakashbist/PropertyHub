@@ -9,12 +9,12 @@ import ChatStackNavigator from '../../../ChatStackNavigator';
 import DashboardStackNavigator from '../../../DashboardStackNavigator';
 
 const DrawerNavigator = createDrawerNavigator({
-    TenantDashboardScreen: TenantDashboardScreen,
-    PropertySearch: PropertySearchStackNavigator,
-    ChatScreen: ChatStackNavigator
+    TenantDashboardScreen: TenantDashboardScreen, // AppRoute.TenantDashboard
+    PropertySearch: PropertySearchStackNavigator, // AppRoute.PropertySearch
+    ChatScreen: ChatStackNavigator // AppRoute.Chat
 },
     {
-        initialRouteName: AppRoute.TenantDashboard,
+        initialRouteName: AppRoute.PropertySearch,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,

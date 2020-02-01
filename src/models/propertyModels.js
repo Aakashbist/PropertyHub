@@ -1,6 +1,6 @@
 class Property {
-    constructor(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription, rent, bond, imageUrl, lat, lng, ownerId) {
-
+    constructor(leased, address, unitNumber, bedroom, bathroom, propertyType, propertyDescription, rent, bond, imageUrl, lat, lng, ownerId) {
+        this.leased = leased;
         this.address = address;
         this.unitNumber = unitNumber;
         this.bedroom = bedroom;
@@ -13,14 +13,14 @@ class Property {
         this.propertyType = propertyType;
         this.ownerId = ownerId;
         this.propertyDescription = propertyDescription;
-
     }
 }
+
 class Coordinates {
     constructor(lat, lng) {
         this.lat = lat;
         this.lng = lng;
-
     }
 }
+
 export { Property, Coordinates };

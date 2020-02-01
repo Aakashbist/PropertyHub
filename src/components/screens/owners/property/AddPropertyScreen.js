@@ -17,6 +17,7 @@ import { createProperty, getPropertyById, getUsersWhoAppliedProperty, leasePrope
 import { createRentHistory } from '../../../services/RentService';
 import { getDownloadUrl } from '../../../services/UploadService';
 import { getUserById } from '../../../services/UserService';
+import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 import { getNameInitials } from '../../../utils/TextUtils';
 
 const AddProperty = {
@@ -74,6 +75,11 @@ const AddNewProperty = (props) => {
         }
         return () => setShowLeasedUserPicker(false);
     }, []);
+
+    useEffect(() => {
+        alert(error);
+    }, [error]);
+
 
     useEffect(() => {
         let _canAddProperty = rent !== null && bond !== null && propertyType !== null && propertyDescription !== null && imageUri !== null && !isLoading;
@@ -207,6 +213,7 @@ const AddNewProperty = (props) => {
             setBathroom(data.bathroom);
             setBedroom(data.bedroom);
             setUnitNumber(data.unitNumber);
+            setLeased(data.leased);
             setLatitude(data.lat);
             setLongitude(data.lng);
             setPropertyDescriptionView(true);
@@ -235,15 +242,12 @@ const AddNewProperty = (props) => {
         let property;
         getDownloadUrl(imageUri, imageFileName)
             .then((url) => {
-                property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
+                property = new Property(leased, address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
                     rent, bond, url, latitude, longitude, currentUser);
-                createProperty(property).then((key) => {
-                    setStep(AddProperty.ADD_PROPERTY_SUCCESS);
-                }).catch((error) => {
-                    errorMessage = setError(parseFirebaseError(error));
-                    setError(errorMessage);
-                });
-
+                return createProperty(property)
+            })
+            .then((key) => {
+                setStep(AddProperty.ADD_PROPERTY_SUCCESS);
             })
             .catch(error => {
                 let errorMessage = parseFirebaseError(error);
@@ -258,7 +262,7 @@ const AddNewProperty = (props) => {
     handleUpdateProperty = () => {
         setIsLoading(true);
         let property;
-        property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
+        property = new Property(leased, address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
             rent, bond, imageUri, latitude, longitude, currentUser);
         setIsLoading(false);
         updateProperty(property, propertyKey)
