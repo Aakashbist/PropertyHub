@@ -170,7 +170,8 @@ const Signup = (props) => {
     </React.Fragment>;
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
       <View style={styles.container}>
         <Image
           source={require('../../assets/icon/homeIcon.png')}

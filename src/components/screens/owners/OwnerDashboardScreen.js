@@ -10,7 +10,6 @@ import { propertyReference } from '../../services/PropertyService';
 
 
 const OwnerDashboard = (props) => {
-
     const date = moment.unix(1580034146345 / 1000).format("DD MMM hh:mm a")
     const [rentDue, setRentDue] = useState();
     const [properties, setProperties] = useState([]);
@@ -119,7 +118,8 @@ const OwnerDashboard = (props) => {
 
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1, margin: 10 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1, margin: 10 }}
+            keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View >
                 {view}
             </View>

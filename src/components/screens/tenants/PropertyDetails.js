@@ -199,11 +199,10 @@ const PropertyDetails = props => {
         );
 
     return (
-        <View>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View>{view}</View>
-            </ScrollView>
-        </View>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
+            <View>{view}</View>
+        </ScrollView>
     );
 };
 

@@ -69,7 +69,7 @@ const ChatScreen = (props) => {
         </React.Fragment>
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View style={styles.containerFull} >
                 {view}
             </View>

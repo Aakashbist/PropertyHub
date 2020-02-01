@@ -16,7 +16,7 @@ const RentDetails = (props) => {
     ])
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View style={styles.timelineContainer} >
                 <TimeLine
                     style={styles.list}

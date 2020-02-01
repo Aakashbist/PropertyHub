@@ -28,7 +28,7 @@ const Login = (props) => {
     let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View style={styles.container} >
                 <Image
                     source={require('../../assets/icon/homeIcon.png')}

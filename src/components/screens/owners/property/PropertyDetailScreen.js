@@ -4,7 +4,7 @@ import styles from '../../../../resources/styles';
 import { Image } from 'native-base';
 import { Icon } from 'react-native-elements';
 import { getPropertyById } from '../../../services/PropertyService';
-import {Firebase, getCurrentUser} from '../../../../config/Firebase';
+import { Firebase, getCurrentUser } from '../../../../config/Firebase';
 
 
 const PropertyDetailScreen = (props) => {
@@ -18,11 +18,13 @@ const PropertyDetailScreen = (props) => {
             getProperty(key);
         }
     }, [])
+
     getProperty = (key) => {
         getPropertyById(currentUser, key).then((data) => {
             setProperties(data);
         }).catch((error) => console.log(error));
     }
+
     return (
         <View style={styles.containerFull} >
             <FlatList

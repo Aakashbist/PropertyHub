@@ -353,8 +353,7 @@ const AddNewProperty = (props) => {
             <TouchableOpacity
                 style={[leased ? styles.buttonDisabled : styles.button, { alignSelf: 'center' }]}
                 onPress={this.onMarkAsLeasedClicked}
-                disabled={leased}
-            >
+                disabled={leased} >
                 <Text style={leased ? styles.buttonTextDisabled : styles.buttonText}>Mark As Leased</Text>
             </TouchableOpacity>
             <Overlay
@@ -585,11 +584,10 @@ const AddNewProperty = (props) => {
     }
 
     return (
-        <ScrollView >
+        <ScrollView keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'} >
             <SafeAreaView>
                 <View style={{ flex: 1 }}>
                     {view}
-
                 </View >
             </SafeAreaView>
         </ScrollView >
