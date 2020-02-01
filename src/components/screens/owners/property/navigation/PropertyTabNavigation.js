@@ -50,7 +50,7 @@ const PropertyTabNavigator = createBottomTabNavigator({
 
 const appContainer = createAppContainer(PropertyTabNavigator)
 appContainer.navigationOptions = (props) => ({
-  drawerLabel: 'Property',
+  drawerLabel: 'Properties',
   drawerIcon: ({ tintColor }) => (
     <Icon name='home'
       type='font-awesome'
