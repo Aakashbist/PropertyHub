@@ -16,7 +16,6 @@ const TenantDashboard = (props) => {
     const date = moment.unix(1580034146345 / 1000).format("DD MMM hh:mm a")
     const [rentDue, setRentDue] = useState();
     const [properties, setProperties] = useState([]);
-    const [pickerSelectedValue, setPickerSelectedValue] = useState([]);
     const [property, setProperty] = useState({});
     const [propertyKey, setPropertyKey] = useState();
     const [dashboardComponentVisible, setDashboardComponentVisible] = useState(false);
@@ -31,7 +30,6 @@ const TenantDashboard = (props) => {
     const currentUser = getCurrentUser().uid;
 
     useEffect(() => {
-        nextRentPaymentDay();
         getProperties();
 
     }, []);
@@ -45,7 +43,8 @@ const TenantDashboard = (props) => {
                         new Promise((resolve, reject) => {
                             getPropertyById(data.propertyId)
                                 .then(value => {
-                                    value.id = data.propertyId
+                                    value.leasedStartDate = data.leasedStartDate,
+                                        value.id = data.propertyId
                                     resolve(value);
                                 }).catch(error => reject(error))
                         })
@@ -53,7 +52,6 @@ const TenantDashboard = (props) => {
                 });
                 Promise.all(promises).then((values) => {
                     setProperties(values);
-                    console.log(values);
                     setPropertyKey(propertyKey);
                 })
             });
@@ -64,8 +62,8 @@ const TenantDashboard = (props) => {
             const data = properties.find(property => property.id === propertyId)
             if (data) {
                 setProperty(data);
+                nextRentPaymentDay(data.leasedStartDate);
                 getRentHistory(data.id).then(data => {
-                    console.log(data);
                 });
                 setDashboardComponentVisible(true);
             }
@@ -86,11 +84,16 @@ const TenantDashboard = (props) => {
 
     }
 
-    nextRentPaymentDay = () => {
-        //will get in from server
-        const calculateDifference = new Date("February 1, 2020").getTime() - new Date().getTime();    //Future date - current date
-        const dueDate = Math.floor(calculateDifference / (1000 * 60 * 60 * 24));
-        setRentDue(dueDate)
+    nextRentPaymentDay = (leasedStartDate) => {
+        if (leasedStartDate < new Date().getTime()) {
+            const dateDifferenceInMilliSec = new Date(moment(leasedStartDate).format('ll')).getTime() - new Date().getTime();
+            const numberOfDaysAfterLeased = Math.floor(dateDifferenceInMilliSec / (1000 * 60 * 60 * 24));
+            const dueDate = Math.floor(14 - (Math.abs(numberOfDaysAfterLeased) % 14) + 1)
+            setRentDue(dueDate)
+        }
+        else {
+            setRentDue(null)
+        }
     }
 
     const view =
@@ -183,7 +186,7 @@ const TenantDashboard = (props) => {
 
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1, margin: 10 }}
+        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1 }}
             keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View >
                 {view}

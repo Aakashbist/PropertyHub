@@ -118,7 +118,7 @@ const OwnerDashboard = (props) => {
 
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1, margin: 10 }}
+        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: colors.darkWhite1 }}
             keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View >
                 {view}

@@ -76,10 +76,6 @@ const AddNewProperty = (props) => {
         return () => setShowLeasedUserPicker(false);
     }, []);
 
-    useEffect(() => {
-        alert(error);
-    }, [error]);
-
 
     useEffect(() => {
         let _canAddProperty = rent !== null && bond !== null && propertyType !== null && propertyDescription !== null && imageUri !== null && !isLoading;
@@ -154,10 +150,11 @@ const AddNewProperty = (props) => {
                 maxDate: dateAfterSixMonth
             });
             if (action !== DatePickerAndroid.dismissedAction) {
-                var startOfLeased = moment([year, month, day]).format('ll');
-                var endOfLeased = moment(startOfLeased).add(6, "months").format('ll');
+                var startOfLeased = moment([year, month, day]).valueOf();
+                var endOfLeased = moment(startOfLeased).add(6, "months").valueOf();
                 setLeasedStartDate(startOfLeased);
                 setLeasedEndDate(endOfLeased);
+                console.log(startOfLeased, endOfLeased, ">>>")
                 setError(undefined);
             }
 
@@ -213,7 +210,6 @@ const AddNewProperty = (props) => {
             setBathroom(data.bathroom);
             setBedroom(data.bedroom);
             setUnitNumber(data.unitNumber);
-            setLeased(data.leased);
             setLatitude(data.lat);
             setLongitude(data.lng);
             setPropertyDescriptionView(true);
@@ -532,7 +528,7 @@ const AddNewProperty = (props) => {
                                         <View style={[styles.containerFlexRow, { alignContent: 'center' }]}>
                                             {
                                                 leasedStartDate !== undefined &&
-                                                <Label style={{ color: colors.success, fontSize: 15 }}> Leasing From: {leasedEndDate}</Label>
+                                                <Label style={{ color: colors.success, fontSize: 15 }}> Leasing From:  {moment(leasedStartDate).format('ll')}</Label>
                                             }{
                                                 error &&
                                                 < Label style={{ color: colors.danger, fontSize: 15 }}>{error}</Label>

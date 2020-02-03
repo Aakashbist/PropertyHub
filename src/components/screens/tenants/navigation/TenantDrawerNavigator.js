@@ -14,7 +14,7 @@ const DrawerNavigator = createDrawerNavigator({
     ChatScreen: ChatStackNavigator // AppRoute.Chat
 },
     {
-        initialRouteName: AppRoute.PropertySearch,
+        initialRouteName: AppRoute.TenantDashboard,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,
