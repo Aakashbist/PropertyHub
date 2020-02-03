@@ -1,4 +1,3 @@
-import { once } from 'lodash';
 import moment from 'moment';
 import { Container, Label, Picker } from 'native-base';
 import React, { Fragment, useEffect, useState } from 'react';
@@ -12,12 +11,11 @@ import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
+import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
 import { createProperty, getPropertyById, getUsersWhoAppliedProperty, leaseProperty, updateProperty } from '../../../services/PropertyService';
-import { createRentHistory } from '../../../services/RentService';
 import { getDownloadUrl } from '../../../services/UploadService';
 import { getUserById } from '../../../services/UserService';
-import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 import { getNameInitials } from '../../../utils/TextUtils';
 
 const AddProperty = {
@@ -306,7 +304,6 @@ const AddNewProperty = (props) => {
         const property = {
             leased: true
         }
-        initiateRentHistory(tenantId);
         updateProperty(property, propertyKey)
             .then(() => {
                 leaseProperty(propertyKey, tenantId, leasedStartDate, leasedEndDate)
@@ -319,10 +316,6 @@ const AddNewProperty = (props) => {
     onFocusedChange = () => {
         setFocused(true);
     };
-
-    initiateRentHistory = (tenantId) => {
-        createRentHistory(propertyKey, tenantId, leasedStartDate);
-    }
 
     const suggestionView = predictions.map(item =>
         <TouchableOpacity

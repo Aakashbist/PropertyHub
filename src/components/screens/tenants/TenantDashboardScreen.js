@@ -3,29 +3,21 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Picker, ScrollView, Slider, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-elements';
 import TimeLine from 'react-native-timeline-flatlist';
-import { getCurrentUser, getServerTimestamp } from '../../../config/Firebase';
+import { getCurrentUser } from '../../../config/Firebase';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
 import { getLeasedPropertiesByTenantId, getPropertyById } from '../../services/PropertyService';
-import { getRentHistory } from '../../services/RentService';
-import { Property } from '../../../models/propertyModels';
-import { Label } from 'native-base';
+import { getRentHistory, createRentHistory } from '../../services/RentService';
+import { _ } from "lodash";
 
 
 const TenantDashboard = (props) => {
-    const date = moment.unix(1580034146345 / 1000).format("DD MMM hh:mm a")
-    const [rentDue, setRentDue] = useState();
+    const [rentDue, setRentDue] = useState(null);
     const [properties, setProperties] = useState([]);
     const [property, setProperty] = useState({});
     const [propertyKey, setPropertyKey] = useState();
     const [dashboardComponentVisible, setDashboardComponentVisible] = useState(false);
-    const [rentHistory, setRentHistory] = useState([
-        { time: date, description: '250', title: 'Rent Collected' },
-        { time: date, description: '300', title: 'rent paid' },
-        { time: date, description: '550', title: 'Rent Collected' },
-        { time: date, description: '650', title: 'rent Collected' },
-        { time: date, description: '750', title: 'Rent Collected' }
-    ])
+    const [rentHistory, setRentHistory] = useState([])
 
     const currentUser = getCurrentUser().uid;
 
@@ -63,7 +55,8 @@ const TenantDashboard = (props) => {
             if (data) {
                 setProperty(data);
                 nextRentPaymentDay(data.leasedStartDate);
-                getRentHistory(data.id).then(data => {
+                getRentHistory(data.id).then(history => {
+                    setRentHistory(history);
                 });
                 setDashboardComponentVisible(true);
             }
@@ -74,6 +67,22 @@ const TenantDashboard = (props) => {
         }
     }
 
+    renderLastTransaction = (history) => {
+        var lastPayment = _.last(history);
+        if (lastPayment) {
+            return (
+
+                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> Last Transaction : {lastPayment.time}</Text>
+            )
+        }
+        else {
+            return (
+
+                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> No transaction yet.</Text>
+            )
+        }
+    }
+
     renderPicker = (properties) => {
         return properties.map(property => (
             < Picker.Item key={property.id} label={property.address} value={property.id} />
@@ -81,7 +90,8 @@ const TenantDashboard = (props) => {
     }
 
     payRent = () => {
-
+        createRentHistory(property.id, currentUser, property.rent);
+        //  { time: date, description: '250', title: 'Rent Collected' },
     }
 
     nextRentPaymentDay = (leasedStartDate) => {
@@ -95,6 +105,10 @@ const TenantDashboard = (props) => {
             setRentDue(null)
         }
     }
+
+    const dueDateView = rentDue === null ?
+        <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}>No due date yet</Text> :
+        <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}>Due in {rentDue} Days </Text>
 
     const view =
         <View style={[styles.containerLeft]}>
@@ -137,14 +151,14 @@ const TenantDashboard = (props) => {
                                 value={rentDue}
                             />
 
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 5 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 4 }}>
                                 <Icon
                                     name="bolt"
                                     type="font-awesome"
                                     size={24}
                                     color={colors.warning}
                                 />
-                                <Text style={[styles.textSubHeading, { paddingVertical: 20, flex: 1 }]}>Due in {rentDue} Days </Text>
+                                {dueDateView}
                                 <TouchableOpacity
                                     style={[styles.button, { margin: 8 }]}
                                     onPress={() => payRent()}
@@ -158,7 +172,7 @@ const TenantDashboard = (props) => {
 
                     <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column', padding: 16 }]}>
                         <View style={[styles.containerFlexRow, { marginHorizontal: 5 }]}>
-                            <Text style={{ flex: 1, fontSize: 21, color: colors.blue }}>Rent Paid</Text>
+                            <Text style={{ flex: 1, fontSize: 21, color: colors.blue }}>Rent Paid History</Text>
                             <Icon
                                 name="timeline"
                                 type="material"
@@ -166,10 +180,10 @@ const TenantDashboard = (props) => {
                                 color={colors.blue}
                             />
                         </View>
+
                         <View>
-                            <Text style={[styles.textSubHeading]}> Total: $450 </Text>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> Last Transaction : {date}</Text>
+                                {renderLastTransaction(rentHistory)}
                             </View>
                             <TimeLine
                                 style={styles.list}

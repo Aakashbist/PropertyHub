@@ -7,28 +7,18 @@ import { getCurrentUser } from '../../../config/Firebase';
 import colors from '../../../resources/colors';
 import styles from '../../../resources/styles';
 import { propertyReference } from '../../services/PropertyService';
-
+import _ from "lodash";
+import { getRentHistory } from '../../services/RentService';
 
 const OwnerDashboard = (props) => {
-    const date = moment.unix(1580034146345 / 1000).format("DD MMM hh:mm a")
-    const [rentDue, setRentDue] = useState();
     const [properties, setProperties] = useState([]);
     const [property, setProperty] = useState({});
-    const [pickerSelectedValue, setPickerSelectedValue] = useState();
-
     const [dashboardComponentVisible, setDashboardComponentVisible] = useState(false);
-    const [rentHistory, setRentHistory] = useState([
-        { time: date, description: '250', title: 'Rent Collected' },
-        { time: date, description: '300', title: 'rent paid' },
-        { time: date, description: '550', title: 'Rent Collected' },
-        { time: date, description: '650', title: 'rent Collected' },
-        { time: date, description: '750', title: 'Rent Collected' }
-    ])
+    const [rentHistory, setRentHistory] = useState([])
 
     const currentUser = getCurrentUser().uid;
 
     useEffect(() => {
-        nextRentPaymentDay();
         getProperties();
 
     }, []);
@@ -49,6 +39,9 @@ const OwnerDashboard = (props) => {
             const data = properties.find(property => property.id === propertyId)
             if (data) {
                 setProperty(data);
+                getRentHistory(data.id).then(history => {
+                    setRentHistory(history);
+                });
                 setDashboardComponentVisible(true);
             }
         }
@@ -58,18 +51,26 @@ const OwnerDashboard = (props) => {
         }
     }
 
+    renderLastTransaction = (history) => {
+        var lastPayment = _.last(history);
+        if (lastPayment) {
+            return (
+
+                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> Last Transaction : {lastPayment.time}</Text>
+            )
+        }
+        else {
+            return (
+
+                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> No transaction yet.</Text>
+            )
+        }
+    }
 
     renderPicker = (properties) => {
         return properties.map(property =>
             < Picker.Item key={property.id} label={property.address} value={property.id} />
         )
-    }
-
-    nextRentPaymentDay = () => {
-        //will get in from server
-        const calculateDifference = new Date("February 1, 2020").getTime() - new Date().getTime();    //Future date - current date
-        const dueDate = Math.floor(calculateDifference / (1000 * 60 * 60 * 24));
-        setRentDue(dueDate)
     }
 
     const view =
@@ -90,7 +91,7 @@ const OwnerDashboard = (props) => {
                 <Fragment>
                     <View style={[styles.dashboardViewWithShadow, { flexDirection: 'column', padding: 16 }]}>
                         <View style={[styles.containerFlexRow, { marginHorizontal: 5 }]}>
-                            <Text style={{ flex: 1, fontSize: 21, color: colors.blue }}>Rent collected</Text>
+                            <Text style={{ flex: 1, fontSize: 21, color: colors.blue }}>Rent collection History</Text>
                             <Icon
                                 name="timeline"
                                 type="material"
@@ -99,9 +100,8 @@ const OwnerDashboard = (props) => {
                             />
                         </View>
                         <View>
-                            <Text style={[styles.textSubHeading]}> Total: $5000 </Text>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 15, paddingVertical: 8, flex: 1 }}> Last Transaction : {date} </Text>
+                                {renderLastTransaction(rentHistory)}
                             </View>
                             <TimeLine
                                 style={styles.list}
