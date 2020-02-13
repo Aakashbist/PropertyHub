@@ -78,8 +78,9 @@ const PropertyListScreen = (props) => {
 
                             <TouchableOpacity
                                 style={{ marginHorizontal: 4 }}
-                                onPress={() => this.deleteProperties(item.id)}>
-                                <Icon name='trash' type='entypo' size={20} color={colors.primaryDark} />
+                                onPress={() => this.deleteProperties(item.id)}
+                                disabled={item.leased}>
+                                <Icon name='trash' type='entypo' size={20} color={item.leased ? colors.darkWhite2 : colors.danger} />
                             </TouchableOpacity>
 
                         </View>

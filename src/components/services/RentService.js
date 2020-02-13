@@ -18,7 +18,7 @@ export function createRentHistory(propertyKey, tenantId, rent) {
             } else {
                 resolve();
             }
-        })
+        }) 
     })
 }
 

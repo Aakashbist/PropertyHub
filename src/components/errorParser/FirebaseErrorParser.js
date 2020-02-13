@@ -1,7 +1,6 @@
 export default function parseFirebaseError(error) {
     let errorMessage;
 
-    alert(JSON.stringify(error));
     switch (error.code) {
         case 'auth/wrong-password':
             errorMessage = 'Wrong Password';

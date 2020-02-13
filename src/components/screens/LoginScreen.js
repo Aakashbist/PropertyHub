@@ -7,8 +7,8 @@ import styles from '../../resources/styles';
 import parseFirebaseError from '../errorParser/FirebaseErrorParser';
 
 const Login = (props) => {
-    const [email, setEmail] = useState('dilroop.singh@gmail.com');
-    const [password, setPassword] = useState('Qwerty123456');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState();
     const [canLogin, setCanLogin] = useState(false);
 
