@@ -143,7 +143,35 @@ export default {
         justifyContent: "flex-start",
         alignItems: "center",
     },
+    dashboardViewWithShadow: {
+        margin: 16,
+        alignSelf: 'stretch',
+        borderRadius: 8,
+        backgroundColor: colors.white,
+        borderRadius: 2,
+        borderColor: '#ddd',
+        //ios    
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
+        //android
+        elevation: 4
+    },
+    timelineContainer: {
+        flex: 1,
+        padding: 20,
+        paddingTop: 65,
+        backgroundColor: colors.white,
+        width: '100%',
 
+    },
+    timelineList: {
+        flex: 1,
+        marginTop: 20,
+    },
     FloatingButtonStyle: {
         resizeMode: 'contain',
         width: 50,
@@ -163,7 +191,7 @@ export default {
         fontSize: 14
     },
     textSubHeading: {
-        fontSize: 18
+        fontSize: 17
     },
     primaryTextHeading: {
         color: colors.primary,

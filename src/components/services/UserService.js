@@ -4,7 +4,7 @@ const ownerCollectionName = 'owners';
 const tenantCollectionName = 'tenants';
 
 export function getUserById(key) {
-    // checks tenant frst
+    // checks tenant first
     return new Promise((resolve, reject) => {
         Promise.all(
             [getTenantById(key),
@@ -20,6 +20,7 @@ export function getOwnerById(key) {
         const user = Firebase.database().ref(`${ownerCollectionName}/${key}`);
         user.once("value", data => {
             resolve(data.val());
+            console.log("service", JSON.stringify(data));
         }, error => reject(error));
     })
 }

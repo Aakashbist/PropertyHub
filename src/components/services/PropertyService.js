@@ -8,7 +8,7 @@ const propertyLeasedCollection = 'leaseProperty';
 
 export function getPropertiesBySearch(searchTerm) {
     return new Promise((resolve, reject) => {
-        Firebase.database().ref(`${propertyCollection}`).once('value', snapshot => {
+        Firebase.database().ref(`${propertyCollection}`).orderByChild("leased").equalTo(false).once('value', snapshot => {
             var data = snapshot.val();
             if (data) {
                 const properties = mapToArray(data);
@@ -30,10 +30,7 @@ export function getPropertiesBySearch(searchTerm) {
 
 export function propertyReference(userId, callback) {
     let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/`);
-
-    dbPropertyRef.off();
     const onResponse = (dataSnapshot) => {
-
         if (dataSnapshot.exists()) {
             let data = dataSnapshot.val();
             let result = mapToArray(data);
@@ -45,12 +42,38 @@ export function propertyReference(userId, callback) {
     dbPropertyRef.orderByChild(`ownerId`).equalTo(userId).on('value', onResponse);
 }
 
+export function getLeasedPropertiesByTenantId(userId) {
+    return new Promise((resolve, reject) => {
+        let dbPropertyRef = Firebase.database().ref(`${propertyLeasedCollection}`);
+        dbPropertyRef.orderByChild(`tenantId`).equalTo(userId).once('value', snapShot => {
+            if (snapShot.exists()) {
+                let data = snapShot.val();
+                let result = mapToArray(data);
+                resolve(result);
+            }
+            else {
+                resolve([]);
+            }
+        }, error => reject(error));
+    })
+}
+
+export function propertyCountByUserId(userId) {
+    return new Promise((resolve, reject) => {
+        let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/`);
+        dbPropertyRef.orderByChild(`ownerId`).equalTo(userId).once('value', snapShot => {
+            const numberOfProperties = snapShot.numChildren();
+            resolve(numberOfProperties);
+        }, error => reject(error));
+    })
+}
+
 export function deletePropertiesWithId(propertyId) {
     let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/${propertyId}`);
     return new Promise((resolve, reject) => {
         return dbPropertyRef.remove()
             .then(resolve())
-            .ca; ch(error => reject(error));
+            .catch(error => reject(error));
     });
 }
 
@@ -118,12 +141,14 @@ export function checkAlreadyApplied(propertyId, applicatorId) {
     });
 }
 
-export function leaseProperty(propertyId, leaseToUser) {
+export function leaseProperty(propertyId, leaseToUser, startDate, endDate) {
     return new Promise((resolve, reject) => {
-        console.log(propertyId, applicatorId);
-        let propertyApplyRef = Firebase.database().ref().child(`${propertyLeasedCollection}/${propertyId}`);
+        let propertyApplyRef = Firebase.database().ref().child(`${propertyLeasedCollection}`);
         let data = {
-            leasedTo: leaseToUser,
+            tenantId: leaseToUser,
+            leasedStartDate: startDate,
+            leasedEndDate: endDate,
+            propertyId: propertyId,
             createdAt: getServerTimestamp()
         };
         propertyApplyRef.push(data, (error) => {

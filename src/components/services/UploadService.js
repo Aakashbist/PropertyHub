@@ -3,7 +3,6 @@ import DocumentPicker from 'react-native-document-picker';
 
 const collection = "Documents"
 export async function getDownloadUrl(uri, fileName) {
-    alert("here");
     console.log(uri, fileName, 'download');
     const documentUri = getUriBasedOnOS(uri)
     const response = await fetch(documentUri);
@@ -37,7 +36,6 @@ export function openDocumentPicker() {
                 // DocumentPicker.types.allFiles,image,plainText,audio,pdf
             });
             //uri,type,name(filename),size is in res obj
-
             resolve(res);
 
         } catch (err) {

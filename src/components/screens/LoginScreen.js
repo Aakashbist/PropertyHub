@@ -7,8 +7,8 @@ import styles from '../../resources/styles';
 import parseFirebaseError from '../errorParser/FirebaseErrorParser';
 
 const Login = (props) => {
-    const [email, setEmail] = useState('dilroop.singh@gmail.com');
-    const [password, setPassword] = useState('Qwerty123456');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState();
     const [canLogin, setCanLogin] = useState(false);
 
@@ -28,7 +28,7 @@ const Login = (props) => {
     let errorView = error ? <Text style={{ color: colors.textColorError }}>{error}</Text> : null;
 
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <View style={styles.container} >
                 <Image
                     source={require('../../assets/icon/homeIcon.png')}

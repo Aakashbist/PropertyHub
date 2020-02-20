@@ -6,7 +6,8 @@ const AppRoute = {
     Owner: 'Owner',
     Auth: 'Auth',
     AuthLoading: 'AuthLoading',
-    Dashboard: 'DashboardScreen',
+    OwnerDashBoard: 'OwnerDashboardScreen',
+    TenantDashboard: 'TenantDashboardScreen',
     Profile: 'ProfileScreen',
     PropertySearch: 'PropertySearch',
     PropertyDetailsTenant: 'PropertyDetails',
@@ -16,7 +17,8 @@ const AppRoute = {
     AddProperty: 'AddPropertyScreen',
     LeasedProperty: 'LeasedPropertyScreen',
     Chat: 'ChatScreen',
-    ChatRoom: 'ChatRoomScreen'
+    ChatRoom: 'ChatRoomScreen',
+    RentDetails: 'RentDetailsScreen'
 }
 
 export default AppRoute

@@ -78,12 +78,18 @@ const PropertyListScreen = (props) => {
 
                             <TouchableOpacity
                                 style={{ marginHorizontal: 4 }}
-                                onPress={() => this.deleteProperties(item.id)}>
-                                <Icon name='trash' type='entypo' size={20} color={colors.primaryDark} />
+                                onPress={() => this.deleteProperties(item.id)}
+                                disabled={item.leased}>
+                                <Icon name='trash' type='entypo' size={20} color={item.leased ? colors.darkWhite2 : colors.danger} />
                             </TouchableOpacity>
 
                         </View>
-                        <Text style={{ flex: 1, fontSize: 16 }}>Rent ${item.rent}</Text>
+                        <View style={styles.containerFlexRow}>
+                            <Text style={{ flex: 1, fontSize: 15 }}>Rent ${item.rent}</Text>
+                            {item.leased &&
+                                <Icon name='lock' type='evilicon' size={34} color={colors.danger} />
+                            }
+                        </View>
                     </Card>
                 )}
             />
@@ -91,15 +97,14 @@ const PropertyListScreen = (props) => {
 
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
+        <ScrollView style={{ flex: 1, backgroundColor: '#f4f4f4' }}
+            keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
             <SafeAreaView>
-                <ScrollView>
-                    <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
-                        {view}
-                    </View>
-                </ScrollView>
+                <View style={[styles.containerLeft, { paddingBottom: 16, flexDirection: 'column' }]} >
+                    {view}
+                </View>
             </SafeAreaView>
-        </View>
+        </ScrollView>
     )
 }
 

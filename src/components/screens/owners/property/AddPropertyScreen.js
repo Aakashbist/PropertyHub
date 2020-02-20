@@ -1,21 +1,22 @@
+import moment from 'moment';
 import { Container, Label, Picker } from 'native-base';
-import React, { useEffect, useState, Fragment } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, FlatList, TouchableOpacity, View, ActivityIndicator, Alert, TextInput } from 'react-native';
-import { Icon, Slider, SearchBar, Input, Overlay, Avatar, Divider } from 'react-native-elements';
+import React, { Fragment, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, DatePickerAndroid, FlatList, Image, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Avatar, Divider, Icon, Overlay, SearchBar, Slider } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Firebase, getCurrentUser } from '../../../../config/Firebase';
+import { getCurrentUser } from '../../../../config/Firebase';
 import { Property } from '../../../../models/propertyModels';
 import AppRoute from '../../../../resources/appRoute';
 import colors from '../../../../resources/colors';
 import PropertyType from '../../../../resources/propertyType';
 import styles from '../../../../resources/styles';
+import parseFirebaseError from '../../../errorParser/FirebaseErrorParser';
 import { getGooglePlaceAutocomplete, getGooglePlaceDetails } from '../../../services/GoogleService';
+import { createProperty, getPropertyById, getUsersWhoAppliedProperty, leaseProperty, updateProperty } from '../../../services/PropertyService';
 import { getDownloadUrl } from '../../../services/UploadService';
-import { getPropertyById, createProperty, updateProperty, getUsersWhoAppliedProperty, leaseProperty } from '../../../services/PropertyService';
 import { getUserById } from '../../../services/UserService';
 import { getNameInitials } from '../../../utils/TextUtils';
-
 
 const AddProperty = {
     PROPERTY_DETAILS: 0,
@@ -47,13 +48,16 @@ const AddNewProperty = (props) => {
     const [imageUri, setImageUri] = useState();
     const [propertyKey, setPropertyKey] = useState();
     const [propertyDescription, setPropertyDescription] = useState();
-    const [error, setError] = useState("All fields are required *");
+    const [error, setError] = useState();
 
     // leased User data
     const [leased, setLeased] = useState(false);
     const [showLeasedUserPicker, setShowLeasedUserPicker] = useState(false);
     const [interstedUsers, setInterestedUsers] = useState([]);
     const [appliers, setAppliers] = useState([]);
+    const [leasedStartDate, setLeasedStartDate] = useState();
+    const [leasedEndDate, setLeasedEndDate] = useState();
+    const [canLeasedProperty, setCanLeasedProperty] = useState('');
 
     const currentUser = getCurrentUser().uid;
 
@@ -70,12 +74,21 @@ const AddNewProperty = (props) => {
         return () => setShowLeasedUserPicker(false);
     }, []);
 
+
     useEffect(() => {
         let _canAddProperty = rent !== null && bond !== null && propertyType !== null && propertyDescription !== null && imageUri !== null && !isLoading;
         if (canAddProperty !== _canAddProperty) {
             setCanAddProperty(_canAddProperty);
         }
     }, [rent, bond, propertyType, isLoading, imageUri]);
+
+    getProperty = (key, mode) => {
+        getPropertyById(key).then((data) => {
+            setPropertyFields(data, mode, key);
+
+        }).catch((error) => console.log(error));
+    };
+
 
     getProperty = (key, mode) => {
         getPropertyById(key).then((data) => {
@@ -124,20 +137,29 @@ const AddNewProperty = (props) => {
             .catch(error => setError(error));
     };
 
-    getPostalCode = (json) => {
-        const addressComponents = json.result.address_components;
-        for (let i = 0; i < addressComponents.length; i++) {
-            const typesArray = addressComponents[i].types;
-            for (let j = 0; j < typesArray.length; j++) {
-                if (typesArray[j].toString() === "postal_code") {
-                    const postalCode = addressComponents[i].long_name;
-                }
-                if (typesArray[j].toString() === "locality") {
-                    const locality = addressComponents[i].long_name;
-                }
+
+    openDatePicker = async () => {
+        try {
+            var today = moment()
+            var dateAfterSixMonth = moment(today).add(6, "months").toDate();
+            const { action, year, month, day } = await DatePickerAndroid.open({
+                date: new Date(),
+                minDate: new Date(),
+                maxDate: dateAfterSixMonth
+            });
+            if (action !== DatePickerAndroid.dismissedAction) {
+                var startOfLeased = moment([year, month, day]).valueOf();
+                var endOfLeased = moment(startOfLeased).add(6, "months").valueOf();
+                setLeasedStartDate(startOfLeased);
+                setLeasedEndDate(endOfLeased);
+                console.log(startOfLeased, endOfLeased, ">>>")
+                setError(undefined);
             }
+
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
         }
-    };
+    }
 
     loadCoordinatesByPlaceId = (placeId) => {
         getGooglePlaceDetails(placeId)
@@ -191,6 +213,7 @@ const AddNewProperty = (props) => {
             setPropertyDescriptionView(true);
             setImageUri(data.imageUrl);
             setPropertyDescription(data.propertyDescription);
+            setLeased(data.leased);
         }
     };
 
@@ -213,15 +236,12 @@ const AddNewProperty = (props) => {
         let property;
         getDownloadUrl(imageUri, imageFileName)
             .then((url) => {
-                property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
+                property = new Property(leased, address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
                     rent, bond, url, latitude, longitude, currentUser);
-                createProperty(property).then((key) => {
-                    setStep(AddProperty.ADD_PROPERTY_SUCCESS);
-                }).catch((error) => {
-                    errorMessage = setError(parseFirebaseError(error));
-                    setError(errorMessage);
-                });
-
+                return createProperty(property)
+            })
+            .then((key) => {
+                setStep(AddProperty.ADD_PROPERTY_SUCCESS);
             })
             .catch(error => {
                 let errorMessage = parseFirebaseError(error);
@@ -236,7 +256,7 @@ const AddNewProperty = (props) => {
     handleUpdateProperty = () => {
         setIsLoading(true);
         let property;
-        property = new Property(address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
+        property = new Property(leased, address, unitNumber, bedroom, bathroom, propertyType, propertyDescription,
             rent, bond, imageUri, latitude, longitude, currentUser);
         setIsLoading(false);
         updateProperty(property, propertyKey)
@@ -251,24 +271,27 @@ const AddNewProperty = (props) => {
     };
 
     onMarkAsLeasedClicked = () => {
-        if (appliers) {
-            console.log("in on click", appliers);
-            let promises = [];
+        if (leasedStartDate !== undefined) {
+            if (appliers) {
+                let promises = [];
 
-            appliers.forEach(item => {
-                promises.push(getUserById(item.applicatorId));
-            });
+                appliers.forEach(item => {
+                    promises.push(getUserById(item.applicatorId));
+                });
 
-            Promise.all(promises)
-                .then((value) => {
-                    console.log(value, "values sss");
-                    setInterestedUsers(value);
-                    setShowLeasedUserPicker(true);
-                })
-                .catch((error) => setError(error));
+                Promise.all(promises)
+                    .then((value) => {
+                        console.log(value, "values sss");
+                        setInterestedUsers(value);
+                        setShowLeasedUserPicker(true);
+                    })
+                    .catch((error) => setError(error));
+            }
+        }
+        else {
+            setError("please choose Leased Start date")
         }
     }
-
     onSetLeasedUser = (userId) => {
         console.log(userId);
         const { key, mode } = props.navigation.state.params;
@@ -276,6 +299,20 @@ const AddNewProperty = (props) => {
             setShowLeasedUserPicker(false);
             Alert("Leased");
         }).catch((error) => Alert(error));
+    }
+
+    createLeasedProperty = (tenantId) => {
+        setShowLeasedUserPicker(false);
+        const property = {
+            leased: true
+        }
+        updateProperty(property, propertyKey)
+            .then(() => {
+                leaseProperty(propertyKey, tenantId, leasedStartDate, leasedEndDate)
+                    .then(() => props.navigation.navigate(AppRoute.PropertyList));
+            })
+            .catch(error => console.log(error))
+
     }
 
     onFocusedChange = () => {
@@ -305,9 +342,10 @@ const AddNewProperty = (props) => {
     var markAsLeased = (editMode && step === AddProperty.PROPERTY_DETAILS && appliers.length > 0) ? (
         <React.Fragment>
             <TouchableOpacity
-                style={[styles.button, { alignSelf: 'center' }]}
-                onPress={this.onMarkAsLeasedClicked}>
-                <Text style={styles.buttonText}>Mark As Leased</Text>
+                style={[leased ? styles.buttonDisabled : styles.button, { alignSelf: 'center' }]}
+                onPress={this.onMarkAsLeasedClicked}
+                disabled={leased} >
+                <Text style={leased ? styles.buttonTextDisabled : styles.buttonText}>Mark As Leased</Text>
             </TouchableOpacity>
             <Overlay
                 isVisible={showLeasedUserPicker}
@@ -328,7 +366,7 @@ const AddNewProperty = (props) => {
                         renderItem={({ item }) => (
                             <View >
                                 <TouchableOpacity
-                                    onPress={() => onSetLeasedUser(item.id)}
+                                    onPress={() => createLeasedProperty(item.id)}
                                     style={{ flex: 1, flexDirection: 'row', alignContent: 'center', padding: 16 }}>
                                     <Avatar rounded
                                         overlayContainerStyle={{ backgroundColor: colors.primaryDark }}
@@ -471,14 +509,32 @@ const AddNewProperty = (props) => {
                                     imageUri &&
                                     <Image source={{ uri: imageUri }} style={{ width: '100%', height: 100, resizeMode: 'contain' }} />
                                 }
-
-
                                 {editMode ?
-                                    <TouchableOpacity
-                                        style={[styles.button, { alignSelf: 'center' }]}
-                                        onPress={this.handleUpdateProperty}>
-                                        <Text style={styles.buttonText}>Update Property </Text>
-                                    </TouchableOpacity> :
+                                    <Fragment>
+                                        <View style={[styles.containerFlexRow, { alignContent: 'center' }]}>
+                                            <TouchableOpacity
+                                                style={[leased ? styles.buttonDisabled : styles.button, { alignSelf: 'center', marginRight: 4 }]}
+                                                onPress={this.openDatePicker}
+                                                disable={leased}>
+                                                <Text style={leased ? styles.buttonTextDisabled : styles.buttonText}>Leased From</Text>
+                                            </TouchableOpacity>
+                                            {markAsLeased}
+                                        </View>
+                                        <View style={[styles.containerFlexRow, { alignContent: 'center' }]}>
+                                            {
+                                                leasedStartDate !== undefined &&
+                                                <Label style={{ color: colors.success, fontSize: 15 }}> Leasing From:  {moment(leasedStartDate).format('ll')}</Label>
+                                            }{
+                                                error &&
+                                                < Label style={{ color: colors.danger, fontSize: 15 }}>{error}</Label>
+                                            }
+                                        </View>
+                                        <TouchableOpacity
+                                            style={[styles.button, { alignSelf: 'center' }]}
+                                            onPress={this.handleUpdateProperty}>
+                                            <Text style={styles.buttonText}>Update Property </Text>
+                                        </TouchableOpacity>
+                                    </Fragment> :
                                     <Fragment>
                                         <TouchableOpacity
                                             onPress={this.selectPropertyImage}
@@ -493,7 +549,7 @@ const AddNewProperty = (props) => {
                                         </TouchableOpacity>
                                     </Fragment>
                                 }
-                                {markAsLeased}
+
                             </View>
                         </View> : null
                     }
@@ -519,7 +575,7 @@ const AddNewProperty = (props) => {
     }
 
     return (
-        <ScrollView >
+        <ScrollView keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'} >
             <SafeAreaView>
                 <View style={{ flex: 1 }}>
                     {view}

@@ -56,18 +56,11 @@ const Signup = (props) => {
             userDb = "owners";
             break;
         }
-        Firebase.database().ref().child(userDb + '/' + user.id).set(user);
+        return Firebase.database().ref().child(userDb + '/' + user.id).set(user);
       })
-
       .then(() => {
         currentUser.sendEmailVerification();
-        Firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            user.updateProfile({
-              displayName: name
-            })
-          }
-        })
+
       })
       .then(() => {
         clearFields();
@@ -170,7 +163,8 @@ const Signup = (props) => {
     </React.Fragment>;
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
       <View style={styles.container}>
         <Image
           source={require('../../assets/icon/homeIcon.png')}

@@ -117,7 +117,7 @@ const PropertyDetails = props => {
                 </View>
 
                 <View
-                    style={{ marginVertical: 16, alignSelf: 'stretch', flexDirection: 'row'}}>
+                    style={{ marginVertical: 16, alignSelf: 'stretch', flexDirection: 'row' }}>
                     <View
                         style={{
                             justifyContent: 'center',
@@ -179,13 +179,13 @@ const PropertyDetails = props => {
                         <Divider style={{ marginTop: 16, marginBottom: 40 }} />
 
                         {
-                        showApplyProperty && applied &&
+                            showApplyProperty && applied &&
                             <TouchableOpacity style={[styles.buttonDisabled, { alignSelf: 'center' }]} onPress={() => this.applyProperty(owner.id)}>
                                 <Text style={styles.buttonTextDisabled}>Application Sent</Text>
                             </TouchableOpacity>
                         }
                         {
-                        showApplyProperty && !applied &&
+                            showApplyProperty && !applied &&
                             <TouchableOpacity style={[styles.button, { alignSelf: 'center' }]} onPress={() => this.applyProperty(owner.id)}>
                                 <Text style={styles.buttonText}>Apply Property</Text>
                             </TouchableOpacity>
@@ -195,15 +195,14 @@ const PropertyDetails = props => {
             </View>
         </View>
     ) : (
-        <ActivityIndicator size="large" color={colors.primary} />
-    );
+            <ActivityIndicator size="large" color={colors.primary} />
+        );
 
     return (
-        <View>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View>{view}</View>
-            </ScrollView>
-        </View>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
+            <View>{view}</View>
+        </ScrollView>
     );
 };
 

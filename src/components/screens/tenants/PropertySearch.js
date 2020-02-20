@@ -30,7 +30,7 @@ const PropertySearch = (props) => {
   }, [debouncedSearch]);
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps={'always'} keyboardDismissMode={'on-drag'}>
       <SafeAreaView>
         <View style={styles.containerFull}>
           <SearchBar

@@ -24,10 +24,13 @@ const ChatRoomScreen = (props) => {
     useEffect(() => {
         initializeChatRoom();
         getCurrentUserClaims().then((isOwner) => {
-          setIsOwner(isOwner);
+            setOwner(isOwner);
         })
     }, []);
 
+    setOwner = (value) => {
+        setIsOwner(value);
+    }
     setNewMessages = (newMessages) => {
         var messages = newMessages.sort((a, b) => b.createdAt - a.createdAt);
         console.log(messages);
@@ -120,14 +123,14 @@ const ChatRoomScreen = (props) => {
     }
 
     sendInspectionMessage = (dateTimeString) => {
-      const message = {
-          text: `Hello ! We will will be conducting property Inspection on ${dateTimeString}`,
-      };
-      if (chatRoomId) {
-        sendMessage([message], chatRoomId).then(() => {
-          navigateToChatRoom(owner);
-        });
-      }
+        const message = {
+            text: `Hello ! We will will be conducting property Inspection on ${dateTimeString}`,
+        };
+        if (chatRoomId) {
+            sendMessage([message], chatRoomId).then(() => {
+                navigateToChatRoom(owner);
+            });
+        }
     }
 
     const imageTypes = ["jpg", "jpeg", "png"];
@@ -136,11 +139,11 @@ const ChatRoomScreen = (props) => {
         return (
             <View style={[styles.customActionsContainer, { paddingLeft: 8, paddingTop: 4, paddingBottom: 4 }]}>
 
-              { isOwner &&
-                <View style={[styles.boxCenter, { height: 36, backgroundColor: colors.primaryDark, borderRadius: 18, marginRight: 4 }]}>
-                    <Text onPress={this.openDatePicker} style={{ color: colors.darkWhite2, paddingHorizontal: 8 }} > Inspection </Text>
-                </View>
-              }
+                {isOwner &&
+                    <View style={[styles.boxCenter, { height: 36, backgroundColor: colors.primaryDark, borderRadius: 18, marginRight: 4 }]}>
+                        <Text onPress={this.openDatePicker} style={{ color: colors.darkWhite2, paddingHorizontal: 8 }} > Inspection </Text>
+                    </View>
+                }
                 <View style={[styles.boxCenter, { width: 36, height: 36, backgroundColor: colors.primaryDark, borderRadius: 18 }]}>
                     <Icon name='paperclip'
                         type='evilicon'

@@ -1,19 +1,20 @@
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import AppRoute from '../../../../resources/appRoute';
-import DashboardScreen from '../../DashboardScreen';
+import TenantDashboardScreen from '../TenantDashboardScreen';
 import PropertySearchStackNavigator from './PropertySearchStackNavigator';
 import DrawerMenu from '../../../DrawerMenu';
 import colors from '../../../../resources/colors';
 import ChatStackNavigator from '../../../ChatStackNavigator';
+import DashboardStackNavigator from '../../../DashboardStackNavigator';
 
 const DrawerNavigator = createDrawerNavigator({
-    DashboardScreen: { screen: DashboardScreen },
-    PropertySearch: PropertySearchStackNavigator,
-    ChatScreen: ChatStackNavigator
+    TenantDashboardScreen: TenantDashboardScreen, // AppRoute.TenantDashboard
+    PropertySearch: PropertySearchStackNavigator, // AppRoute.PropertySearch
+    ChatScreen: ChatStackNavigator // AppRoute.Chat
 },
     {
-        initialRouteName: AppRoute.Chat,
+        initialRouteName: AppRoute.PropertySearch,
         drawerPosition: "left",
         drawerType: 'slide',
         edgeWidth: 100,
