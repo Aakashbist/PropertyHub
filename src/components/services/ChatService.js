@@ -86,6 +86,7 @@ export function shouldCreateChatHistory(senderId, receiverId) {
             promises.push(addChateeForUser(senderId, receiverId))
         }
     });
+
     getChatHistoryById(receiverId).then(data => {
         const found = data.find(element => element.chatee === senderId)
         if (!found) {

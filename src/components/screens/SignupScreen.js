@@ -56,18 +56,11 @@ const Signup = (props) => {
             userDb = "owners";
             break;
         }
-        Firebase.database().ref().child(userDb + '/' + user.id).set(user);
+        return Firebase.database().ref().child(userDb + '/' + user.id).set(user);
       })
-
       .then(() => {
         currentUser.sendEmailVerification();
-        Firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            user.updateProfile({
-              displayName: name
-            })
-          }
-        })
+
       })
       .then(() => {
         clearFields();

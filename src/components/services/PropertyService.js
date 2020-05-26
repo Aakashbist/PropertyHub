@@ -30,8 +30,6 @@ export function getPropertiesBySearch(searchTerm) {
 
 export function propertyReference(userId, callback) {
     let dbPropertyRef = Firebase.database().ref(`${propertyCollection}/`);
-
-    dbPropertyRef.off();
     const onResponse = (dataSnapshot) => {
         if (dataSnapshot.exists()) {
             let data = dataSnapshot.val();

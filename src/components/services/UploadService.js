@@ -36,7 +36,6 @@ export function openDocumentPicker() {
                 // DocumentPicker.types.allFiles,image,plainText,audio,pdf
             });
             //uri,type,name(filename),size is in res obj
-
             resolve(res);
 
         } catch (err) {

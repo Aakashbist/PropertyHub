@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Picker, ScrollView, View } from 'react-native';
-import { Icon, Text } from 'react-native-elements';
+import { Icon, Text, Header } from 'react-native-elements';
 import TimeLine from 'react-native-timeline-flatlist';
 import { getCurrentUser } from '../../../config/Firebase';
 import colors from '../../../resources/colors';

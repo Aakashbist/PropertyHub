@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import AppRoute from "../../../../../resources/appRoute";
 import colors from "../../../../../resources/colors";
 import styles from '../../../../../resources/styles';
-import ChatStackNavigator from '../../../../ChatStackNavigator';
 import AddPropertyScreen from '../AddPropertyScreen';
 import PropertyStackNavigator from '../navigation/PropertyStackNavigation';
 
